@@ -2,9 +2,12 @@ name: Job digest (3x daily)
 
 on:
   schedule:
-    # Times are UTC. These map to 9am / 1pm / 4pm ET during EDT (summer).
-    # In winter (EST) they'll land at 8am / 12pm / 3pm — shift by 1h if you care.
-    - cron: "0 13,17,20 * * *"
+    # Times are UTC. These map to 8:57am / 12:57pm / 3:57pm ET during EDT (summer).
+    # In winter (EST) they'll land at 7:57 / 11:57 / 2:57 — shift by 1h if you care.
+    # Minute :57 (not :00) deliberately dodges the top-of-hour cron pile-up on
+    # GitHub Actions, which routinely delays :00 runs 15-60+ min. No SLA either
+    # way, but back-of-the-hour slots are delayed far less often.
+    - cron: "57 12,16,19 * * *"
   workflow_dispatch:
 
 permissions:
