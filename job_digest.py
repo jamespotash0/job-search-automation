@@ -39,8 +39,9 @@ RESUME = {
         "ai product manager", "technical product manager", "founding product manager",
         "founding pm", "technical program manager",
         "forward deployed engineer", "forward deployed", "deployment strategist",
-        "ai strategist", "solutions engineer", "product engineer",
+        "ai strategist", "solutions engineer",
         "technical solutions", "implementation", "product operations",
+        "product strategy",
     ],
     # Skills / tools from your resume (keyword overlap with the JD).
     "skills": [
@@ -70,6 +71,19 @@ SENIORITY_EXCLUDE = [
     "senior", "sr.", "sr ", "staff", "principal", "lead ", "director",
     "head of", "vp", "vice president", " ii", " iii", "manager of managers",
     "group product", "chief",
+]
+
+# Software-engineering (coding) roles to hard-exclude — you want product /
+# deployment / solutions, NOT SWE. Note "Forward Deployed Engineer" and
+# "Solutions Engineer" are KEPT (not coding-IC roles); only titles like
+# "...Software Engineer", backend/frontend/full-stack, data/ML eng, etc. drop.
+SWE_EXCLUDE = [
+    "software engineer", "software developer", "swe ", "backend", "back-end",
+    "front end", "front-end", "frontend", "full stack", "full-stack", "fullstack",
+    "web developer", "mobile engineer", "ios engineer", "android engineer",
+    "data engineer", "machine learning engineer", "ml engineer", "devops",
+    "site reliability", " sre", "security engineer", "firmware", "game developer",
+    "developer advocate",
 ]
 
 # Words in the JD body that signal a junior/early-career fit (boost).
@@ -471,6 +485,8 @@ def fetch_workday(entry):
 def title_is_target(title):
     t = title.lower()
     if any(x in t for x in SENIORITY_EXCLUDE):
+        return False
+    if any(x in t for x in SWE_EXCLUDE):      # no software-engineering roles
         return False
     return any(x in t for x in RESUME["target_titles"])
 
