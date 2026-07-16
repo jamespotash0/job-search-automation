@@ -9,3 +9,4 @@ __pycache__/
 
 # Personal docs (resume, etc.) — keep out of public repo
 docs/*.pdf
+.vscode/
