@@ -52,6 +52,10 @@ environment variables / GitHub Actions secrets.
      (The values in there now are just an example — replace them.)
    - `job_digest.py` → `PREFER_LARGER` (True = big companies rank first; set
      **False** for small/early-stage roles).
+   - `job_digest.py` → company watchlists: add ATS tokens for companies you
+     want to track — `GREENHOUSE_COMPANIES`, `LEVER_COMPANIES`,
+     `ASHBY_COMPANIES`, `WORKDAY_COMPANIES` (or let the funding→job loop fill
+     them in automatically).
    - `funding_digest.py` → `FOCUS_KEYWORDS` (your sectors) and
      `LOCATION_KEYWORDS` (your cities; leave empty to ignore location).
 4. **Run it.** Actions tab → pick a workflow → *Run workflow*, or run locally
