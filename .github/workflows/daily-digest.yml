@@ -15,6 +15,9 @@ concurrency:
 jobs:
   digest:
     runs-on: ubuntu-latest
+    # Runners are UTC; render digest timestamps in ET so the email clock matches.
+    env:
+      TZ: America/New_York
     steps:
       - uses: actions/checkout@v4
 

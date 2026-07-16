@@ -20,6 +20,9 @@ concurrency:
 jobs:
   jobs-digest:
     runs-on: ubuntu-latest
+    # Runners are UTC; render digest timestamps + "today/1d ago" labels in ET.
+    env:
+      TZ: America/New_York
     steps:
       - uses: actions/checkout@v4
 
