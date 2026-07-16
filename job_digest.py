@@ -35,13 +35,14 @@ from datetime import datetime, timezone
 RESUME = {
     # Titles you're targeting (matched against posting titles).
     "target_titles": [
-        "product manager", "associate product manager", "apm", "product owner",
-        "ai product manager", "technical product manager", "founding product manager",
-        "founding pm", "technical program manager",
+        # Core PM + tight product-family variants only — kept deliberately narrow.
+        "product manager", "associate product manager", "apm",
+        "ai product manager", "technical product manager",
+        "founding product manager", "founding pm",
+        "product owner", "product operations", "product strategy",
+        # Forward-deployed family — only the two named, not the wider
+        # solutions-engineer / implementation / strategist net.
         "forward deployed engineer", "forward deployed", "deployment strategist",
-        "ai strategist", "solutions engineer",
-        "technical solutions", "implementation", "product operations",
-        "product strategy",
     ],
     # Skills / tools from your resume (keyword overlap with the JD).
     "skills": [
@@ -139,6 +140,7 @@ ASHBY_COMPANIES = [
     "kalshi",        # fintech/markets · Product Manager, Growth/Payments (NYC)
     "rho",           # fintech · Product Manager (NYC)
     "highbeam",      # fintech/SMB · NYC
+    "eliseai",       # PROPTECH/AI · NYC · Solutions Engineer (you interviewed here)
     # SF/London-HQ but they DO staff NYC — the per-role location gate keeps only
     # their NYC postings, so seeding them just means "watch for NYC roles here".
     "decagon",       # AI agents · 24 NYC roles live
