@@ -158,7 +158,10 @@ machine left on.)
 
 ## Costs
 - Digests + email + job sources: **free**.
-- `ANTHROPIC_API_KEY`: a few cents/day at `ENRICH_TOP_N=8` (lower it to spend less).
+- `ANTHROPIC_API_KEY`: `ENRICH_TOP_N=None` (default) summarizes **every** raise —
+  one web-search call each, so cost scales with the day's volume (often 10–40
+  raises). Set `ENRICH_TOP_N` to an integer (e.g. `8`) to cap spend, or `0` to
+  turn summaries off entirely.
 - `HUNTER_API_KEY`: free tier ~50/mo; the script rations it and falls back to
   pattern-guessed emails (marked UNVERIFIED) after the cap.
 

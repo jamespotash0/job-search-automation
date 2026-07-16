@@ -31,9 +31,13 @@ except Exception:
 # CONFIG — tune these to your search
 # --------------------------------------------------------------------------
 
-# Enrich the top N ranked raises with company info + founder email. Set to 0
-# to disable enrichment entirely (pure free headlines).
-ENRICH_TOP_N = 8
+# Enrich raises with an AI company summary + founder email.
+#   None = enrich EVERY collected raise (fullest digest, most API spend)
+#   N    = only the top N ranked raises
+#   0    = disable enrichment entirely (pure free headlines)
+# Enriching all is a web-search + (optional) Hunter call per company, so cost
+# scales with how many raises come through that day (see "Costs" in the README).
+ENRICH_TOP_N = None
 
 # How far back to look. Run daily -> keep at ~28h so nothing slips through gaps.
 LOOKBACK_HOURS = 28
@@ -307,6 +311,14 @@ def build_html(items, letters=None):
                                 f"✉ <a href='mailto:{html.escape(enr['email'])}' style='color:{color}'>"
                                 f"{html.escape(enr['email'])}</a> "
                                 f"<span style='color:#999'>({html.escape(enr.get('email_status',''))})</span></div>")
+                    # other likely formats to try if the top guess bounces
+                    alts = enr.get("email_alts") or []
+                    if alts:
+                        alt_links = " · ".join(
+                            f"<a href='mailto:{html.escape(a)}' style='color:#b06;text-decoration:none'>"
+                            f"{html.escape(a)}</a>" for a in alts[:3])
+                        bits.append(f"<div style='font-size:11px;color:#999;margin:1px 0 0 14px'>"
+                                    f"or try: {alt_links}</div>")
                 # click-to-search links (no scraping)
                 from urllib.parse import quote_plus
                 comp = i.get("company") or i["title"]
@@ -371,12 +383,14 @@ if __name__ == "__main__":
     items = collect()
     print(f"[info] collected {len(items)} items")
 
-    if ENRICH_TOP_N and _enrich is not None:
+    if ENRICH_TOP_N != 0 and _enrich is not None:
         try:
             import watchlist as _wl
         except Exception:
             _wl = None
-        for i in items[:ENRICH_TOP_N]:
+        targets = items if ENRICH_TOP_N is None else items[:ENRICH_TOP_N]
+        print(f"[info] enriching {len(targets)} of {len(items)} raises")
+        for i in targets:
             company = guess_company(i["title"])
             i["company"] = company
             try:

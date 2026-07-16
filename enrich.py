@@ -175,31 +175,53 @@ def pattern_to_email(pattern, first, last, domain):
     return f"{email}@{domain}"
 
 
-def guess_email(domain, founder):
+def guess_emails(domain, founder):
+    """Ranked list of the most likely email formats for a founder, most-likely
+    first. Only used as the UNVERIFIED fallback (no Hunter verification / no
+    observed domain pattern). Order reflects real-world prevalence at startups:
+        1. first@domain          (jane@acme.ai)      — most common
+        2. first.last@domain     (jane.smith@acme.ai)
+        3. {f}last@domain        (jsmith@acme.ai)
+        4. last@domain           (smith@acme.ai)
+    """
     if not (domain and founder):
-        return ""
-    parts = founder.strip().split()
-    first = parts[0].lower()
-    return f"{first}@{domain}"   # simplest common pattern
+        return []
+    parts = [p for p in re.sub(r"[^a-z .-]", "", founder.lower()).split() if p]
+    if not parts:
+        return []
+    first = parts[0]
+    last = parts[-1] if len(parts) > 1 else ""
+    cands = [f"{first}@{domain}"]
+    if last:
+        cands += [f"{first}.{last}@{domain}",
+                  f"{first[:1]}{last}@{domain}",
+                  f"{last}@{domain}"]
+    seen, out = set(), []
+    for c in cands:                       # dedupe, keep order
+        if c not in seen:
+            seen.add(c)
+            out.append(c)
+    return out
 
 
 def find_email(domain, founders):
-    """Returns (email, status)."""
+    """Returns (email, status, alts). `alts` holds the other likely guesses,
+    ranked, and is only populated for the UNVERIFIED name-based fallback."""
     founder = founders[0] if founders else ""
     first = founder.split()[0] if founder else ""
     last = founder.split()[-1] if len(founder.split()) > 1 else ""
 
     pattern, best = hunter_domain_search(domain)
     if best:
-        return best, "verified (Hunter)"
+        return best, "verified (Hunter)", []
     if pattern:
         e = pattern_to_email(pattern, first, last, domain)
         if e:
-            return e, "pattern (Hunter)"
-    e = guess_email(domain, founder)
-    if e:
-        return e, "guessed (UNVERIFIED)"
-    return "", ""
+            return e, "pattern (Hunter)", []
+    guesses = guess_emails(domain, founder)
+    if guesses:
+        return guesses[0], "guessed (UNVERIFIED)", guesses[1:]
+    return "", "", []
 
 
 # --------------------------------------------------------------------------
@@ -214,9 +236,9 @@ def enrich(company):
 
     info = ai_lookup(company)
     domain = info.get("domain") or ""
-    email, status = ("", "")
+    email, status, alts = ("", "", [])
     if domain:
-        email, status = find_email(domain, info.get("founders", []))
+        email, status, alts = find_email(domain, info.get("founders", []))
 
     result = {
         "website": info.get("website", ""),
@@ -226,6 +248,7 @@ def enrich(company):
         "investors": info.get("investors", []),
         "email": email,
         "email_status": status,
+        "email_alts": alts,
         "ts": datetime.now().timestamp(),
     }
     cache[key] = result
