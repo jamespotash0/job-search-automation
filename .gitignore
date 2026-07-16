@@ -16,3 +16,6 @@ docs/*.pdf
 profile.json
 profile.compiled.json
 .vscode/
+
+# ephemeral discovery breadcrumb (written 8am, read by funding digest same run)
+discover_status.json

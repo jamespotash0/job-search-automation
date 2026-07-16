@@ -134,3 +134,14 @@ def get_tokens():
     """For the job digest: current auto-detected tokens by provider."""
     d = _load()
     return {"greenhouse": d["greenhouse"], "lever": d["lever"], "ashby": d["ashby"]}
+
+
+def get_checked():
+    """Company names already probed (so discovery can skip re-searching them)."""
+    return list(_load()["checked"])
+
+
+def token_count():
+    """Total distinct ATS tokens currently on the watchlist."""
+    d = _load()
+    return len(d["greenhouse"]) + len(d["lever"]) + len(d["ashby"])

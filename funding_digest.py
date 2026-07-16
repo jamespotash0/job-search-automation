@@ -268,6 +268,32 @@ def newsletters_block(letters):
             "<ul style='list-style:none;padding:0;margin:0'>" + "".join(rows) + "</ul>")
 
 
+def discovery_banner():
+    """A one-line status of the 8am discovery step, read from the breadcrumb
+    discover.py leaves. Green when it added companies, grey when it ran but found
+    nothing new, red when it failed — so you can tell at a glance that the loop
+    that feeds the job digest is alive. Empty string if discovery didn't run."""
+    try:
+        with open("discover_status.json") as f:
+            st = json.load(f)
+    except Exception:
+        return ""
+    total = st.get("watchlist_total", "?")
+    if not st.get("ok"):
+        color, msg = "#b00", f"⚠ Discovery FAILED: {html.escape(str(st.get('error') or 'unknown'))}"
+    elif st.get("added"):
+        names = ", ".join(st.get("added_names", [])[:8])
+        color = "#2a7"
+        msg = (f"✓ Discovery: probed {st.get('probed', 0)}, "
+               f"added {st.get('added')} — {html.escape(names)}")
+    else:
+        color = "#999"
+        msg = f"Discovery ran: probed {st.get('probed', 0)}, no new companies today"
+    return (f"<div style='font-family:sans-serif;font-size:12px;color:{color};"
+            f"border-left:3px solid {color};padding:2px 0 2px 8px;margin:0 0 12px'>"
+            f"{msg} · watchlist now {total} companies</div>")
+
+
 def build_html(items, letters=None):
     today = datetime.now().strftime("%A, %b %d")
     letters = letters or []
@@ -420,4 +446,4 @@ if __name__ == "__main__":
 
     letters = collect_substack()
     print(f"[info] {len(letters)} newsletter posts")
-    send_email(build_html(items, letters))
+    send_email(discovery_banner() + build_html(items, letters))
