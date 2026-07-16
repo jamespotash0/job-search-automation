@@ -35,6 +35,30 @@ Per-piece detail lives in `docs/ENRICHMENT_README.md`, `docs/JOBS_README.md`,
 
 ---
 
+## Use it yourself (fork & configure)
+
+This repo is a template — everyone runs their own copy with their own email,
+keys, and job criteria. Nothing personal is committed; all secrets come from
+environment variables / GitHub Actions secrets.
+
+1. **Fork** this repo (or click *Use this template* / clone it).
+2. **Add your secrets.** Locally: `cp .env.example .env` and fill it in. For the
+   scheduled runs: in *your* fork, **Settings → Secrets and variables → Actions**
+   and add the same keys (see the secrets table below). Only `EMAIL_*` are
+   required; the API keys are optional.
+3. **Make it yours.** Edit the config blocks — none of this needs code changes,
+   just edit the lists:
+   - `job_digest.py` → `RESUME` block: your target titles, skills, domains.
+     (The values in there now are just an example — replace them.)
+   - `job_digest.py` → `PREFER_LARGER` (True = big companies rank first; set
+     **False** for small/early-stage roles).
+   - `funding_digest.py` → `FOCUS_KEYWORDS` (your sectors) and
+     `LOCATION_KEYWORDS` (your cities; leave empty to ignore location).
+4. **Run it.** Actions tab → pick a workflow → *Run workflow*, or run locally
+   (see below). The schedules live in `.github/workflows/*.yml` (cron in UTC).
+
+---
+
 ## Setup with Claude Code (recommended)
 
 You have this whole folder. Easiest path: open it in Claude Code and let it do
