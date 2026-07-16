@@ -118,20 +118,26 @@ instead (good for a dry run).
   loop fill them in automatically. For Workday-based companies, add
   tenant/wd/site entries to `WORKDAY_COMPANIES`.
 
-`RESUME` in `job_digest.py` is pre-loaded from James Potash's resume; the funding
-digest pulls from Google News + TechCrunch + VentureBeat + EU-Startups + Tech.eu.
+`RESUME` in `job_digest.py` is pre-loaded from James Potash's resume, and the ATS
+lists are seeded with small/early-stage NYC startups in that lane (edra, probook,
+valon, credal, rogo, alloy, …). The funding digest pulls from Google News +
+TechCrunch + VentureBeat + EU-Startups + Tech.eu, plus a **From your newsletters**
+section from any Substack in `SUBSTACK_FEEDS` (currently *next play*).
 
 ---
 
 ## Run locally (optional, no GitHub)
 ```bash
-pip install -r requirements.txt
+python3 -m venv .venv                       # create an isolated environment
+.venv/bin/python -m pip install -r requirements.txt
 export EMAIL_USER=... EMAIL_PASS=... EMAIL_TO=...
 export ANTHROPIC_API_KEY=...   # optional
 export HUNTER_API_KEY=...       # optional
-python funding_digest.py
-python job_digest.py
+.venv/bin/python funding_digest.py
+.venv/bin/python job_digest.py
 ```
+(Or activate the venv first with `source .venv/bin/activate`, then use plain
+`python`.)
 Then schedule with cron. (GitHub Actions is easier — it's free and needs no
 machine left on.)
 

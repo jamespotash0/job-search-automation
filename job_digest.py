@@ -100,9 +100,31 @@ REMOTIVE_SEARCHES = ["product manager", "associate product manager",
 # ATS watchlist — add ATS tokens for companies you're targeting (e.g. from the
 # funding digest). Find the token in a company's careers URL:
 #   boards.greenhouse.io/<TOKEN>   jobs.lever.co/<TOKEN>   jobs.ashbyhq.com/<TOKEN>
-GREENHOUSE_COMPANIES = []   # e.g. ["ramp", "notion"]
+# Seeded with SMALL / early-stage (seed–Series B) NYC startups whose live boards
+# carry PM / FDE / deployment / AI-strategist / solutions roles in your lane —
+# each verified against the ATS's public API, location-checked to NYC, and kept
+# small (≤~65 open roles, i.e. not the 400-role giants). The loop auto-adds more
+# as companies raise; trim/extend freely.
+GREENHOUSE_COMPANIES = [
+    "alloy",         # fintech/identity · founding Forward Deployed Engineer
+    "vestwell",      # fintech/retirement · Implementations Manager
+    "lithic",        # fintech/cards (Privacy.com) · NYC
+    "northspyre",    # PROPTECH · NYC (your Stringbean domain)
+    "vts",           # PROPTECH · NYC (your domain)
+    "honeycomb",     # PROPTECH/insurance · NYC (your domain)
+]
 LEVER_COMPANIES = []        # e.g. ["somestartup"]
-ASHBY_COMPANIES = []        # e.g. ["somestartup"]
+ASHBY_COMPANIES = [
+    "edra",          # AI · AI Strategist (New York)
+    "probook",       # AI · Deployment Strategist, Implementation Manager (Manhattan)
+    "credal",        # AI/enterprise · Founding GTM Deployment Strategist (Brooklyn)
+    "normalcomputing",  # AI · Forward Deployed Engineer (NYC)
+    "valon",         # PROPTECH/mortgage · Deployment Strategist, Implementation (3 NYC roles)
+    "rogo",          # fintech/AI · Product Manager | Agents (NYC)
+    "kalshi",        # fintech/markets · Product Manager, Growth/Payments (NYC)
+    "rho",           # fintech · Product Manager (NYC)
+    "highbeam",      # fintech/SMB · NYC
+]
 
 # Workday boards. Unlike the token-based ATSs above, a Workday board needs THREE
 # parts you read from the careers URL:
@@ -394,13 +416,17 @@ def qualification_score(title, content):
 
 
 def is_nyc(location, content):
-    loc = (location or "").lower()
-    blob = loc + " " + (content or "").lower()
-    if any(k in blob for k in NYC_KEYWORDS):
-        return True
-    if REMOTE_OK and "remote" in loc:
-        return True
-    return False
+    loc = (location or "").strip().lower()
+    if loc:
+        # Trust an explicit location: a posting that says "San Francisco" isn't
+        # NYC just because its JD name-drops a New York office.
+        if any(k in loc for k in NYC_KEYWORDS):
+            return True
+        if REMOTE_OK and "remote" in loc:
+            return True
+        return False
+    # No location field (e.g. HN "Who's hiring") — fall back to the body text.
+    return any(k in (content or "").lower() for k in NYC_KEYWORDS)
 
 
 def size_score(company):

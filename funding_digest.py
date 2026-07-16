@@ -82,6 +82,18 @@ EXTRA_FEEDS = [
     "https://tech.eu/feed/",
 ]
 
+# Substack newsletters to pull. Any Substack exposes RSS at <name>.substack.com/feed
+# (or a custom-domain newsletter at <domain>/feed). Their posts run through the same
+# funding-signal filter below, so only funding-related items survive. Add the ones
+# you follow — e.g. deal/roundup newsletters that name who just raised.
+SUBSTACK_FEEDS = [
+    "https://nextplayso.substack.com/feed",   # "next play" — startups hiring after raising $10-50M
+]
+# Newsletters post on their own cadence (often weekly) and are already on-topic,
+# so they get their own digest section instead of the 28h/funding-signal gate.
+SUBSTACK_LOOKBACK_DAYS = 14
+SUBSTACK_MAX = 6
+
 # Max items to include in the email.
 MAX_ITEMS = 40
 
@@ -186,11 +198,63 @@ def collect():
     return items[:MAX_ITEMS]
 
 
-def build_html(items):
+def collect_substack():
+    """Latest posts from SUBSTACK_FEEDS — shown as their own section, NOT run
+    through the 28h/funding-signal gate (the whole newsletter is already on-topic
+    and posts on a slower, irregular cadence)."""
+    if not SUBSTACK_FEEDS:
+        return []
+    cutoff = datetime.now(timezone.utc) - timedelta(days=SUBSTACK_LOOKBACK_DAYS)
+    out, seen = [], set()
+    for url in SUBSTACK_FEEDS:
+        try:
+            parsed = feedparser.parse(url, agent=FEED_UA)
+        except Exception as e:
+            print(f"[warn] substack {url}: {e}")
+            continue
+        src = clean(getattr(parsed.feed, "title", "")) or "Substack"
+        for e in parsed.entries:
+            title = clean(getattr(e, "title", ""))
+            link = getattr(e, "link", "")
+            if not title or not link or link in seen:
+                continue
+            if entry_time(e) < cutoff:
+                continue
+            seen.add(link)
+            out.append({"title": title, "link": link, "source": src,
+                        "time": entry_time(e)})
+    out.sort(key=lambda x: x["time"], reverse=True)
+    return out[:SUBSTACK_MAX]
+
+
+def newsletters_block(letters):
+    if not letters:
+        return ""
+    rows = []
+    for l in letters:
+        dt = l["time"].strftime("%b %d")
+        rows.append(
+            f"<li style='margin:0 0 9px'>"
+            f"<a href='{html.escape(l['link'])}' style='font-weight:600;color:#1a5fb4;text-decoration:none'>"
+            f"{html.escape(l['title'])}</a>"
+            f"<span style='color:#999;font-size:12px'> · {html.escape(l['source'])} · {dt}</span>"
+            f"</li>")
+    return ("<h3 style='font-family:sans-serif'>From your newsletters</h3>"
+            "<ul style='list-style:none;padding:0;margin:0'>" + "".join(rows) + "</ul>")
+
+
+def build_html(items, letters=None):
     today = datetime.now().strftime("%A, %b %d")
+    letters = letters or []
     if not items:
-        return f"<h2>Funding digest — {today}</h2><p>No new raises matched today. " \
-               f"Widen your keywords or check back tomorrow.</p>"
+        head = f"<h2 style='font-family:sans-serif'>Funding digest — {today}</h2>"
+        if letters:
+            body = ("<p style='font-family:sans-serif;color:#666;font-size:13px'>"
+                    "No new raises matched today, but here's the latest from your "
+                    "newsletters.</p>") + newsletters_block(letters)
+            return f"<div style='max-width:640px'>{head}{body}</div>"
+        return head + ("<p>No new raises matched today. "
+                       "Widen your keywords or check back tomorrow.</p>")
 
     best = [i for i in items if i["score"] >= 3]
     other = [i for i in items if i["score"] < 3]
@@ -250,6 +314,8 @@ def build_html(items):
         parts.append("<h3 style='font-family:sans-serif'>Best matches</h3>" + block(best))
     if other:
         parts.append("<h3 style='font-family:sans-serif'>Other recent raises</h3>" + block(other))
+    if letters:
+        parts.append(newsletters_block(letters))
     return "<div style='max-width:640px'>" + "".join(parts) + "</div>"
 
 
@@ -307,4 +373,6 @@ if __name__ == "__main__":
     else:
         print("[info] enrichment disabled or enrich.py missing")
 
-    send_email(build_html(items))
+    letters = collect_substack()
+    print(f"[info] {len(letters)} newsletter posts")
+    send_email(build_html(items, letters))
