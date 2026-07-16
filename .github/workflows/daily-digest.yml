@@ -1,0 +1,51 @@
+name: Daily funding digest
+
+on:
+  schedule:
+    - cron: "0 12 * * *"     # 8am ET (EDT). Adjust as you like (UTC).
+  workflow_dispatch:
+
+jobs:
+  digest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install deps
+        run: pip install feedparser
+
+      # Persist enrichment cache + Hunter monthly counter across runs so we never
+      # re-spend API calls / quota on the same company.
+      - name: Restore enrichment cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            enrich_cache.json
+            hunter_usage.json
+            ats_watchlist.json
+          key: enrich-${{ github.run_id }}
+          restore-keys: |
+            enrich-
+
+      # Shared ATS watchlist (the loop) — also cached under its own prefix so the
+      # job digest workflow can read it (caches are repo-scoped).
+      - name: Sync ATS watchlist
+        uses: actions/cache@v4
+        with:
+          path: ats_watchlist.json
+          key: watchlist-${{ github.run_id }}
+          restore-keys: |
+            watchlist-
+
+      - name: Send digest
+        env:
+          EMAIL_USER:        ${{ secrets.EMAIL_USER }}
+          EMAIL_PASS:        ${{ secrets.EMAIL_PASS }}
+          EMAIL_TO:          ${{ secrets.EMAIL_TO }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          HUNTER_API_KEY:    ${{ secrets.HUNTER_API_KEY }}
+        run: python funding_digest.py

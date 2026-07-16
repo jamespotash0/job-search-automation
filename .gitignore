@@ -1,0 +1,11 @@
+.env
+seen_jobs.json
+enrich_cache.json
+hunter_usage.json
+ats_watchlist.json
+__pycache__/
+*.pyc
+.venv/
+
+# Personal docs (resume, etc.) — keep out of public repo
+docs/*.pdf

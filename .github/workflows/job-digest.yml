@@ -1,0 +1,43 @@
+name: Job digest (3x daily)
+
+on:
+  schedule:
+    # Times are UTC. These map to 9am / 1pm / 4pm ET during EDT (summer).
+    # In winter (EST) they'll land at 8am / 12pm / 3pm — shift by 1h if you care.
+    - cron: "0 13,17,20 * * *"
+  workflow_dispatch:
+
+jobs:
+  jobs-digest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # Restore the "already-seen" list so 1pm/4pm don't repeat 9am's postings.
+      - name: Restore seen cache
+        uses: actions/cache@v4
+        with:
+          path: seen_jobs.json
+          key: seen-jobs-${{ github.run_id }}
+          restore-keys: |
+            seen-jobs-
+
+      # Read the shared ATS watchlist written by the funding digest (the loop).
+      - name: Sync ATS watchlist
+        uses: actions/cache@v4
+        with:
+          path: ats_watchlist.json
+          key: watchlist-job-${{ github.run_id }}
+          restore-keys: |
+            watchlist-
+
+      - name: Send job digest
+        env:
+          EMAIL_USER: ${{ secrets.EMAIL_USER }}
+          EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
+          EMAIL_TO:   ${{ secrets.EMAIL_TO }}
+        run: python job_digest.py
