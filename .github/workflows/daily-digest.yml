@@ -36,6 +36,15 @@ jobs:
               && git show "origin/state:$f" > "$f" && echo "restored $f" || true
           done
 
+      # Web-search LinkedIn "we're hiring" posts / hiring roundups for companies
+      # hiring your roles, probe their ATS, and add hits to ats_watchlist.json.
+      # Non-fatal: a discovery failure never blocks the digest.
+      - name: Discover hiring companies
+        continue-on-error: true
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python discover.py
+
       - name: Send digest
         env:
           EMAIL_USER:        ${{ secrets.EMAIL_USER }}

@@ -26,6 +26,8 @@ funding_digest.py ──detects ATS──► ats_watchlist.json ──feeds─�
 | `enrich.py` | AI + Hunter.io enrichment (imported by funding digest) |
 | `job_digest.py` | Job digest script |
 | `watchlist.py` | The loop (imported by both digests) |
+| `discover.py` | Web-searches "who's hiring" posts/articles → adds companies to the watchlist |
+| `setup_profile.py` | Compiles your resume + `profile.json` into the filters both digests use |
 | `.github/workflows/daily-digest.yml` | Funding digest schedule (8am ET) |
 | `.github/workflows/job-digest.yml` | Job digest schedule (9am/1pm/4pm ET) |
 | `requirements.txt` | Python deps |
@@ -64,9 +66,12 @@ environment variables / GitHub Actions secrets.
    python setup_profile.py        # Claude reads your resume + sentences
    ```
    It writes `profile.compiled.json` (title/skill/domain/location filters), which
-   **both digests load automatically**. Commit that file so GitHub Actions uses
-   it. Re-run whenever your resume or `profile.json` changes. (Needs
-   `ANTHROPIC_API_KEY`; your resume never leaves the Anthropic API call.)
+   **both digests load automatically**. `profile.json` and `profile.compiled.json`
+   are gitignored (personal, per-forker — only `profile.example.json` is committed),
+   so to make *your* fork's GitHub Actions use them, force-add them in your fork:
+   `git add -f profile.json profile.compiled.json`. Re-run `setup_profile.py`
+   whenever your resume or `profile.json` changes. (Needs `ANTHROPIC_API_KEY`; your
+   resume never leaves the Anthropic API call.)
 
    **Advanced path:** skip the profile and edit the config blocks directly —
    `RESUME` / `PREFER_LARGER` / the `GREENHOUSE_/LEVER_/ASHBY_/WORKDAY_COMPANIES`

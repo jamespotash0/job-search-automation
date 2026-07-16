@@ -27,6 +27,7 @@ import urllib.request
 from urllib.parse import quote_plus
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from email.utils import formataddr
 from datetime import datetime, timezone
 
 # ==========================================================================
@@ -599,6 +600,16 @@ def build_html(items):
     )
 
 
+def from_header():
+    """'Job Bot (@Name) <sending@addr>' so the digest doesn't show up as yourself.
+    Handle comes from DIGEST_HANDLE, else the first name in the sending address."""
+    handle = os.environ.get("DIGEST_HANDLE", "").strip()
+    if not handle:
+        m = re.match(r"[A-Za-z]+", (EMAIL_USER or "").split("@")[0])
+        handle = m.group(0).capitalize() if m else "you"
+    return formataddr((f"Job Bot (@{handle})", EMAIL_USER))
+
+
 def send_email(html_body):
     if not (EMAIL_USER and EMAIL_PASS and EMAIL_TO):
         print("[info] email creds not set — printing digest:\n")
@@ -606,7 +617,7 @@ def send_email(html_body):
         return
     msg = MIMEMultipart("alternative")
     msg["Subject"] = f"Job digest — {datetime.now().strftime('%b %d %-I%p')}"
-    msg["From"] = EMAIL_USER
+    msg["From"] = from_header()
     msg["To"] = EMAIL_TO
     msg.attach(MIMEText(html_body, "html"))
     with smtplib.SMTP(SMTP_HOST, SMTP_PORT) as srv:

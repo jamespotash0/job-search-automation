@@ -37,6 +37,16 @@ for companies you list in `COMPANY_SIZE`; unknown companies rank neutral.
   senior/large, so most postings get filtered — best for a few specific targets.
   Unlike the token ATSs, Workday can't be auto-detected by the loop (it needs the
   tenant+datacenter+site triple), so add these by hand.
+- **Web discovery** (`discover.py`) — Claude web-searches LinkedIn "we're hiring"
+  posts, "who is hiring" articles, and hiring roundups for companies hiring your
+  roles, then probes each company's Greenhouse/Lever/Ashby board and adds hits to
+  `ats_watchlist.json` automatically. Runs once/day in the funding workflow
+  (needs `ANTHROPIC_API_KEY`). LinkedIn can't be scraped directly, so this reads
+  the public posts *about* who's hiring rather than LinkedIn itself.
+
+**No SWE roles:** titles like "…Software Engineer", backend/frontend/full-stack,
+data/ML engineer, devops, etc. are hard-excluded (`SWE_EXCLUDE`) — but
+"Forward Deployed Engineer" and "Solutions Engineer" are kept.
 
 ## Setup
 Same repo and secrets as the funding digest (`EMAIL_USER`, `EMAIL_PASS`,

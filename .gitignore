@@ -8,6 +8,11 @@ __pycache__/
 .venv/
 .state_wt/          # transient git worktree used to persist CI state
 
-# Personal docs (resume, etc.) — keep out of public repo
+# Personal docs & config (resume, your compiled profile) — keep out of public repo.
+# Each forker creates their own profile.json from profile.example.json; only the
+# example is committed. To have your fork's GitHub Actions use them, force-add in
+# your own fork: git add -f profile.json profile.compiled.json
 docs/*.pdf
+profile.json
+profile.compiled.json
 .vscode/

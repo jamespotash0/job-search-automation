@@ -87,7 +87,9 @@ def compile_profile(profile):
         "\"solutions engineer\",\"implementation\",\"product operations\",\"ai strategist\". "
         "Do NOT use long fully-qualified titles (\"senior customer solutions engineer\") and do "
         "NOT add redundant variants of a stem already present (skip \"junior product manager\" "
-        "if \"product manager\" is there). Match the seniority the person wants.\n"
+        "if \"product manager\" is there). Match the seniority the person wants. "
+        "Do NOT include pure software-engineering/coding stems (software engineer, backend, "
+        "frontend, full-stack, data/ML engineer, devops) unless the person explicitly wants them.\n"
         '  "skills": 20-40 skills/tools taken from the RESUME that would appear in a matching '
         "job description (e.g. \"sql\",\"figma\",\"roadmap\",\"discovery\").\n"
         '  "domains": 10-20 industry/domain keywords they have exposure to or want '
@@ -136,15 +138,42 @@ def compile_profile(profile):
     return compiled
 
 
+# Placeholder values shipped in profile.example.json — a profile still holding
+# these hasn't been filled in by the forker yet.
+PLACEHOLDERS = {
+    "resume_file": "docs/your_resume.pdf",
+}
+
+
+def check_filled(profile, path):
+    """Exit if the profile still holds unedited example placeholders."""
+    unfilled = [k for k, v in PLACEHOLDERS.items() if str(profile.get(k, "")).strip() == v]
+    for k in ("roles", "startup_types"):
+        if str(profile.get(k, "")).strip().lower().startswith("one sentence"):
+            unfilled.append(k)
+    if unfilled:
+        sys.exit(
+            f"[error] {path} still has example placeholders: {', '.join(sorted(set(unfilled)))}.\n"
+            "        This profile is set per-forker, not shipped as a default — edit "
+            f"{path} with your own resume path, roles, and startup_types, then re-run."
+        )
+
+
 def main():
     load_dotenv()
     path = sys.argv[1] if len(sys.argv) > 1 else "profile.json"
     try:
         with open(path) as f:
             profile = json.load(f)
+    except FileNotFoundError:
+        sys.exit(
+            f"[error] {path} not found. This profile is set per-forker, not shipped as a default.\n"
+            f"        cp profile.example.json {path}   # then edit it and re-run."
+        )
     except Exception as e:
         sys.exit(f"[error] could not read {path}: {e}")
     profile.pop("_help", None)
+    check_filled(profile, path)
 
     compiled = compile_profile(profile)
     with open(OUT_FILE, "w") as f:
