@@ -13,6 +13,7 @@ Configure via the CONFIG block below, or via environment variables for secrets.
 
 import os
 import re
+import json
 import smtplib
 import html
 from email.mime.multipart import MIMEMultipart
@@ -93,6 +94,25 @@ SUBSTACK_FEEDS = [
 # so they get their own digest section instead of the 28h/funding-signal gate.
 SUBSTACK_LOOKBACK_DAYS = 14
 SUBSTACK_MAX = 6
+
+# Optional compiled profile (from setup_profile.py) — overrides the focus /
+# location keywords above so the funding digest follows the same profile.json as
+# the job digest. Absent = the defaults above apply.
+def _apply_profile():
+    global FOCUS_KEYWORDS, LOCATION_KEYWORDS
+    try:
+        with open("profile.compiled.json") as f:
+            p = json.load(f)
+    except Exception:
+        return
+    if p.get("focus_keywords"):
+        FOCUS_KEYWORDS = [k.lower() for k in p["focus_keywords"]]
+    if p.get("location_keywords") is not None:
+        LOCATION_KEYWORDS = [k.lower() for k in p["location_keywords"]]
+    print(f"[profile] using profile.compiled.json — {len(FOCUS_KEYWORDS)} focus keywords")
+
+
+_apply_profile()
 
 # Max items to include in the email.
 MAX_ITEMS = 40

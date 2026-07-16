@@ -46,18 +46,33 @@ environment variables / GitHub Actions secrets.
    scheduled runs: in *your* fork, **Settings → Secrets and variables → Actions**
    and add the same keys (see the secrets table below). Only `EMAIL_*` are
    required; the API keys are optional.
-3. **Make it yours.** Edit the config blocks — none of this needs code changes,
-   just edit the lists:
-   - `job_digest.py` → `RESUME` block: your target titles, skills, domains.
-     (The values in there now are just an example — replace them.)
-   - `job_digest.py` → `PREFER_LARGER` (True = big companies rank first; set
-     **False** for small/early-stage roles).
-   - `job_digest.py` → company watchlists: add ATS tokens for companies you
-     want to track — `GREENHOUSE_COMPANIES`, `LEVER_COMPANIES`,
-     `ASHBY_COMPANIES`, `WORKDAY_COMPANIES` (or let the funding→job loop fill
-     them in automatically).
-   - `funding_digest.py` → `FOCUS_KEYWORDS` (your sectors) and
-     `LOCATION_KEYWORDS` (your cities; leave empty to ignore location).
+3. **Make it yours — easy path (recommended): a profile from your resume.**
+   No code editing. Copy `profile.example.json` → `profile.json`, drop your
+   resume in `docs/`, and fill in five things:
+   ```jsonc
+   {
+     "resume_file": "docs/your_resume.pdf",   // .pdf / .txt / .md
+     "locations": ["new york", "remote"],      // [] = anywhere
+     "remote_ok": false,
+     "roles": "one sentence: the roles you want",
+     "startup_types": "one sentence: the companies you want",
+     "company_size": "small"                    // small | large | any
+   }
+   ```
+   Then run once:
+   ```bash
+   python setup_profile.py        # Claude reads your resume + sentences
+   ```
+   It writes `profile.compiled.json` (title/skill/domain/location filters), which
+   **both digests load automatically**. Commit that file so GitHub Actions uses
+   it. Re-run whenever your resume or `profile.json` changes. (Needs
+   `ANTHROPIC_API_KEY`; your resume never leaves the Anthropic API call.)
+
+   **Advanced path:** skip the profile and edit the config blocks directly —
+   `RESUME` / `PREFER_LARGER` / the `GREENHOUSE_/LEVER_/ASHBY_/WORKDAY_COMPANIES`
+   watchlists in `job_digest.py`, and `FOCUS_KEYWORDS` / `LOCATION_KEYWORDS` in
+   `funding_digest.py`. If no `profile.compiled.json` is present, these apply.
+   (This repo's committed defaults are tuned to James as a worked example.)
 4. **Run it.** Actions tab → pick a workflow → *Run workflow*, or run locally
    (see below). The schedules live in `.github/workflows/*.yml` (cron in UTC).
 

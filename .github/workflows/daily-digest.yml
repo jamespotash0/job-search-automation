@@ -5,6 +5,13 @@ on:
     - cron: "0 12 * * *"     # 8am ET (EDT). Adjust as you like (UTC).
   workflow_dispatch:
 
+permissions:
+  contents: write            # push persisted state to the `state` branch
+
+concurrency:
+  group: funding-digest      # never overlap two funding runs (state safety)
+  cancel-in-progress: false
+
 jobs:
   digest:
     runs-on: ubuntu-latest
@@ -16,30 +23,18 @@ jobs:
           python-version: "3.12"
 
       - name: Install deps
-        run: pip install feedparser
+        run: pip install -r requirements.txt
 
-      # Persist enrichment cache + Hunter monthly counter across runs so we never
-      # re-spend API calls / quota on the same company.
-      - name: Restore enrichment cache
-        uses: actions/cache@v4
-        with:
-          path: |
-            enrich_cache.json
-            hunter_usage.json
-            ats_watchlist.json
-          key: enrich-${{ github.run_id }}
-          restore-keys: |
-            enrich-
-
-      # Shared ATS watchlist (the loop) — also cached under its own prefix so the
-      # job digest workflow can read it (caches are repo-scoped).
-      - name: Sync ATS watchlist
-        uses: actions/cache@v4
-        with:
-          path: ats_watchlist.json
-          key: watchlist-${{ github.run_id }}
-          restore-keys: |
-            watchlist-
+      # Durable state lives on the `state` branch (survives cache eviction and is
+      # inspectable). Pull the files this digest reads/updates: enrichment cache,
+      # Hunter monthly counter, and the shared ATS watchlist (the loop).
+      - name: Restore state
+        run: |
+          git fetch -q origin state 2>/dev/null || true
+          for f in enrich_cache.json hunter_usage.json ats_watchlist.json; do
+            git cat-file -e "origin/state:$f" 2>/dev/null \
+              && git show "origin/state:$f" > "$f" && echo "restored $f" || true
+          done
 
       - name: Send digest
         env:
@@ -49,3 +44,11 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           HUNTER_API_KEY:    ${{ secrets.HUNTER_API_KEY }}
         run: python funding_digest.py
+
+      # Persist enrichment cache, Hunter counter, and the watchlist so we never
+      # re-spend API calls and the job digest sees newly-raised companies.
+      - name: Persist state
+        if: always()
+        env:
+          FILES: "enrich_cache.json hunter_usage.json ats_watchlist.json"
+        run: bash .github/persist-state.sh

@@ -7,6 +7,13 @@ on:
     - cron: "0 13,17,20 * * *"
   workflow_dispatch:
 
+permissions:
+  contents: write            # push the updated seen-cache to the `state` branch
+
+concurrency:
+  group: job-digest          # never overlap two job runs (seen-cache safety)
+  cancel-in-progress: false
+
 jobs:
   jobs-digest:
     runs-on: ubuntu-latest
@@ -17,23 +24,16 @@ jobs:
         with:
           python-version: "3.12"
 
-      # Restore the "already-seen" list so 1pm/4pm don't repeat 9am's postings.
-      - name: Restore seen cache
-        uses: actions/cache@v4
-        with:
-          path: seen_jobs.json
-          key: seen-jobs-${{ github.run_id }}
-          restore-keys: |
-            seen-jobs-
-
-      # Read the shared ATS watchlist written by the funding digest (the loop).
-      - name: Sync ATS watchlist
-        uses: actions/cache@v4
-        with:
-          path: ats_watchlist.json
-          key: watchlist-job-${{ github.run_id }}
-          restore-keys: |
-            watchlist-
+      # Durable state on the `state` branch: the "already-seen" list (so 1pm/4pm
+      # don't repeat 9am's postings) plus the shared ATS watchlist written by the
+      # funding digest (read-only here — this workflow never writes it back).
+      - name: Restore state
+        run: |
+          git fetch -q origin state 2>/dev/null || true
+          for f in seen_jobs.json ats_watchlist.json; do
+            git cat-file -e "origin/state:$f" 2>/dev/null \
+              && git show "origin/state:$f" > "$f" && echo "restored $f" || true
+          done
 
       - name: Send job digest
         env:
@@ -41,3 +41,10 @@ jobs:
           EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
           EMAIL_TO:   ${{ secrets.EMAIL_TO }}
         run: python job_digest.py
+
+      # Persist only the seen-cache; the watchlist is owned by the funding digest.
+      - name: Persist state
+        if: always()
+        env:
+          FILES: "seen_jobs.json"
+        run: bash .github/persist-state.sh

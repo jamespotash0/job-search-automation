@@ -27,7 +27,7 @@ import urllib.request
 from urllib.parse import quote_plus
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from datetime import datetime
+from datetime import datetime, timezone
 
 # ==========================================================================
 # YOUR RESUME PROFILE  — drives the qualification score
@@ -115,6 +115,7 @@ GREENHOUSE_COMPANIES = [
 ]
 LEVER_COMPANIES = []        # e.g. ["somestartup"]
 ASHBY_COMPANIES = [
+    # NYC-HQ, fitting roles now
     "edra",          # AI · AI Strategist (New York)
     "probook",       # AI · Deployment Strategist, Implementation Manager (Manhattan)
     "credal",        # AI/enterprise · Founding GTM Deployment Strategist (Brooklyn)
@@ -124,6 +125,16 @@ ASHBY_COMPANIES = [
     "kalshi",        # fintech/markets · Product Manager, Growth/Payments (NYC)
     "rho",           # fintech · Product Manager (NYC)
     "highbeam",      # fintech/SMB · NYC
+    # SF/London-HQ but they DO staff NYC — the per-role location gate keeps only
+    # their NYC postings, so seeding them just means "watch for NYC roles here".
+    "decagon",       # AI agents · 24 NYC roles live
+    "merge",         # unified API · 11 NYC roles live
+    "distyl",        # AI/enterprise deployment (AI Strategist, AI Operator)
+    "context",       # AI · Forward Deployed Engineer, Deployment Strategist
+    "meticulous",    # AI/dev tools · Forward Deployed Engineer
+    "parafin",       # fintech/embedded · Forward Deployed Engineer
+    "method",        # fintech/payments · Solutions Engineer
+    "stytch",        # dev tools/auth · Solutions Engineer
 ]
 
 # Workday boards. Unlike the token-based ATSs above, a Workday board needs THREE
@@ -170,6 +181,44 @@ MAX_ITEMS = 30
 SEEN_FILE = "seen_jobs.json"
 SEEN_TTL_DAYS = 14
 
+# Recency: drop postings older than this many days, using the board's own
+# posted/updated timestamp. Newer postings also rank higher (tiebreak after the
+# resume match). Sources that don't expose a date are kept and shown without an
+# age. Set to 0 to disable age filtering entirely. Overridable via profile.json.
+MAX_AGE_DAYS = 21
+
+# ==========================================================================
+# Optional compiled profile (from setup_profile.py). If profile.compiled.json
+# exists it overrides RESUME + location/size/recency settings above — so anyone
+# can configure everything from profile.json + their resume without editing code.
+# Absent = the defaults above apply (this repo's default is tuned to James).
+# ==========================================================================
+def _apply_profile():
+    global NYC_KEYWORDS, REMOTE_OK, REQUIRE_NYC, PREFER_LARGER, MAX_AGE_DAYS
+    try:
+        with open("profile.compiled.json") as f:
+            p = json.load(f)
+    except Exception:
+        return
+    for k in ("target_titles", "skills", "domains", "years"):
+        if p.get(k):
+            RESUME[k] = p[k]
+    if p.get("location_keywords") is not None:
+        NYC_KEYWORDS = [k.lower() for k in p["location_keywords"]]
+        REQUIRE_NYC = bool(NYC_KEYWORDS)
+    if "remote_ok" in p:
+        REMOTE_OK = bool(p["remote_ok"])
+    if "prefer_larger" in p:
+        PREFER_LARGER = bool(p["prefer_larger"])
+    if p.get("max_age_days") is not None:
+        MAX_AGE_DAYS = int(p["max_age_days"])
+    print(f"[profile] using profile.compiled.json — {len(RESUME['target_titles'])} titles, "
+          f"{len(NYC_KEYWORDS)} location keywords, remote_ok={REMOTE_OK}, "
+          f"max_age_days={MAX_AGE_DAYS}")
+
+
+_apply_profile()
+
 # Secrets
 EMAIL_USER = os.environ.get("EMAIL_USER", "")
 EMAIL_PASS = os.environ.get("EMAIL_PASS", "")
@@ -199,6 +248,34 @@ def strip_html(t):
     return html.unescape(re.sub(r"<[^>]+>", " ", t or "")).strip()
 
 
+def to_ts(value):
+    """Best-effort parse of a date/timestamp from any source -> unix seconds, or
+    None if unknown. Handles ISO-8601 strings and epoch seconds/milliseconds."""
+    if value in (None, "", 0):
+        return None
+    if isinstance(value, (int, float)) or str(value).strip().isdigit():
+        v = float(value)
+        return v / 1000.0 if v > 1e12 else v          # milliseconds -> seconds
+    try:
+        dt = datetime.fromisoformat(str(value).strip().replace("Z", "+00:00"))
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=timezone.utc)       # naive -> assume UTC
+        return dt.timestamp()
+    except Exception:
+        return None
+
+
+def age_label(ts):
+    if not ts:
+        return ""
+    days = (datetime.now(timezone.utc).timestamp() - ts) / 86400.0
+    if days < 1:
+        return "today"
+    if days < 2:
+        return "1d ago"
+    return f"{int(days)}d ago"
+
+
 # --------------------------- fetchers (each returns list of normalized dicts)
 def fetch_remotive():
     out = []
@@ -212,6 +289,7 @@ def fetch_remotive():
                     "location": j.get("candidate_required_location", "Remote"),
                     "url": j.get("url", ""),
                     "content": strip_html(j.get("description", ""))[:1200],
+                    "posted_ts": to_ts(j.get("publication_date")),
                     "source": "Remotive",
                 })
         except Exception as e:
@@ -230,6 +308,7 @@ def fetch_arbeitnow():
                 "location": j.get("location", ""),
                 "url": j.get("url", ""),
                 "content": strip_html(j.get("description", ""))[:1200],
+                "posted_ts": to_ts(j.get("created_at")),
                 "source": "Arbeitnow",
             })
     except Exception as e:
@@ -258,6 +337,7 @@ def fetch_hn():
                 "location": "",
                 "url": f"https://news.ycombinator.com/item?id={h.get('objectID')}",
                 "content": body[:1200],
+                "posted_ts": to_ts(h.get("created_at_i")),
                 "source": "HN Who's Hiring",
             })
     except Exception as e:
@@ -276,6 +356,7 @@ def fetch_greenhouse(token):
                 "location": (j.get("location") or {}).get("name", ""),
                 "url": j.get("absolute_url", ""),
                 "content": strip_html(j.get("content", ""))[:1500],
+                "posted_ts": to_ts(j.get("updated_at")),
                 "source": "Greenhouse",
             })
     except Exception as e:
@@ -294,6 +375,7 @@ def fetch_lever(token):
                 "location": (j.get("categories") or {}).get("location", ""),
                 "url": j.get("hostedUrl", ""),
                 "content": strip_html(j.get("descriptionPlain", j.get("description", "")))[:1500],
+                "posted_ts": to_ts(j.get("createdAt")),
                 "source": "Lever",
             })
     except Exception as e:
@@ -312,6 +394,7 @@ def fetch_ashby(token):
                 "location": j.get("location", ""),
                 "url": j.get("jobUrl", ""),
                 "content": strip_html(j.get("descriptionPlain", ""))[:1500],
+                "posted_ts": to_ts(j.get("publishedAt")),
                 "source": "Ashby",
             })
     except Exception as e:
@@ -376,6 +459,7 @@ def fetch_workday(entry):
                 "location": info.get("location", jp.get("locationsText", "")),
                 "url": url,
                 "content": strip_html(info.get("jobDescription", ""))[:1500],
+                "posted_ts": to_ts(info.get("startDate")),
                 "source": "Workday",
             })
     except Exception as e:
@@ -472,6 +556,10 @@ def build_html(items):
         comp = html.escape(i["company"]) if i["company"] else "—"
         sz = COMPANY_SIZE.get((i['company'] or '').lower())
         szlabel = f" · ~{sz} ppl" if sz else ""
+        age = age_label(i.get("posted_ts"))
+        # "today"/"1d ago" gets a green nudge; older postings stay muted grey.
+        agelabel = (f" · <span style='color:{'#2a7' if 'today' in age or '1d' in age else '#999'}'>"
+                    f"{age}</span>") if age else ""
         rows.append(
             f"<li style='margin:0 0 15px'>"
             f"<span style='display:inline-block;min-width:34px;font-weight:700;color:#2a7'>"
@@ -479,7 +567,7 @@ def build_html(items):
             f"<a href='{html.escape(i['url'])}' style='font-weight:600;color:#1a5fb4;text-decoration:none'>"
             f"{html.escape(i['title'])}</a>"
             f"<div style='color:#555;font-size:13px;margin:2px 0 0 34px'>"
-            f"{comp}{loc}{szlabel} · <span style='color:#999'>{html.escape(i['source'])}</span></div>"
+            f"{comp}{loc}{szlabel}{agelabel} · <span style='color:#999'>{html.escape(i['source'])}</span></div>"
             f"</li>"
         )
     return (
@@ -527,8 +615,15 @@ def main():
         print(f"[info] watchlist not available: {e}")
 
     raw = []
-    if USE_REMOTIVE:   raw += fetch_remotive()
-    if USE_ARBEITNOW:  raw += fetch_arbeitnow()
+    # Remotive is remote-only and Arbeitnow is mostly EU/remote — under a strict
+    # NYC gate (REQUIRE_NYC on, REMOTE_OK off) they yield ~nothing, so skip the
+    # calls entirely instead of fetching hundreds of postings just to discard
+    # them. Flip REMOTE_OK=True (or REQUIRE_NYC=False) to use them again.
+    remote_useful = REMOTE_OK or not REQUIRE_NYC
+    if USE_REMOTIVE and remote_useful:   raw += fetch_remotive()
+    elif USE_REMOTIVE:                   print("[info] skipping Remotive (remote-only vs NYC gate)")
+    if USE_ARBEITNOW and remote_useful:  raw += fetch_arbeitnow()
+    elif USE_ARBEITNOW:                  print("[info] skipping Arbeitnow (remote/EU vs NYC gate)")
     if USE_HN_WHOISHIRING: raw += fetch_hn()
     for t in gh:  raw += fetch_greenhouse(t)
     for t in lv:  raw += fetch_lever(t)
@@ -538,8 +633,9 @@ def main():
     print(f"[info] fetched {len(raw)} raw postings")
 
     seen = load_seen()
-    now_ts = datetime.now().timestamp()
-    picked, ids_this_run = [], set()
+    now_ts = datetime.now(timezone.utc).timestamp()
+    age_cutoff = (now_ts - MAX_AGE_DAYS * 86400) if MAX_AGE_DAYS else 0
+    picked, ids_this_run, seen_titles = [], set(), set()
 
     for j in raw:
         if not j.get("title") or not j.get("url"):
@@ -550,8 +646,18 @@ def main():
         if j["source"] == "HN Who's Hiring" and not any(
             x in j["content"].lower() for x in RESUME["target_titles"]):
             continue
+        # Recency gate: drop postings older than MAX_AGE_DAYS when the source
+        # gives a date. Unknown-date sources fall through (kept, no age shown).
+        posted = j.get("posted_ts")
+        if age_cutoff and posted and posted < age_cutoff:
+            continue
         jid = job_id(j)
         if jid in seen or jid in ids_this_run:
+            continue
+        # Collapse the same role surfaced by two boards (different URL -> different
+        # jid) down to one entry, keyed on company + title.
+        tkey = (j.get("company", "").lower().strip(), j["title"].lower().strip())
+        if tkey in seen_titles:
             continue
         if REQUIRE_NYC and not is_nyc(j.get("location", ""), j.get("content", "")):
             continue
@@ -562,8 +668,11 @@ def main():
         j["_id"] = jid
         picked.append(j)
         ids_this_run.add(jid)
+        seen_titles.add(tkey)
 
-    picked.sort(key=lambda x: (x["q"], size_score(x["company"])), reverse=True)
+    # Rank by resume match first, then freshest, then company-size preference.
+    picked.sort(key=lambda x: (x["q"], x.get("posted_ts") or 0, size_score(x["company"])),
+                reverse=True)
     picked = picked[:MAX_ITEMS]
 
     for j in picked:

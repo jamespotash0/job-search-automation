@@ -6,6 +6,7 @@ ats_watchlist.json
 __pycache__/
 *.pyc
 .venv/
+.state_wt/          # transient git worktree used to persist CI state
 
 # Personal docs (resume, etc.) — keep out of public repo
 docs/*.pdf
