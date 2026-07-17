@@ -3,7 +3,7 @@
 discover.py — find companies hiring YOUR roles from the open web (LinkedIn
 "we're hiring" posts, "who is hiring" articles/threads, hiring-roundup
 newsletters) and auto-add the ones on a public ATS to the shared watchlist, so
-the job digest starts scoring their roles — often the same day.
+the companies digest starts scoring their roles — often the same day.
 
 How: Claude + web search (same mechanism as enrich.py). LinkedIn itself can't be
 scraped (it bans bots), but web search surfaces the public posts/articles that
@@ -11,7 +11,7 @@ NAME who's hiring. We extract company names and probe their Greenhouse / Lever /
 Ashby boards via watchlist.py; hits land in ats_watchlist.json, which the job
 digest already reads.
 
-Run it before the job digest (e.g. once/day). Requires ANTHROPIC_API_KEY.
+Run it before the companies digest (e.g. once/day). Requires ANTHROPIC_API_KEY.
 Detection is cached per company (watchlist "checked" list) so nothing is
 re-probed, and no company is added twice.
 """
@@ -161,7 +161,7 @@ def main():
     total = wl.token_count()
     added_names = [f"{prov}:{tok}" for prov, tok in added]
     print(f"[discover] added {len(added)} ATS token(s) to {wl.WATCHLIST_FILE}; "
-          f"the job digest will pick them up on its next run.")
+          f"the companies digest will pick them up on its next run.")
     _write_status(ok=True, error="", probed=len(comps), added=len(added),
                   added_names=added_names, watchlist_total=total)
 

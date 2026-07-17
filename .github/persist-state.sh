@@ -5,8 +5,8 @@
 # the current seen-cache / watchlist / Hunter counter.
 #
 # Each workflow persists ONLY the files it owns (via $FILES), so the funding and
-# job digests never overwrite each other's state. The retry loop handles the
-# rare case where both workflows push to `state` at the same instant: we always
+# companies digests never overwrite each other's state. The retry loop handles
+# the rare case where both workflows push to `state` at the same instant: we always
 # start from the latest remote `state`, re-apply just our files, and push again.
 #
 # Requires: git >= 2.42 (for `worktree add --orphan`); GitHub ubuntu runners ship

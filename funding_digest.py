@@ -60,19 +60,89 @@ STAGE_QUERIES = [
 ]
 
 # Focus keywords. Items matching these float to the top ("Best matches").
-# Everything else still shows under "Other recent raises".
+# Matched on WORD BOUNDARIES, not as substrings — plain `"ai" in blob` also fires
+# on "r-AI-ses"/"em-AI-l"/"ch-AI-n", which handed every funding headline a free
+# focus hit and pushed ~80% of the digest into "Best matches".
 FOCUS_KEYWORDS = [
-    "ai", "artificial intelligence", "agent", "llm", "automation", "workflow",
-    "b2b", "saas", "developer", "infrastructure", "data", "platform",
+    "ai", "artificial intelligence", "agent", "agents", "agentic", "llm",
+    "automation", "workflow", "workflows", "b2b", "saas", "developer",
+    "infrastructure", "data", "platform",
 ]
 
 # Location terms that earn a bonus (leave list empty to ignore location).
 LOCATION_KEYWORDS = ["new york", "nyc", "brooklyn", "manhattan"]
 
-# A headline must contain at least one of these to count as a funding item.
-FUNDING_SIGNALS = [
-    "raise", "raised", "raises", "secures", "secured", "closes", "closed",
-    "seed", "series a", "funding", "led by", "backed by", "$",
+# Geography. "us" = only US-headquartered companies survive; NYC-metro ones then
+# float to the top via LOCATION_KEYWORDS. "any" = no geographic filter.
+# A cold email is only worth sending somewhere you'd actually take the job, and
+# every non-US raise we drop before enrichment is an Anthropic + Hunter call saved.
+GEO_MODE = os.environ.get("GEO_MODE", "us")
+
+# Sector buckets (enrich.CATEGORIES) worth an outreach email. Everything else —
+# biotech, hardware, space, energy, materials — is dropped after enrichment, once
+# we know what the company actually sells. Note healthtech stays IN: "AI agents
+# for hospitals" is a software company and a real match; "AI for drug discovery"
+# comes back as biotech/pharma and drops.
+KEEP_CATEGORIES = {
+    "ai/software", "b2b saas", "devtools/infra", "fintech",
+    "proptech/construction", "healthtech",
+}
+
+# A headline must show a funding VERB *and* an amount-or-round to count. The old
+# gate accepted any of ["seed", "funding", "$", ...] anywhere in title+summary,
+# which let in survey reports, VC fund closes, acquisitions, and roundups.
+RAISE_VERB_RE = re.compile(
+    r"\b(raise[sd]?|raising|secure[sd]?|close[sd]?|land[sd]?|nabs?|nabbed|"
+    r"bags?|bagged|announces?)\b", re.I)
+AMOUNT_RE = re.compile(
+    r"[$€£₹¥]\s?\d[\d.,]*\s?(?:bn|b|m|mn|k)?\b"
+    r"|\b\d[\d.,]*\s?(?:million|billion|crore|lakh)\b", re.I)
+ROUND_RE = re.compile(r"\b(pre-?seed|seed|series\s+[a-e])\b", re.I)
+
+# ...and must not look like one of these, which all carry funding words but are
+# not "a startup just raised money and is about to hire":
+NOT_A_RAISE_RE = re.compile("|".join([
+    r"\b(fund|vehicle)\s+(i{1,3}|iv|v|one|two|three)\b",   # "Resilience I Fund"
+    r"\bclos(?:es|ed)\s+[^.]{0,40}\bfund\b",               # a VC closing a fund
+    r"\b(vc|venture capital|venture)\s+firm\b",
+    r"\bacquir(?:es|ed|ing)\b|\bacquisition\b|\bexits?\s+to\b|\bmerges?\s+with\b",
+    r"\bdaily funding\b|\bfunding (?:report|roundup|frenzy)\b|\bweekly roundup\b",
+    r"\bstartups that raised\b|\bstartups raise\b|\bround[- ]?up\b",
+    r"\bvaluation of\b|\bin talks\b|\bis raising\b|\bplans to raise\b|\beyes\b",
+    r"\b\d+%\s+of\s+(?:enterprises|companies|startups)\b",
+    r"\bsurvey\b|\breport (?:finds|shows|reveals)\b",
+    r"\bthe\b[^:]{0,40}\bgap:",                            # "The AI compute gap: ..."
+]), re.I)
+
+# Cheap pre-enrichment geography screen. Authoritative check is the researched HQ
+# (see us_only_reject), but catching the obvious ones on the headline alone keeps
+# us from paying to enrich a company we'd throw away anyway.
+NON_US_CURRENCY = ["€", "£", "₹", "crore", "lakh", "rmb", "yuan", "shekel", "eur ", "gbp "]
+NON_US_TERMS = [
+    "china", "chinese", "beijing", "shanghai", "shenzhen", "hong kong",
+    "india", "indian", "bengaluru", "bangalore", "mumbai", "delhi", "gurugram",
+    "uk-based", "british", "london", "cambridge-based", "oxford-based",
+    "france", "french", "paris", "grenoble", "germany", "german", "berlin",
+    "munich", "belgium", "belgian", "antwerp", "brussels", "netherlands",
+    "dutch", "amsterdam", "spain", "spanish", "barcelona", "madrid",
+    "sweden", "swedish", "stockholm", "denmark", "danish", "copenhagen",
+    "finland", "helsinki", "norway", "oslo", "switzerland", "swiss", "zurich",
+    "ireland", "irish", "dublin", "italy", "italian", "milan", "poland",
+    "warsaw", "estonia", "tallinn", "israel", "israeli", "tel aviv",
+    "singapore", "japan", "japanese", "tokyo", "korea", "korean", "seoul",
+    "australia", "australian", "sydney", "melbourne", "anz", "new zealand",
+    "canada", "canadian", "toronto", "vancouver", "brazil", "brazilian",
+    "são paulo", "sao paulo", "mexico", "nigeria", "lagos", "kenya", "nairobi",
+    "south africa", "south african", "johannesburg", "cape town", "egypt",
+    "dubai", "uae", "abu dhabi", "saudi", "turkey", "istanbul", "indonesia",
+    "jakarta", "vietnam", "philippines", "thailand", "europe", "european",
+]
+# Outlets whose coverage is essentially all non-US.
+NON_US_SOURCES = [
+    "eu-startups", "tech.eu", "calcalistech", "ynetnews", "entrackr",
+    "indian startup times", "yourstory", "weetracker", "bw disrupt",
+    "moneycontrol", "smartcompany", "startupdaily", "sifted", "tech in asia",
+    "e27", "krasia", "techcabal", "disrupt africa", "arabian business",
 ]
 
 # Extra static RSS feeds to include (venture/funding coverage). All verified free
@@ -83,7 +153,11 @@ EXTRA_FEEDS = [
     # US venture coverage
     "https://techcrunch.com/category/venture/feed/",
     "https://venturebeat.com/feed",   # note: no trailing slash (the "/" 308-loops)
-    # Europe-heavy — broad coverage; comment these out if you only want US raises.
+]
+
+# Europe-heavy feeds — only pulled when GEO_MODE allows non-US raises, since
+# under GEO_MODE="us" every item they produce gets dropped downstream anyway.
+EU_FEEDS = [
     "https://www.eu-startups.com/feed/",
     "https://tech.eu/feed/",
 ]
@@ -102,7 +176,7 @@ SUBSTACK_MAX = 6
 
 # Optional compiled profile (from setup_profile.py) — overrides the focus /
 # location keywords above so the funding digest follows the same profile.json as
-# the job digest. Absent = the defaults above apply.
+# the companies digest. Absent = the defaults above apply.
 def _apply_profile():
     global FOCUS_KEYWORDS, LOCATION_KEYWORDS
     try:
@@ -121,6 +195,11 @@ _apply_profile()
 
 # Max items to include in the email.
 MAX_ITEMS = 40
+
+# Score at or above which a raise lands in "Best matches". Scores are computed on
+# the headline AND the researched description, so a genuine AI/B2B company clears
+# this comfortably while a one-keyword brush-past doesn't.
+BEST_SCORE = int(os.environ.get("BEST_SCORE", "6"))
 
 # Browser-ish UA — some feeds (e.g. VentureBeat) reject feedparser's default UA.
 FEED_UA = "Mozilla/5.0 (funding-digest; +https://github.com)"
@@ -164,25 +243,140 @@ def norm_title(title: str) -> str:
     return re.sub(r"\s+", " ", t).strip()
 
 
+def kw_matcher(keywords):
+    """Word-boundary matcher for a keyword list. Guards the digest's oldest bug:
+    substring matching let "ai" hit inside "raises", so every funding headline
+    scored a focus point and the Best/Other split stopped meaning anything."""
+    if not keywords:
+        return re.compile(r"(?!)")            # matches nothing
+    alts = "|".join(re.escape(k) for k in sorted(keywords, key=len, reverse=True))
+    return re.compile(rf"(?<![a-z0-9])(?:{alts})(?![a-z0-9])", re.I)
+
+
+_FOCUS_RE = kw_matcher(FOCUS_KEYWORDS)
+_LOC_RE = kw_matcher(LOCATION_KEYWORDS)
+
+
 def is_funding(title: str, summary: str) -> bool:
-    blob = (title + " " + summary).lower()
-    return any(sig in blob for sig in FUNDING_SIGNALS)
+    """True only for 'a specific company just closed a round'."""
+    blob = f"{title} {summary}"
+    if NOT_A_RAISE_RE.search(blob):
+        return False
+    if not RAISE_VERB_RE.search(blob):
+        return False
+    return bool(AMOUNT_RE.search(blob) or ROUND_RE.search(blob))
+
+
+def non_us_hint(title: str, summary: str, source: str) -> str:
+    """Cheap pre-enrichment geography screen — returns a reason, or "" if the item
+    looks US (or if we simply can't tell from the headline)."""
+    blob = f"{title} {summary}".lower()
+    for c in NON_US_CURRENCY:
+        if c in blob:
+            return f"non-USD amount ({c.strip()})"
+    m = kw_matcher(NON_US_TERMS).search(blob)
+    if m:
+        return f"non-US ({m.group(0)})"
+    src = (source or "").lower()
+    for s in NON_US_SOURCES:
+        if s in src:
+            return f"non-US outlet ({source})"
+    return ""
+
+
+def us_only_reject(enr: dict) -> str:
+    """Authoritative geography check, run on the RESEARCHED headquarters. An
+    unknown country is kept — a failed lookup isn't evidence of being foreign."""
+    if GEO_MODE != "us":
+        return ""
+    country = (enr.get("hq_country") or "").strip().lower()
+    if not country:
+        return ""
+    if country in ("united states", "usa", "us", "u.s.", "u.s.a.", "america"):
+        return ""
+    return f"HQ {enr.get('hq_city') or ''} {enr.get('hq_country')}".strip()
+
+
+def off_sector_reject(enr: dict) -> str:
+    """Drop companies whose product isn't something you'd work on. Runs after
+    enrichment because the headline alone never says what they sell."""
+    cat = (enr.get("category") or "").strip().lower()
+    if not cat:
+        return ""                              # unknown — let scoring decide
+    return "" if cat in KEEP_CATEGORIES else cat
+
+
+def extract_round(title: str, summary: str):
+    """(stage, amount) as display strings, e.g. ("Seed", "$13M")."""
+    blob = f"{title} {summary}"
+    stage = ""
+    m = ROUND_RE.search(blob)
+    if m:
+        stage = re.sub(r"\s+", " ", m.group(1)).strip().title()
+        stage = stage.replace("Preseed", "Pre-Seed").replace("Pre-Seed", "Pre-seed")
+    amount = ""
+    m = re.search(r"\$\s?(\d[\d.,]*)\s?(billion|bn|b|million|mn|m|k)?\b", blob, re.I)
+    if m:
+        num = m.group(1).rstrip(".,")
+        unit = (m.group(2) or "").lower()
+        suffix = {"billion": "B", "bn": "B", "b": "B",
+                  "million": "M", "mn": "M", "m": "M", "k": "K"}.get(unit, "")
+        amount = f"${num}{suffix}"
+    return stage, amount
 
 
 def score(title: str, summary: str) -> int:
-    blob = (title + " " + summary).lower()
-    s = 0
-    s += sum(2 for k in FOCUS_KEYWORDS if k in blob)
-    s += sum(3 for k in LOCATION_KEYWORDS if k in blob)
-    if "series a" in blob or "seed" in blob:
+    blob = f"{title} {summary}"
+    s = 2 * len(set(m.group(0).lower() for m in _FOCUS_RE.finditer(blob)))
+    s += 3 * len(set(m.group(0).lower() for m in _LOC_RE.finditer(blob)))
+    if ROUND_RE.search(blob):
         s += 1
     return s
 
 
+def rescore(item) -> int:
+    """Re-score once enrichment has told us what the company actually does. The
+    headline is a thin, marketing-shaped signal; the description is the real one."""
+    enr = item.get("enrich") or {}
+    blob = " ".join(filter(None, [
+        item["title"], item["summary"], enr.get("description", ""),
+        enr.get("hq_city", ""), enr.get("category", ""),
+    ]))
+    return score(blob, "")
+
+
+def hq_label(enr: dict) -> str:
+    city, country = enr.get("hq_city", ""), enr.get("hq_country", "")
+    if city:
+        return city
+    return country or ""
+
+
+def summary_is_echo(item) -> bool:
+    """Google News hands back a summary that is just the headline again plus the
+    outlet name. Printing both is how you get 'X raises $13M — X raises $13M'."""
+    s, t = norm_title(item.get("summary", "")), norm_title(item.get("title", ""))
+    if not s:
+        return True
+    return s.startswith(t[:60]) or t.startswith(s[:60])
+
+
+def company_key(name: str) -> str:
+    """Canonical identity for a company, so the same raise covered by five
+    outlets collapses to one entry (and one enrichment call)."""
+    k = re.sub(r"[^a-z0-9 ]", " ", (name or "").lower())
+    k = re.sub(r"\b(inc|llc|ltd|corp|co|the|a|an)\b", " ", k)
+    k = re.sub(r"\b(ai|io|app|labs?|technologies|tech|health|bio)\b\s*$", " ", k)
+    return re.sub(r"\s+", " ", k).strip()
+
+
 def collect():
     feeds = [google_news_rss(q) for q in STAGE_QUERIES] + EXTRA_FEEDS
+    if GEO_MODE != "us":
+        feeds += EU_FEEDS
     cutoff = datetime.now(timezone.utc) - timedelta(hours=LOOKBACK_HOURS)
-    items, seen = [], set()
+    groups, seen_titles = {}, set()
+    dropped = {"stale": 0, "not_a_raise": 0, "non_us": 0, "dupe": 0}
 
     for url in feeds:
         try:
@@ -198,28 +392,64 @@ def collect():
             if not title or not link:
                 continue
             if entry_time(e) < cutoff:
+                dropped["stale"] += 1
                 continue
             if not is_funding(title, summary):
+                dropped["not_a_raise"] += 1
                 continue
 
             key = norm_title(title)
-            if key in seen:
+            if key in seen_titles:
                 continue
-            seen.add(key)
+            seen_titles.add(key)
 
             source = ""
             if hasattr(e, "source") and getattr(e.source, "title", None):
                 source = e.source.title
-            items.append({
+
+            if GEO_MODE == "us":
+                why = non_us_hint(title, summary, source)
+                if why:
+                    dropped["non_us"] += 1
+                    continue
+
+            company = guess_company(title)
+            ck = company_key(company)
+            if not ck:
+                continue
+
+            stage, amount = extract_round(title, summary)
+            item = {
                 "title": title,
+                "company": company,
                 "summary": summary[:240],
                 "link": link,
                 "source": source,
+                "stage": stage,
+                "amount": amount,
                 "score": score(title, summary),
                 "time": entry_time(e),
-            })
+                "also": [],          # other outlets covering the same raise
+            }
 
-    items.sort(key=lambda x: (x["score"], x["time"]), reverse=True)
+            prior = groups.get(ck)
+            if prior is None:
+                groups[ck] = item
+                continue
+            dropped["dupe"] += 1
+            # Keep the better-scoring headline; the loser survives as a link, and
+            # we merge in whichever copy managed to name the stage/amount.
+            keep, drop = (prior, item) if prior["score"] >= item["score"] else (item, prior)
+            keep["also"] = prior["also"] + item["also"]
+            if drop["source"]:
+                keep["also"].append({"source": drop["source"], "link": drop["link"]})
+            keep["stage"] = keep["stage"] or drop["stage"]
+            keep["amount"] = keep["amount"] or drop["amount"]
+            groups[ck] = keep
+
+    items = sorted(groups.values(), key=lambda x: (x["score"], x["time"]), reverse=True)
+    print(f"[filter] kept {len(items)} | dropped: "
+          + ", ".join(f"{k}={v}" for k, v in dropped.items() if v))
     return items[:MAX_ITEMS]
 
 
@@ -272,7 +502,7 @@ def discovery_banner():
     """A one-line status of the 8am discovery step, read from the breadcrumb
     discover.py leaves. Green when it added companies, grey when it ran but found
     nothing new, red when it failed — so you can tell at a glance that the loop
-    that feeds the job digest is alive. Empty string if discovery didn't run."""
+    that feeds the companies digest is alive. Empty string if discovery didn't run."""
     try:
         with open("discover_status.json") as f:
             st = json.load(f)
@@ -307,72 +537,108 @@ def build_html(items, letters=None):
         return head + ("<p>No new raises matched today. "
                        "Widen your keywords or check back tomorrow.</p>")
 
-    best = [i for i in items if i["score"] >= 3]
-    other = [i for i in items if i["score"] < 3]
+    best = [i for i in items if i["score"] >= BEST_SCORE]
+    other = [i for i in items if i["score"] < BEST_SCORE]
 
     def block(rows):
         out = []
         for i in rows:
-            src = f" · <span style='color:#888'>{html.escape(i['source'])}</span>" if i["source"] else ""
             enr = i.get("enrich") or {}
-            extra = ""
-            if enr:
-                bits = []
-                if enr.get("description"):
-                    bits.append(f"<div style='color:#333;font-size:13px;margin-top:4px'>"
-                                f"<b>What they do:</b> {html.escape(enr['description'])}</div>")
-                line = []
-                if enr.get("website"):
-                    w = html.escape(enr["website"])
-                    line.append(f"<a href='{w}' style='color:#1a5fb4'>{html.escape(enr.get('domain') or 'site')}</a>")
-                if enr.get("founders"):
-                    line.append("Founder: " + html.escape(", ".join(enr["founders"][:2])))
-                if enr.get("investors"):
-                    line.append("Backed by: " + html.escape(", ".join(enr["investors"][:3])))
-                if line:
-                    bits.append(f"<div style='color:#555;font-size:12px;margin-top:3px'>"
-                                + " · ".join(line) + "</div>")
-                if enr.get("email"):
-                    color = "#2a7" if "verified" in enr.get("email_status", "") else "#b06"
-                    bits.append(f"<div style='font-size:12px;margin-top:3px'>"
-                                f"✉ <a href='mailto:{html.escape(enr['email'])}' style='color:{color}'>"
-                                f"{html.escape(enr['email'])}</a> "
-                                f"<span style='color:#999'>({html.escape(enr.get('email_status',''))})</span></div>")
-                    # other likely formats to try if the top guess bounces
-                    alts = enr.get("email_alts") or []
-                    if alts:
-                        alt_links = " · ".join(
-                            f"<a href='mailto:{html.escape(a)}' style='color:#b06;text-decoration:none'>"
-                            f"{html.escape(a)}</a>" for a in alts[:3])
-                        bits.append(f"<div style='font-size:11px;color:#999;margin:1px 0 0 14px'>"
-                                    f"or try: {alt_links}</div>")
-                # click-to-search links (no scraping)
-                from urllib.parse import quote_plus
-                comp = i.get("company") or i["title"]
-                li = "https://www.google.com/search?q=" + quote_plus(f"{comp} founder linkedin")
-                cb = "https://www.google.com/search?q=" + quote_plus(f"{comp} crunchbase")
-                bits.append(f"<div style='font-size:12px;margin-top:3px'>"
-                            f"<a href='{li}' style='color:#888'>find on LinkedIn</a> · "
-                            f"<a href='{cb}' style='color:#888'>Crunchbase</a></div>")
-                extra = "".join(bits)
+            bits = []
+
+            # Badge line: the three things that decide whether this is worth an
+            # email — how big the round was, what stage, and where they sit.
+            badges = [b for b in (i.get("stage"), i.get("amount"), hq_label(enr)) if b]
+            badge_html = ""
+            if badges:
+                badge_html = "".join(
+                    f"<span style='display:inline-block;background:#f0f3f7;color:#445;"
+                    f"font-size:11px;font-weight:600;border-radius:3px;padding:2px 6px;"
+                    f"margin:0 4px 0 0'>{html.escape(b)}</span>" for b in badges)
+
+            # What they do. Prefer the researched description; the RSS summary is
+            # usually just the headline again ("X raises $13M  X raises $13M").
+            desc = enr.get("description") or ""
+            if not desc and not summary_is_echo(i):
+                desc = i["summary"]
+            if desc:
+                bits.append(f"<div style='color:#333;font-size:13px;margin-top:5px;"
+                            f"line-height:1.45'>{html.escape(desc)}</div>")
+
+            line = []
+            if enr.get("investors"):
+                line.append("Backed by " + html.escape(", ".join(enr["investors"][:3])))
+            if enr.get("founders"):
+                line.append(html.escape(", ".join(enr["founders"][:2])))
+            if line:
+                bits.append(f"<div style='color:#666;font-size:12px;margin-top:4px'>"
+                            + " · ".join(line) + "</div>")
+
+            if enr.get("email"):
+                verified = "verified" in enr.get("email_status", "")
+                color = "#1a7f4b" if verified else "#a35"
+                tag = "verified" if verified else html.escape(enr.get("email_status", ""))
+                bits.append(f"<div style='font-size:13px;margin-top:6px'>"
+                            f"✉ <a href='mailto:{html.escape(enr['email'])}' "
+                            f"style='color:{color};font-weight:600;text-decoration:none'>"
+                            f"{html.escape(enr['email'])}</a> "
+                            f"<span style='color:#aaa;font-size:11px'>{tag}</span></div>")
+                alts = enr.get("email_alts") or []
+                if alts:
+                    alt_links = " · ".join(
+                        f"<a href='mailto:{html.escape(a)}' style='color:#a35;text-decoration:none'>"
+                        f"{html.escape(a)}</a>" for a in alts[:3])
+                    bits.append(f"<div style='font-size:11px;color:#aaa;margin:2px 0 0 14px'>"
+                                f"if that bounces: {alt_links}</div>")
+
+            # Footer: every link for this company on one line, article included, so
+            # the headline itself doesn't have to be the clickable thing.
+            from urllib.parse import quote_plus
+            comp = i.get("company") or i["title"]
+            links = []
+            if enr.get("website"):
+                links.append(f"<a href='{html.escape(enr['website'])}' style='color:#1a5fb4;"
+                             f"text-decoration:none'>{html.escape(enr.get('domain') or 'site')}</a>")
+            links.append("<a href='https://www.google.com/search?q="
+                         + quote_plus(f"{comp} founder linkedin")
+                         + "' style='color:#999;text-decoration:none'>LinkedIn</a>")
+            links.append("<a href='https://www.google.com/search?q="
+                         + quote_plus(f"{comp} crunchbase")
+                         + "' style='color:#999;text-decoration:none'>Crunchbase</a>")
+            src_name = i["source"] or "article"
+            links.append(f"<a href='{html.escape(i['link'])}' style='color:#999;"
+                         f"text-decoration:none'>{html.escape(src_name)} ↗</a>")
+            for a in (i.get("also") or [])[:2]:
+                links.append(f"<a href='{html.escape(a['link'])}' style='color:#ccc;"
+                             f"text-decoration:none'>{html.escape(a['source'])} ↗</a>")
+            bits.append(f"<div style='font-size:11px;margin-top:6px'>"
+                        + " · ".join(links) + "</div>")
+
             out.append(
-                f"<li style='margin:0 0 18px'>"
-                f"<a href='{html.escape(i['link'])}' style='font-weight:600;color:#1a5fb4;text-decoration:none'>"
-                f"{html.escape(i['title'])}</a>{src}"
-                f"<div style='color:#444;font-size:13px;margin-top:3px'>{html.escape(i['summary'])}</div>"
-                f"{extra}"
+                f"<li style='margin:0 0 22px;padding:0 0 0 10px;border-left:2px solid #e6e9ee'>"
+                f"<div style='font-family:sans-serif;font-size:15px;font-weight:700;"
+                f"color:#111;margin-bottom:5px'>{html.escape(comp)}</div>"
+                f"{badge_html}"
+                f"{''.join(bits)}"
                 f"</li>"
             )
-        return "<ul style='list-style:none;padding:0;margin:0'>" + "".join(out) + "</ul>"
+        return ("<ul style='list-style:none;padding:0;margin:0;font-family:sans-serif'>"
+                + "".join(out) + "</ul>")
 
-    parts = [f"<h2 style='font-family:sans-serif'>Funding digest — {today}</h2>",
-             f"<p style='font-family:sans-serif;color:#666;font-size:13px'>"
-             f"{len(items)} raises in the last {LOOKBACK_HOURS}h. "
-             f"Top matches first — these are your outreach targets today.</p>"]
+    geo = "US" if GEO_MODE == "us" else "global"
+    parts = [f"<h2 style='font-family:sans-serif;margin-bottom:2px'>Funding digest — {today}</h2>",
+             f"<p style='font-family:sans-serif;color:#777;font-size:13px;margin-top:0'>"
+             f"{len(best)} worth an email"
+             + (f" · {len(other)} more below" if other else "")
+             + f" · {geo} raises, last {LOOKBACK_HOURS}h</p>"]
     if best:
-        parts.append("<h3 style='font-family:sans-serif'>Best matches</h3>" + block(best))
+        parts.append("<h3 style='font-family:sans-serif;font-size:13px;color:#888;"
+                     "text-transform:uppercase;letter-spacing:.5px;margin:18px 0 10px'>"
+                     "Best matches</h3>" + block(best))
     if other:
-        parts.append("<h3 style='font-family:sans-serif'>Other recent raises</h3>" + block(other))
+        parts.append("<h3 style='font-family:sans-serif;font-size:13px;color:#888;"
+                     "text-transform:uppercase;letter-spacing:.5px;margin:22px 0 10px'>"
+                     "Other recent raises</h3>" + block(other))
     if letters:
         parts.append(newsletters_block(letters))
     return "<div style='max-width:640px'>" + "".join(parts) + "</div>"
@@ -428,19 +694,39 @@ if __name__ == "__main__":
         targets = items if ENRICH_TOP_N is None else items[:ENRICH_TOP_N]
         print(f"[info] enriching {len(targets)} of {len(items)} raises")
         for i in targets:
-            company = guess_company(i["title"])
-            i["company"] = company
+            company = i["company"]
             try:
                 i["enrich"] = _enrich.enrich(company)
                 print(f"[enrich] {company}: {i['enrich'].get('email_status') or 'no email'}")
             except Exception as e:
                 print(f"[warn] enrich {company}: {e}")
-            # LOOP: detect this company's ATS and feed the job digest's watchlist
-            if _wl is not None:
+
+        # Now that we know where each company sits and what it sells, drop what
+        # the headline alone couldn't rule out. Doing this before the watchlist
+        # write also keeps foreign/off-sector companies out of the companies digest.
+        kept = []
+        for i in items:
+            enr = i.get("enrich") or {}
+            why = us_only_reject(enr)
+            if why:
+                print(f"[drop] {i['company']}: outside US — {why}")
+                continue
+            why = off_sector_reject(enr)
+            if why:
+                print(f"[drop] {i['company']}: off-sector — {why}")
+                continue
+            i["score"] = rescore(i)
+            kept.append(i)
+        items = sorted(kept, key=lambda x: (x["score"], x["time"]), reverse=True)
+        print(f"[info] {len(items)} raises survived enrichment filters")
+
+        # LOOP: detect each surviving company's ATS and feed the companies digest's watchlist
+        if _wl is not None:
+            for i in items:
                 try:
-                    _wl.detect_and_add(company, (i.get("enrich") or {}).get("domain"))
+                    _wl.detect_and_add(i["company"], (i.get("enrich") or {}).get("domain"))
                 except Exception as e:
-                    print(f"[warn] watchlist {company}: {e}")
+                    print(f"[warn] watchlist {i['company']}: {e}")
     else:
         print("[info] enrichment disabled or enrich.py missing")
 

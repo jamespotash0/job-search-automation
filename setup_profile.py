@@ -8,7 +8,7 @@ Reads profile.json (see profile.example.json), sends your resume + your
   { target_titles, skills, domains, focus_keywords, years,
     location_keywords, remote_ok, prefer_larger }
 
-job_digest.py and funding_digest.py load that file automatically if present, so
+companies_digest.py and funding_digest.py load that file automatically if present, so
 you configure everything here without editing any code. Re-run whenever you
 change profile.json or your resume.
 

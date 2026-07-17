@@ -2,7 +2,12 @@ name: Daily funding digest
 
 on:
   schedule:
-    - cron: "0 12 * * *"     # 8am ET (EDT). Adjust as you like (UTC).
+    # Actions cron is UTC-only, so the 8am ET slot is registered TWICE — once for
+    # EDT, once for EST — and the `gate` job below drops whichever is not in
+    # effect, holding 8am ET year-round. Keep in sync with the gate's
+    # TARGET_ET_HOURS; see .github/dst-gate.sh.
+    - cron: "0 12 * * *"     # EDT (Mar-Nov) -> 8am ET
+    - cron: "0 13 * * *"     # EST (Nov-Mar) -> 8am ET
   workflow_dispatch:
 
 permissions:
@@ -13,7 +18,22 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  # Drop the half of the schedule that belongs to the other DST period.
+  gate:
+    runs-on: ubuntu-latest
+    outputs:
+      run: ${{ steps.check.outputs.run }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: check
+        env:
+          TARGET_ET_HOURS: "8"
+          SCHEDULE: ${{ github.event.schedule }}
+        run: bash .github/dst-gate.sh
+
   digest:
+    needs: gate
+    if: needs.gate.outputs.run == 'true'
     runs-on: ubuntu-latest
     # Runners are UTC; render digest timestamps in ET so the email clock matches.
     env:
@@ -58,7 +78,7 @@ jobs:
         run: python funding_digest.py
 
       # Persist enrichment cache, Hunter counter, and the watchlist so we never
-      # re-spend API calls and the job digest sees newly-raised companies.
+      # re-spend API calls and the companies digest sees newly-raised companies.
       - name: Persist state
         if: always()
         env:

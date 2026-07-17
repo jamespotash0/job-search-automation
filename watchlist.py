@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 """
-watchlist.py — the loop between the funding digest and the job digest.
+watchlist.py — the loop between the funding digest and the companies digest.
 
 When the funding digest enriches a freshly-raised company, it calls
 detect_and_add(name, domain). We probe the public ATS boards (Greenhouse /
 Lever / Ashby); if the company is on one, we save its token to a shared
-ats_watchlist.json. The job digest then reads get_tokens() and starts scoring
+ats_watchlist.json. The companies digest then reads get_tokens() and starts scoring
 that company's postings against your resume automatically.
 
-No scraping — these are the same public board APIs the job digest already uses.
+No scraping — these are the same public board APIs the companies digest already uses.
 Detection results are cached (per company) so we never re-probe.
 
 The shared file travels between the two GitHub Actions workflows via a cache
@@ -131,7 +131,7 @@ def detect_and_add(name, domain=None):
 
 
 def get_tokens():
-    """For the job digest: current auto-detected tokens by provider."""
+    """For the companies digest: current auto-detected tokens by provider."""
     d = _load()
     return {"greenhouse": d["greenhouse"], "lever": d["lever"], "ashby": d["ashby"]}
 

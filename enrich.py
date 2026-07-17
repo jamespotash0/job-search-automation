@@ -35,6 +35,21 @@ HUNTER_MONTHLY_CAP  = int(os.environ.get("HUNTER_MONTHLY_CAP", "50"))
 ENRICH_CACHE = "enrich_cache.json"
 HUNTER_USAGE = "hunter_usage.json"
 
+# Bump when the shape of an enrich() result changes; entries cached at an older
+# version are re-fetched instead of returned with fields the callers now expect.
+SCHEMA_VERSION = 2
+
+# Objective sector buckets the researcher must choose from. Kept here (not in the
+# digest) because the answer is a fact about the company and is safe to cache;
+# whether a bucket is a good fit is a per-profile judgement the caller makes.
+CATEGORIES = [
+    "ai/software", "b2b saas", "devtools/infra", "fintech",
+    "proptech/construction", "healthtech", "consumer software",
+    "biotech/pharma", "hardware/devices", "semiconductor/datacenter",
+    "space/aerospace/defense", "energy/climate", "materials/manufacturing",
+    "consumer goods", "other",
+]
+
 UA = {"User-Agent": "Mozilla/5.0 (funding-digest)"}
 
 
@@ -86,7 +101,15 @@ def ai_lookup(company):
         "sites (a16z, Sequoia, Y Combinator, Bessemer, General Catalyst, etc.). "
         "Return ONLY a JSON object, no prose, no code fences:\n"
         '{"website":"","domain":"","description":"one concise sentence on what they do",'
-        '"founders":["Full Name"],"investors":["Firm"]}\n'
+        '"founders":["Full Name"],"investors":["Firm"],'
+        '"hq_city":"","hq_country":"","category":""}\n'
+        "hq_city/hq_country are the HEADQUARTERS, not where an investor or a "
+        "satellite office sits; give hq_country as a full name like "
+        '"United States", "India", "United Kingdom".\n'
+        f"category must be exactly one of: {', '.join(CATEGORIES)}. Pick by what "
+        "the company SELLS, not what it uses internally — a company applying AI to "
+        "design drugs is biotech/pharma, and one selling software that happens to "
+        "run on GPUs is ai/software.\n"
         "Use empty strings/arrays for anything you cannot verify."
     )
     body = {
@@ -231,8 +254,9 @@ def enrich(company):
     """Full enrichment for one company, cached. Returns a dict."""
     cache = _load(ENRICH_CACHE, {})
     key = company.lower().strip()
-    if key in cache:
-        return cache[key]
+    hit = cache.get(key)
+    if hit and hit.get("v") == SCHEMA_VERSION:
+        return hit
 
     info = ai_lookup(company)
     domain = info.get("domain") or ""
@@ -240,12 +264,20 @@ def enrich(company):
     if domain:
         email, status, alts = find_email(domain, info.get("founders", []))
 
+    category = (info.get("category") or "").strip().lower()
+    if category not in CATEGORIES:
+        category = ""          # model went off-menu; caller treats as unknown
+
     result = {
+        "v": SCHEMA_VERSION,
         "website": info.get("website", ""),
         "domain": domain,
         "description": info.get("description", ""),
         "founders": info.get("founders", []),
         "investors": info.get("investors", []),
+        "hq_city": (info.get("hq_city") or "").strip(),
+        "hq_country": (info.get("hq_country") or "").strip(),
+        "category": category,
         "email": email,
         "email_status": status,
         "email_alts": alts,

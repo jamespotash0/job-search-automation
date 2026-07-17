@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Job digest — newest postings for your target roles, ranked by how well they
-match your resume (primary) and company size (secondary tiebreak).
+Companies digest — newest postings for your target roles, ranked by how well
+they match your resume (primary) and company size (secondary tiebreak).
 
 FREE sources, no paid API:
   - Remotive API (remote tech jobs, includes descriptions)   [default on]
@@ -243,7 +243,7 @@ EMAIL_TO   = os.environ.get("EMAIL_TO", EMAIL_USER)
 SMTP_HOST  = os.environ.get("SMTP_HOST", "smtp.gmail.com")
 SMTP_PORT  = int(os.environ.get("SMTP_PORT", "587"))
 
-UA = {"User-Agent": "Mozilla/5.0 (job-digest)"}
+UA = {"User-Agent": "Mozilla/5.0 (companies-digest)"}
 
 
 def get_json(url, timeout=25):
@@ -568,7 +568,7 @@ def save_seen(seen):
 def build_html(items):
     now = datetime.now().strftime("%A, %b %d — %-I:%M%p")
     if not items:
-        return f"<h2>Job digest — {now}</h2><p>No new matching postings this run.</p>"
+        return f"<h2>Companies digest — {now}</h2><p>No new matching postings this run.</p>"
     rows = []
     for i in items:
         loc = f" · {html.escape(i['location'])}" if i["location"] else ""
@@ -591,7 +591,7 @@ def build_html(items):
         )
     return (
         f"<div style='max-width:660px'>"
-        f"<h2 style='font-family:sans-serif'>Job digest — {now}</h2>"
+        f"<h2 style='font-family:sans-serif'>Companies digest — {now}</h2>"
         f"<p style='font-family:sans-serif;color:#666;font-size:13px'>"
         f"{len(items)} new postings, ranked by resume match (green number). "
         f"New since the last run only.</p>"
@@ -616,7 +616,7 @@ def send_email(html_body):
         print(re.sub(r"<[^>]+>", "", html_body))
         return
     msg = MIMEMultipart("alternative")
-    msg["Subject"] = f"Job digest — {datetime.now().strftime('%b %d %-I%p')}"
+    msg["Subject"] = f"Companies digest — {datetime.now().strftime('%b %d %-I%p')}"
     msg["From"] = from_header()
     msg["To"] = EMAIL_TO
     msg.attach(MIMEText(html_body, "html"))
@@ -624,7 +624,7 @@ def send_email(html_body):
         srv.starttls()
         srv.login(EMAIL_USER, EMAIL_PASS)
         srv.sendmail(EMAIL_USER, [a.strip() for a in EMAIL_TO.split(",")], msg.as_string())
-    print(f"[ok] sent job digest to {EMAIL_TO}")
+    print(f"[ok] sent companies digest to {EMAIL_TO}")
 
 
 def main():

@@ -1,4 +1,4 @@
-# Job digest (3x daily)
+# Companies digest (3x daily)
 
 Newest postings for your target roles — Product Manager, Associate PM, AI PM,
 Forward Deployed Engineer, Deployment Strategist, AI Strategist, and adjacent —
@@ -6,7 +6,7 @@ Forward Deployed Engineer, Deployment Strategist, AI Strategist, and adjacent �
 resume** (with company size as a tiebreak). Emailed at 9am, 1pm, and 4pm ET.
 
 This is a separate digest from the funding one — separate script, separate
-schedule, separate email subject ("Job digest — …").
+schedule, separate email subject ("Companies digest — …").
 
 ## How ranking works
 Each posting gets a **qualification score** (the green number in the email):
@@ -51,13 +51,13 @@ data/ML engineer, devops, etc. are hard-excluded (`SWE_EXCLUDE`) — but
 ## Setup
 Same repo and secrets as the funding digest (`EMAIL_USER`, `EMAIL_PASS`,
 `EMAIL_TO`). Just add:
-- `job_digest.py`
-- `.github/workflows/job-digest.yml`
+- `companies_digest.py`
+- `.github/workflows/companies-digest.yml`
 
-Then: Actions tab → "Job digest (3x daily)" → Run workflow to test. Dedup across
-the day's 3 runs is handled by a cached `seen_jobs.json` (auto-managed).
+Then: Actions tab → "Companies digest (3x daily)" → Run workflow to test. Dedup
+across the day's 3 runs is handled by a cached `seen_jobs.json` (auto-managed).
 
-## Tuning (top of job_digest.py)
+## Tuning (top of companies_digest.py)
 - `RESUME` — your titles/skills/domains/years. **Pre-loaded from James Potash's
   resume** (PM · PropTech/B2B SaaS · AI workflow · accessibility/telecom · NYC).
   Edit as your resume evolves — this vocabulary is what each JD is scored against.

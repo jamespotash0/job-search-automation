@@ -16,7 +16,7 @@
     "startup_types": "Plain English. Becomes the domain filter (jobs) and funding focus keywords.",
     "company_size": "'small' = early-stage rank first, 'large' = bigger first, 'any' = neutral.",
     "years_experience": "Approx years; postings demanding far more get penalized.",
-    "max_age_days": "Job digest only: drop postings older than this many days (by the board's own posted date) and rank fresher ones higher. Set 0 to disable age filtering.",
+    "max_age_days": "Companies digest only: drop postings older than this many days (by the board's own posted date) and rank fresher ones higher. Set 0 to disable age filtering.",
     "_usage": "Fill this file in, then run:  python setup_profile.py  → writes profile.compiled.json, which both digests load automatically. Re-run whenever you edit this file or your resume."
   }
 }

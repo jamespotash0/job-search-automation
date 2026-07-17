@@ -4,7 +4,7 @@ Two daily email digests + a loop that connects them, to fuel founder-direct
 outreach and resume-matched job hunting. Runs free/near-free on GitHub Actions.
 
 ```
-funding_digest.py ──detects ATS──► ats_watchlist.json ──feeds──► job_digest.py
+funding_digest.py ──detects ATS──► ats_watchlist.json ──feeds──► companies_digest.py
      (who just raised,                (shared file)              (newest roles,
       enriched w/ contacts)                                       ranked vs resume)
 ```
@@ -13,26 +13,26 @@ funding_digest.py ──detects ATS──► ats_watchlist.json ──feeds─�
 1. **Funding digest** (`funding_digest.py`) — daily email of startups that just
    raised, filtered to your focus, with AI company summaries + founder contacts
    on the top matches. → your outreach targets.
-2. **Job digest** (`job_digest.py`) — 3x/day email of the newest postings for
-   your target roles, filtered to junior/early-career and ranked by how well
-   each matches your resume. → your apply list.
+2. **Companies digest** (`companies_digest.py`) — 3x/day email of the newest
+   postings for your target roles, filtered to junior/early-career and ranked by
+   how well each matches your resume. → your apply list.
 3. **The loop** (`watchlist.py`) — companies from the funding digest auto-flow
-   into the job digest's company watchlist.
+   into the companies digest's company watchlist.
 
 ## Files
 | File | What it is |
 |------|-----------|
 | `funding_digest.py` | Funding digest script |
 | `enrich.py` | AI + Hunter.io enrichment (imported by funding digest) |
-| `job_digest.py` | Job digest script |
+| `companies_digest.py` | Companies digest script |
 | `watchlist.py` | The loop (imported by both digests) |
 | `discover.py` | Web-searches "who's hiring" posts/articles → adds companies to the watchlist |
 | `setup_profile.py` | Compiles your resume + `profile.json` into the filters both digests use |
 | `.github/workflows/daily-digest.yml` | Funding digest schedule (8am ET) |
-| `.github/workflows/job-digest.yml` | Job digest schedule (9am/1pm/4pm ET) |
+| `.github/workflows/companies-digest.yml` | Companies digest schedule (9am/1pm/4pm ET) |
 | `requirements.txt` | Python deps |
 
-Per-piece detail lives in `docs/ENRICHMENT_README.md`, `docs/JOBS_README.md`,
+Per-piece detail lives in `docs/ENRICHMENT_README.md`, `docs/COMPANIES_README.md`,
 `docs/LOOP_README.md`.
 
 ---
@@ -75,8 +75,9 @@ environment variables / GitHub Actions secrets.
 
    **Advanced path:** skip the profile and edit the config blocks directly —
    `RESUME` / `PREFER_LARGER` / the `GREENHOUSE_/LEVER_/ASHBY_/WORKDAY_COMPANIES`
-   watchlists in `job_digest.py`, and `FOCUS_KEYWORDS` / `LOCATION_KEYWORDS` in
-   `funding_digest.py`. If no `profile.compiled.json` is present, these apply.
+   watchlists in `companies_digest.py`, and `FOCUS_KEYWORDS` /
+   `LOCATION_KEYWORDS` in `funding_digest.py`. If no `profile.compiled.json` is
+   present, these apply.
    (This repo's committed defaults are tuned to James as a worked example.)
 4. **Run it.** Actions tab → pick a workflow → *Run workflow*, or run locally
    (see below). The schedules live in `.github/workflows/*.yml` (cron in UTC).
@@ -96,19 +97,19 @@ under `.github/workflows/`):
 your-repo/
 ├── funding_digest.py
 ├── enrich.py
-├── job_digest.py
+├── companies_digest.py
 ├── watchlist.py
 ├── requirements.txt
 └── .github/
     └── workflows/
         ├── daily-digest.yml
-        └── job-digest.yml
+        └── companies-digest.yml
 ```
 
 A prompt you can hand Claude Code:
-> "Move daily-digest.yml and job-digest.yml into .github/workflows/, leave the
->  .py files at the repo root, then init a git repo, create a private GitHub repo,
->  and push."
+> "Move daily-digest.yml and companies-digest.yml into .github/workflows/, leave
+>  the .py files at the repo root, then init a git repo, create a private GitHub
+>  repo, and push."
 
 ### 2. Add secrets
 In the GitHub repo: **Settings → Secrets and variables → Actions → New repository
@@ -132,15 +133,16 @@ instead (good for a dry run).
 
 ### 4. Tune to you
 - `funding_digest.py` CONFIG: stage/sector/location keywords, `ENRICH_TOP_N`.
-- `job_digest.py` `RESUME` block: your titles/skills/domains. `PREFER_LARGER`
-  (True = big companies rank first; **set False for small/early**, your best fit).
+- `companies_digest.py` `RESUME` block: your titles/skills/domains.
+  `PREFER_LARGER` (True = big companies rank first; **set False for small/early**,
+  your best fit).
 - Add ATS tokens for target companies to `GREENHOUSE_COMPANIES` etc. — or let the
   loop fill them in automatically. For Workday-based companies, add
   tenant/wd/site entries to `WORKDAY_COMPANIES`.
 
-`RESUME` in `job_digest.py` is pre-loaded from James Potash's resume, and the ATS
-lists are seeded with small/early-stage NYC startups in that lane (edra, probook,
-valon, credal, rogo, alloy, …). The funding digest pulls from Google News +
+`RESUME` in `companies_digest.py` is pre-loaded from James Potash's resume, and
+the ATS lists are seeded with small/early-stage NYC startups in that lane (edra,
+probook, valon, credal, rogo, alloy, …). The funding digest pulls from Google News +
 TechCrunch + VentureBeat + EU-Startups + Tech.eu, plus a **From your newsletters**
 section from any Substack in `SUBSTACK_FEEDS` (currently *next play*).
 
@@ -154,7 +156,7 @@ export EMAIL_USER=... EMAIL_PASS=... EMAIL_TO=...
 export ANTHROPIC_API_KEY=...   # optional
 export HUNTER_API_KEY=...       # optional
 .venv/bin/python funding_digest.py
-.venv/bin/python job_digest.py
+.venv/bin/python companies_digest.py
 ```
 (Or activate the venv first with `source .venv/bin/activate`, then use plain
 `python`.)

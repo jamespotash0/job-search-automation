@@ -1,24 +1,45 @@
-name: Job digest (3x daily)
+name: Companies digest (3x daily)
 
 on:
   schedule:
-    # Times are UTC. These map to 8:57am / 12:57pm / 3:57pm ET during EDT (summer).
-    # In winter (EST) they'll land at 7:57 / 11:57 / 2:57 — shift by 1h if you care.
+    # Actions cron is UTC-only, so every slot is registered TWICE — once for EDT,
+    # once for EST — and the `gate` job below drops whichever set is not in effect.
+    # That keeps delivery at 8:57am / 12:57pm / 3:57pm ET year-round instead of
+    # sliding an hour earlier every November. Keep these in sync with the gate's
+    # TARGET_ET_HOURS; see .github/dst-gate.sh.
+    #
     # Minute :57 (not :00) deliberately dodges the top-of-hour cron pile-up on
-    # GitHub Actions, which routinely delays :00 runs 15-60+ min. No SLA either
-    # way, but back-of-the-hour slots are delayed far less often.
-    - cron: "57 12,16,19 * * *"
+    # GitHub Actions, which routinely delays :00 runs 15-60+ min. This only moves
+    # the *scheduled* time: Actions gives scheduled runs no SLA and has still been
+    # starting these 60-90 min late, which no cron change on our side can fix.
+    - cron: "57 12,16,19 * * *"   # EDT (Mar-Nov) -> 8:57 / 12:57 / 15:57 ET
+    - cron: "57 13,17,20 * * *"   # EST (Nov-Mar) -> 8:57 / 12:57 / 15:57 ET
   workflow_dispatch:
 
 permissions:
   contents: write            # push the updated seen-cache to the `state` branch
 
 concurrency:
-  group: job-digest          # never overlap two job runs (seen-cache safety)
+  group: companies-digest    # never overlap two runs (seen-cache safety)
   cancel-in-progress: false
 
 jobs:
-  jobs-digest:
+  # Drop the half of the schedule that belongs to the other DST period.
+  gate:
+    runs-on: ubuntu-latest
+    outputs:
+      run: ${{ steps.check.outputs.run }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: check
+        env:
+          TARGET_ET_HOURS: "8 12 15"
+          SCHEDULE: ${{ github.event.schedule }}
+        run: bash .github/dst-gate.sh
+
+  companies-digest:
+    needs: gate
+    if: needs.gate.outputs.run == 'true'
     runs-on: ubuntu-latest
     # Runners are UTC; render digest timestamps + "today/1d ago" labels in ET.
     env:
@@ -41,12 +62,12 @@ jobs:
               && git show "origin/state:$f" > "$f" && echo "restored $f" || true
           done
 
-      - name: Send job digest
+      - name: Send companies digest
         env:
           EMAIL_USER: ${{ secrets.EMAIL_USER }}
           EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
           EMAIL_TO:   ${{ secrets.EMAIL_TO }}
-        run: python job_digest.py
+        run: python companies_digest.py
 
       # Persist only the seen-cache; the watchlist is owned by the funding digest.
       - name: Persist state
