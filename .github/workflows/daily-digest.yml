@@ -68,6 +68,23 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: python discover.py
 
+      # The compiled profile (resume-derived focus keywords + locations) is
+      # gitignored — this repo is public, so it can't be committed. Ship it as the
+      # PROFILE_COMPILED_JSON secret instead (paste the contents of your local
+      # profile.compiled.json). Without it, both digests silently fall back to the
+      # generic hardcoded keywords in the script — which is what made an early
+      # digest match capsule hotels and space startups.
+      - name: Write compiled profile
+        env:
+          PROFILE_COMPILED_JSON: ${{ secrets.PROFILE_COMPILED_JSON }}
+        run: |
+          if [ -n "$PROFILE_COMPILED_JSON" ]; then
+            printf '%s' "$PROFILE_COMPILED_JSON" > profile.compiled.json
+            echo "wrote profile.compiled.json ($(wc -c < profile.compiled.json) bytes)"
+          else
+            echo "::warning::PROFILE_COMPILED_JSON not set — digest will use generic default keywords"
+          fi
+
       - name: Send digest
         env:
           EMAIL_USER:        ${{ secrets.EMAIL_USER }}
@@ -75,6 +92,7 @@ jobs:
           EMAIL_TO:          ${{ secrets.EMAIL_TO }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           HUNTER_API_KEY:    ${{ secrets.HUNTER_API_KEY }}
+          GEO_MODE:          ${{ vars.GEO_MODE || 'us' }}
         run: python funding_digest.py
 
       # Persist enrichment cache, Hunter counter, and the watchlist so we never
