@@ -7,7 +7,9 @@
     "india",
     "extend",
     "haven",
-    "d3"
+    "d3",
+    "axle",
+    "kalepa"
   ],
   "lever": [
     "rise"
@@ -28,7 +30,11 @@
     "rogo",
     "proxima",
     "flora",
-    "inference"
+    "inference",
+    "concourse",
+    "whetstoneresearch",
+    "artian",
+    "norm-ai"
   ],
   "checked": [
     "alloy",
@@ -98,6 +104,19 @@
     "instockrx",
     "logcat.ai",
     "inference cloud operator general compute",
-    "elorian"
+    "elorian",
+    "concourse",
+    "whetstone research",
+    "tandem",
+    "nerd apply",
+    "pasito",
+    "cvector",
+    "axle",
+    "kalepa",
+    "artian ai",
+    "norm ai",
+    "claimshero",
+    "fabric",
+    "pascal"
   ]
 }
