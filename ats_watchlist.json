@@ -9,7 +9,8 @@
     "haven",
     "d3",
     "axle",
-    "kalepa"
+    "kalepa",
+    "speechify"
   ],
   "lever": [
     "rise"
@@ -34,7 +35,10 @@
     "concourse",
     "whetstoneresearch",
     "artian",
-    "norm-ai"
+    "norm-ai",
+    "salesjack",
+    "broccoli",
+    "confido"
   ],
   "checked": [
     "alloy",
@@ -117,6 +121,20 @@
     "norm ai",
     "claimshero",
     "fabric",
-    "pascal"
+    "pascal",
+    "estuary",
+    "comograph",
+    "zora ai",
+    "salesjack",
+    "speechify",
+    "broccoli ai",
+    "confido",
+    "careforce",
+    "just appraised",
+    "surebright",
+    "peoplebox.ai",
+    "artos",
+    "alguna",
+    "agentic grid-planning platform piq"
   ]
 }
