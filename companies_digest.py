@@ -30,6 +30,29 @@ from email.mime.text import MIMEText
 from email.utils import formataddr
 from datetime import datetime, timezone
 
+
+def load_dotenv(path=".env"):
+    """Minimal .env loader so local runs pick up keys without exporting them.
+    Runs before the source toggles below read the environment. In GitHub Actions
+    there's no .env — those values come from repo secrets — so this is a no-op there."""
+    try:
+        with open(path) as f:
+            for line in f:
+                line = line.strip()
+                if line and not line.startswith("#") and "=" in line:
+                    k, v = line.split("=", 1)
+                    os.environ.setdefault(k.strip(), v.strip())
+    except Exception:
+        pass
+
+
+load_dotenv()
+
+# Accept either name for the xAI/Grok key: the docs call it XAI_API_KEY, but
+# GROK_API_KEY is the intuitive name, so honor both (XAI_API_KEY wins if both set).
+if not os.environ.get("XAI_API_KEY") and os.environ.get("GROK_API_KEY"):
+    os.environ["XAI_API_KEY"] = os.environ["GROK_API_KEY"]
+
 # ==========================================================================
 # YOUR RESUME PROFILE  — drives the qualification score
 # ==========================================================================
@@ -44,6 +67,11 @@ RESUME = {
         # Forward-deployed family — only the two named, not the wider
         # solutions-engineer / implementation / strategist net.
         "forward deployed engineer", "forward deployed", "deployment strategist",
+        # Early / associate go-to-market + growth at product-led startups (e.g.
+        # Mangomint's "GTM Associate, AI Product"). SENIORITY_EXCLUDE still drops
+        # GTM Lead/Head/Director/VP, so only associate/manager-level survives.
+        "gtm", "go-to-market", "growth associate", "revenue operations",
+        "revenue strategy",
     ],
     # Skills / tools from your resume (keyword overlap with the JD).
     "skills": [
@@ -108,10 +136,30 @@ USE_HN_WHOISHIRING = True
 
 USE_WORKDAY = True
 
+# The Muse — free, keyless job API with location filtering. Reaches startups not
+# on our ATS watchlist. https://www.themuse.com/developers/api/v2
+USE_MUSE = True
+
+# Adzuna — free aggregator (indexes many boards + company sites). Needs a free
+# app id + key from https://developer.adzuna.com ; auto-disables if unset.
+USE_ADZUNA = bool(os.environ.get("ADZUNA_APP_ID") and os.environ.get("ADZUNA_APP_KEY"))
+
+# X / Grok Live Search — surfaces founder "we're hiring" posts that never hit a
+# board (the Courted-APM-on-LinkedIn case). Needs XAI_API_KEY; auto-disables if
+# unset. Cost is ~$0.005 per search (xAI X-search tool), so ~cents/month.
+USE_GROK_X = bool(os.environ.get("XAI_API_KEY"))
+
 REMOTIVE_SEARCHES = ["product manager", "associate product manager",
                      "technical product manager", "ai product manager",
                      "forward deployed", "deployment strategist", "ai strategist",
                      "solutions engineer", "product operations", "product owner"]
+
+# Compact query set reused by the aggregators (Muse/Adzuna) and the X search.
+# Fewer, broader phrases than REMOTIVE_SEARCHES to stay within free-tier call
+# budgets; the resume title/seniority filter downstream does the fine sorting.
+JOB_SEARCH_QUERIES = ["product manager", "associate product manager",
+                      "ai product manager", "forward deployed engineer",
+                      "deployment strategist"]
 
 # ATS watchlist — add ATS tokens for companies you're targeting (e.g. from the
 # funding digest). Find the token in a company's careers URL:
@@ -152,6 +200,7 @@ ASHBY_COMPANIES = [
     "parafin",       # fintech/embedded · Forward Deployed Engineer
     "method",        # fintech/payments · Solutions Engineer
     "stytch",        # dev tools/auth · Solutions Engineer
+    "mangomint",     # AI/vertical SaaS · GTM Associate, AI Product (US-remote)
 ]
 
 # Workday boards. Unlike the token-based ATSs above, a Workday board needs THREE
@@ -176,12 +225,41 @@ COMPANY_SIZE = {
 }
 PREFER_LARGER = False   # False = small/early companies rank higher (your fit).
 
-# --- Location: keep only NYC-based roles / companies ---------------------
+# --- Location: keep NYC roles, plus US-remote roles ----------------------
 REQUIRE_NYC = True
-REMOTE_OK = False   # True = also keep remote roles (may include NYC startups)
+REMOTE_OK = False   # True = enable the global remote boards (Remotive/Arbeitnow)
+
+# Keep US-remote roles too, not just NYC-tagged ones. Many early-startup roles
+# (e.g. Mangomint's "GTM Associate, AI Product") are listed as a bare "United
+# States" or "Remote — US" with no city, so a strict NYC-substring gate drops
+# them even though you could do them from NYC. This widens the gate to: NYC, OR
+# US-remote / US-national, while still dropping on-site-elsewhere (SF, Austin)
+# and non-US roles. Set JOB_ALLOW_US_REMOTE=0 to go back to strict NYC-only.
+ALLOW_US_REMOTE = os.environ.get("JOB_ALLOW_US_REMOTE", "1").lower() not in ("0", "false", "no")
+
 NYC_KEYWORDS = [
     "new york", "nyc", "new york city", "brooklyn", "manhattan",
     "ny,", " ny ", ", ny", "queens", "n.y.",
+]
+
+# A bare national/remote US location (no city) — treated as US-remote and kept.
+US_NATIONAL_LOC = {
+    "united states", "usa", "us", "u.s.", "u.s.a.", "u.s.a", "america",
+    "united states of america", "remote", "remote us", "us remote",
+    "anywhere", "anywhere in the us", "nationwide",
+}
+US_LOC_HINTS = ["united states", "usa", "u.s.", "us-based", "us based",
+                "remote - us", "remote, us", "remote (us", "remote us",
+                "us remote", "anywhere in the us", "onsite or remote"]
+# Location terms that mark a role as NOT US — drop these even when "remote".
+NON_US_LOC_HINTS = [
+    "united kingdom", "uk", "london", "england", "scotland", "ireland", "dublin",
+    "canada", "toronto", "vancouver", "ontario", "europe", "european", "emea",
+    "germany", "berlin", "munich", "france", "paris", "spain", "madrid",
+    "netherlands", "amsterdam", "india", "bangalore", "bengaluru", "mumbai",
+    "singapore", "australia", "sydney", "apac", "latam", "brazil", "mexico",
+    "israel", "tel aviv", "poland", "portugal", "lisbon", "sweden", "stockholm",
+    "dubai", "uae", "nigeria", "kenya", "south africa", "philippines", "worldwide",
 ]
 
 # --- Stage bias: nudge seed / Series A / B to the top -------------------
@@ -197,6 +275,14 @@ LATE_STAGE_SIGNALS = [
 MAX_ITEMS = 30
 SEEN_FILE = "seen_jobs.json"
 SEEN_TTL_DAYS = 14
+
+# Only email when a run actually turns up a new posting. The seen-cache means
+# almost everything lands in the morning run — the 1pm/4pm runs then found
+# nothing new and still emailed an empty "no new postings" digest, which was pure
+# noise. With this on (default), an empty run stays silent; a genuinely fresh
+# midday role still reaches you same-day. Set SEND_WHEN_EMPTY=1 to always send
+# (e.g. as a daily heartbeat, or while debugging).
+SEND_WHEN_EMPTY = os.environ.get("SEND_WHEN_EMPTY", "").lower() in ("1", "true", "yes")
 
 # Recency: drop postings older than this many days, using the board's own
 # posted/updated timestamp. Newer postings also rank higher (tiebreak after the
@@ -362,6 +448,160 @@ def fetch_hn():
     return out
 
 
+def fetch_muse():
+    """The Muse — free, keyless. Location-filtered to New York + Flexible/Remote;
+    the downstream US-remote gate keeps only the ones that qualify."""
+    out = []
+    # Muse categories that hold our target roles. 'Product Management' is the core;
+    # the others catch FDE / deployment / solutions-flavored postings.
+    cats = ["Product Management", "Project Management", "Sales", "Data Science"]
+    from urllib.parse import urlencode
+    for page in range(1, 3):                       # 2 pages ≈ 40 postings/loc
+        params = [("page", page), ("location", "New York, NY"),
+                  ("location", "Flexible / Remote")]
+        params += [("category", c) for c in cats]
+        try:
+            data = get_json("https://www.themuse.com/api/public/jobs?" + urlencode(params))
+        except Exception as e:
+            print(f"[warn] muse page {page}: {e}")
+            break
+        results = data.get("results", [])
+        if not results:
+            break
+        for j in results:
+            locs = ", ".join(l.get("name", "") for l in j.get("locations", []))
+            comp = (j.get("company") or {}).get("name", "")
+            out.append({
+                "title": j.get("name", ""),
+                "company": comp,
+                "location": locs,
+                "url": (j.get("refs") or {}).get("landing_page", ""),
+                "content": strip_html(j.get("contents", ""))[:1500],
+                "posted_ts": to_ts(j.get("publication_date")),
+                "source": "The Muse",
+            })
+    return out
+
+
+def fetch_adzuna():
+    """Adzuna — free aggregator (indexes many boards + company career pages).
+    Queried for US roles in/around New York; the location gate filters further."""
+    app_id = os.environ.get("ADZUNA_APP_ID", "")
+    app_key = os.environ.get("ADZUNA_APP_KEY", "")
+    if not (app_id and app_key):
+        return []
+    from urllib.parse import urlencode
+    out = []
+    for q in JOB_SEARCH_QUERIES:
+        params = urlencode({
+            "app_id": app_id, "app_key": app_key,
+            "what_phrase": q,                       # exact-phrase title match
+            "where": "New York",
+            "distance": 80,                         # km — covers the NYC metro
+            "max_days_old": MAX_AGE_DAYS or 21,
+            "results_per_page": 25, "content-type": "application/json",
+        })
+        try:
+            data = get_json(f"https://api.adzuna.com/v1/api/jobs/us/search/1?{params}")
+        except Exception as e:
+            print(f"[warn] adzuna '{q}': {e}")
+            continue
+        for j in data.get("results", []):
+            loc = (j.get("location") or {}).get("display_name", "")
+            out.append({
+                "title": j.get("title", ""),
+                "company": (j.get("company") or {}).get("display_name", ""),
+                "location": loc,
+                "url": j.get("redirect_url", ""),
+                "content": strip_html(j.get("description", ""))[:1500],
+                "posted_ts": to_ts(j.get("created")),
+                "source": "Adzuna",
+            })
+    return out
+
+
+def fetch_grok_x():
+    """xAI Grok X (Twitter) search via the Agent Tools API (the current API — the
+    older Live Search / search_parameters form returns 410 Gone). Surfaces recent
+    founder/recruiter "we're hiring" posts and returns them as normalized postings
+    whose URL is the tweet. Needs XAI_API_KEY (GROK_API_KEY is aliased to it).
+    Non-fatal on any error."""
+    api_key = os.environ.get("XAI_API_KEY", "")
+    if not api_key:
+        return []
+    model = os.environ.get("XAI_MODEL", "grok-4.5")
+    days = int(os.environ.get("XAI_LOOKBACK_DAYS", "5"))
+    roles = ", ".join(JOB_SEARCH_QUERIES)
+    prompt = (
+        f"Search X for posts from the last {days} days where a founder, recruiter, "
+        f"or employee is HIRING for a role like: {roles}. Focus on early-stage US "
+        "startups, New York or US-remote. Only real, currently-open roles (ignore "
+        "generic threads, advice, and 'looking for work' posts). Return ONLY a JSON "
+        "array, no prose, no code fences:\n"
+        '[{"company":"","role":"","location":"","tweet_url":"","summary":"one line"}]\n'
+        "Use \"\" for anything you cannot determine. Up to 15 items."
+    )
+    payload = {
+        "model": model,
+        "input": [{"role": "user", "content": prompt}],
+        "tools": [{"type": "x_search"}],
+    }
+    try:
+        req = urllib.request.Request(
+            "https://api.x.ai/v1/responses",
+            data=json.dumps(payload).encode(),
+            headers={"Content-Type": "application/json",
+                     "Authorization": f"Bearer {api_key}"}, method="POST")
+        with urllib.request.urlopen(req, timeout=180) as r:
+            data = json.loads(r.read().decode("utf-8", "replace"))
+    except Exception as e:
+        print(f"[warn] grok/x search: {e}")
+        return []
+    # The final answer is the output item of type "message"; earlier items are
+    # reasoning + tool calls. Fall back to output_text if present.
+    text = data.get("output_text") or ""
+    if not text:
+        for item in data.get("output", []):
+            if item.get("type") == "message":
+                for c in item.get("content", []):
+                    if c.get("type") == "output_text":
+                        text += c.get("text", "")
+    m = re.search(r"\[.*\]", text or "", re.S)
+    if not m:
+        print("[info] grok/x: no postings parsed")
+        return []
+    try:
+        leads = json.loads(m.group(0))
+    except Exception:
+        print("[info] grok/x: unparseable JSON")
+        return []
+    out = []
+    for l in leads:
+        role = (l.get("role") or "").strip()
+        if not role:
+            continue
+        company = (l.get("company") or "").strip()
+        # A tweet URL is ideal; if the model didn't capture one, fall back to a
+        # search so the lead is still actionable (and passes the URL gate).
+        url = (l.get("tweet_url") or "").strip()
+        if not url:
+            url = "https://www.google.com/search?q=" + quote_plus(
+                f"{company} {role} hiring")
+        out.append({
+            "title": role,
+            "company": company,
+            # Prompt constrains to US/NYC; default blanks to US so the location
+            # gate keeps them (a model-supplied non-US location is still honored).
+            "location": (l.get("location") or "United States").strip(),
+            "url": url,
+            "content": (l.get("summary") or "").strip()[:600],
+            "posted_ts": None,                      # tweet date not reliably returned
+            "source": "X/Grok",
+        })
+    print(f"[info] grok/x: {len(out)} hiring posts")
+    return out
+
+
 def fetch_greenhouse(token):
     out = []
     try:
@@ -485,9 +725,16 @@ def fetch_workday(entry):
 
 
 # --------------------------- filtering & scoring
+# "lead" as a standalone word is senior, but the SENIORITY_EXCLUDE substring
+# "lead " (trailing space) misses a title that ENDS in "Lead" (e.g. "GTM Lead",
+# "Product Lead"). Match it on a word boundary instead — \blead\b won't fire on
+# "leading"/"leader"/"leadership".
+_LEAD_RE = re.compile(r"\blead\b")
+
+
 def title_is_target(title):
     t = title.lower()
-    if any(x in t for x in SENIORITY_EXCLUDE):
+    if any(x in t for x in SENIORITY_EXCLUDE) or _LEAD_RE.search(t):
         return False
     if any(x in t for x in SWE_EXCLUDE):      # no software-engineering roles
         return False
@@ -518,18 +765,37 @@ def qualification_score(title, content):
     return s
 
 
-def is_nyc(location, content):
+def location_ok(location, content):
+    """Keep NYC roles, plus (when ALLOW_US_REMOTE) US-remote / US-national roles.
+    Drops on-site-elsewhere (SF, Austin) and anything explicitly non-US."""
     loc = (location or "").strip().lower()
     if loc:
         # Trust an explicit location: a posting that says "San Francisco" isn't
         # NYC just because its JD name-drops a New York office.
         if any(k in loc for k in NYC_KEYWORDS):
             return True
-        if REMOTE_OK and "remote" in loc:
-            return True
-        return False
+        if not ALLOW_US_REMOTE:
+            return False
+        if any(t in loc for t in NON_US_LOC_HINTS):
+            return False                       # remote-EU / remote-worldwide → drop
+        if loc in US_NATIONAL_LOC:
+            return True                        # bare "United States" / "Remote"
+        if any(t in loc for t in US_LOC_HINTS):
+            return True                        # "Remote - US", "US-based", ...
+        if "remote" in loc or "anywhere" in loc:
+            return True                        # remote, no non-US marker → assume US-ok
+        return False                           # a city we didn't match → on-site elsewhere
     # No location field (e.g. HN "Who's hiring") — fall back to the body text.
-    return any(k in (content or "").lower() for k in NYC_KEYWORDS)
+    body = (content or "").lower()
+    if any(k in body for k in NYC_KEYWORDS):
+        return True
+    if ALLOW_US_REMOTE and "remote" in body and not any(t in body for t in NON_US_LOC_HINTS):
+        return True
+    return False
+
+
+# Back-compat alias (older callers referenced is_nyc).
+is_nyc = location_ok
 
 
 def size_score(company):
@@ -654,6 +920,14 @@ def main():
     if USE_ARBEITNOW and remote_useful:  raw += fetch_arbeitnow()
     elif USE_ARBEITNOW:                  print("[info] skipping Arbeitnow (remote/EU vs NYC gate)")
     if USE_HN_WHOISHIRING: raw += fetch_hn()
+    # Free aggregators that DO expose location, so they survive the NYC/US-remote
+    # gate: The Muse (keyless) and Adzuna (free app id/key). These reach roles at
+    # companies not on our ATS watchlist — e.g. a LinkedIn-surfaced posting that
+    # Google-for-Jobs/Adzuna also indexes.
+    if USE_MUSE:   raw += fetch_muse()
+    if USE_ADZUNA: raw += fetch_adzuna()
+    # X / Grok: founder "we're hiring" posts that never hit a job board.
+    if USE_GROK_X: raw += fetch_grok_x()
     for t in gh:  raw += fetch_greenhouse(t)
     for t in lv:  raw += fetch_lever(t)
     for t in ash: raw += fetch_ashby(t)
@@ -709,7 +983,10 @@ def main():
     save_seen(seen)
 
     print(f"[info] {len(picked)} new matching postings this run")
-    send_email(build_html(picked))
+    if picked or SEND_WHEN_EMPTY:
+        send_email(build_html(picked))
+    else:
+        print("[info] nothing new this run — skipping email (set SEND_WHEN_EMPTY=1 to override)")
 
 
 if __name__ == "__main__":

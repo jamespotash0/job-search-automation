@@ -62,11 +62,33 @@ jobs:
               && git show "origin/state:$f" > "$f" && echo "restored $f" || true
           done
 
+      # Same as the funding workflow: the compiled profile (resume-derived titles,
+      # locations) is gitignored on this public repo, so ship it as a secret and
+      # write it to disk here. Without it the digest uses the generic default
+      # titles baked into the script. Paste your local profile.compiled.json.
+      - name: Write compiled profile
+        env:
+          PROFILE_COMPILED_JSON: ${{ secrets.PROFILE_COMPILED_JSON }}
+        run: |
+          if [ -n "$PROFILE_COMPILED_JSON" ]; then
+            printf '%s' "$PROFILE_COMPILED_JSON" > profile.compiled.json
+            echo "wrote profile.compiled.json ($(wc -c < profile.compiled.json) bytes)"
+          else
+            echo "::warning::PROFILE_COMPILED_JSON not set — using generic default titles"
+          fi
+
       - name: Send companies digest
         env:
           EMAIL_USER: ${{ secrets.EMAIL_USER }}
           EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
           EMAIL_TO:   ${{ secrets.EMAIL_TO }}
+          # Optional sources — each auto-disables if its key is unset (see the
+          # USE_ADZUNA / USE_GROK_X toggles in companies_digest.py).
+          ADZUNA_APP_ID:  ${{ secrets.ADZUNA_APP_ID }}
+          ADZUNA_APP_KEY: ${{ secrets.ADZUNA_APP_KEY }}
+          # Either name works (the script aliases GROK_API_KEY -> XAI_API_KEY).
+          XAI_API_KEY:    ${{ secrets.XAI_API_KEY }}
+          GROK_API_KEY:   ${{ secrets.GROK_API_KEY }}
         run: python companies_digest.py
 
       # Persist only the seen-cache; the watchlist is owned by the funding digest.

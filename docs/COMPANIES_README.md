@@ -57,6 +57,12 @@ Same repo and secrets as the funding digest (`EMAIL_USER`, `EMAIL_PASS`,
 Then: Actions tab → "Companies digest (3x daily)" → Run workflow to test. Dedup
 across the day's 3 runs is handled by a cached `seen_jobs.json` (auto-managed).
 
+**Quiet by default:** because dedup means most new postings land in the 9am run,
+a run that turns up nothing new **skips the email** rather than sending an empty
+"no new postings" digest. A genuinely fresh midday role still reaches you
+same-day. Set `SEND_WHEN_EMPTY=1` (env / Actions secret) to always send — e.g.
+as a daily heartbeat or while debugging.
+
 ## Tuning (top of companies_digest.py)
 - `RESUME` — your titles/skills/domains/years. **Pre-loaded from James Potash's
   resume** (PM · PropTech/B2B SaaS · AI workflow · accessibility/telecom · NYC).
@@ -67,6 +73,8 @@ across the day's 3 runs is handled by a cached `seen_jobs.json` (auto-managed).
   caps per-board detail fetches.
 - `COMPANY_SIZE` + `PREFER_LARGER` — the size tiebreak.
 - `SEEN_TTL_DAYS` — how long before a still-open role can resurface (default 14).
+- `SEND_WHEN_EMPTY` (env) — `1` to email even when a run finds nothing new;
+  default off, so empty midday runs stay silent.
 
 ## Honest limits
 - LinkedIn/Indeed can't be scraped freely, so out-of-the-box coverage skews

@@ -11,17 +11,20 @@ your daily funding digest.
 - **Click-to-search links** for LinkedIn + Crunchbase (no scraping — LinkedIn
   bans bots, so these are one-tap searches you run yourself)
 
-Enrichment covers the **top N ranked raises per run** (default 8) to control
-cost and quota. Set `ENRICH_TOP_N = 0` in funding_digest.py to turn it off.
+Enrichment covers **every ranked raise per run** by default (`ENRICH_TOP_N =
+None` in funding_digest.py), so cost scales with the day's volume (often 10–40
+raises). Set `ENRICH_TOP_N` to an integer (e.g. `8`) to cap spend to the top-N,
+or `0` to turn it off.
 
 ## New secrets to add (repo → Settings → Secrets → Actions)
 - `ANTHROPIC_API_KEY` — powers the AI research + web search. Get one at
-  console.anthropic.com. Small per-run cost (a few cents/day at N=8).
+  console.anthropic.com. One web-search call per enriched raise, so cost scales
+  with the day's volume (cap it with `ENRICH_TOP_N` if needed).
 - `HUNTER_API_KEY` — optional, for real founder emails. Free tier is limited.
 
 ## About the Hunter free tier — you WILL hit the cap
-A daily digest enriching 8 companies = ~240 lookups/month, but the free tier is
-~50. So the script **rations Hunter automatically**:
+With enrich-all on, a busy day can request dozens of lookups, far above the ~50
+free-tier monthly quota. So the script **rations Hunter automatically**:
 - Counts calls in `hunter_usage.json`, resets monthly, hard-stops at
   `HUNTER_MONTHLY_CAP` (default 50 — set it to your real quota).
 - Never looks up the same company twice (`enrich_cache.json`).

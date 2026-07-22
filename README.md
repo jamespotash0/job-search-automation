@@ -15,7 +15,8 @@ funding_digest.py ──detects ATS──► ats_watchlist.json ──feeds─�
    on the top matches. → your outreach targets.
 2. **Companies digest** (`companies_digest.py`) — 3x/day email of the newest
    postings for your target roles, filtered to junior/early-career and ranked by
-   how well each matches your resume. → your apply list.
+   how well each matches your resume. → your apply list. Runs that find nothing
+   new stay silent (set `SEND_WHEN_EMPTY=1` to always send).
 3. **The loop** (`watchlist.py`) — companies from the funding digest auto-flow
    into the companies digest's company watchlist.
 

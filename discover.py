@@ -68,24 +68,29 @@ def discover(roles, locations, exclude=None):
     prompt = (
         f"Use web search to find companies that are CURRENTLY hiring for roles like: {roles}. "
         f"Focus on {loc}. Strongly prefer small / early-stage startups (seed to Series B); "
-        "exclude large public companies. Look especially at:\n"
+        "exclude large public companies. Search several DIFFERENT angles (don't stop after "
+        "one) — spend your searches across:\n"
         "- LinkedIn posts where founders/employees say 'we're hiring' / 'my team is hiring'\n"
+        "- X/Twitter 'we're hiring' posts from founders and early employees\n"
         "- 'who is hiring' articles, threads, and hiring-roundup newsletters (last ~3 weeks)\n"
-        "- startup job boards and recently-funded-company lists\n"
+        "- Ashby / Greenhouse / Lever public job-board listings for these titles in the area\n"
+        "- recently-funded (seed/Series A) startup lists and YC/a16z/Sequoia portfolio pages\n"
         + skip_line +
         "Return ONLY a JSON array (no prose, no code fences) of objects:\n"
         '[{"name":"Company Name","domain":"company.com"}]\n'
         f"Up to {MAX_COMPANIES} companies. Use \"\" for a domain you cannot determine. "
         "Do NOT include software-engineering-only shops; focus on companies with "
-        "product / deployment / solutions / GTM roles."
+        "product / deployment / solutions / GTM / growth roles."
     )
     body = {
         # max_tokens must be generous: interleaved thinking + web-search results
         # eat the budget, and a too-small cap stops the turn before the final JSON.
         "model": model,
-        "max_tokens": 6000,
+        "max_tokens": 8000,
         "messages": [{"role": "user", "content": prompt}],
-        "tools": [{"type": "web_search_20250305", "name": "web_search", "max_uses": 5}],
+        # More search slots = more distinct angles covered per run (cost is a few
+        # cents; this is the loop that feeds the whole companies digest).
+        "tools": [{"type": "web_search_20250305", "name": "web_search", "max_uses": 8}],
     }
     try:
         req = urllib.request.Request(
@@ -130,7 +135,8 @@ def main():
     roles = ", ".join(p.get("target_titles", [])) or (
         "product manager, associate product manager, AI product manager, product "
         "operations, product strategy, forward deployed engineer, deployment "
-        "strategist, AI strategist, solutions engineer, implementation")
+        "strategist, AI strategist, GTM associate, go-to-market associate, growth "
+        "associate, revenue operations")
     locations = p.get("location_keywords") or ["new york"]
 
     try:
