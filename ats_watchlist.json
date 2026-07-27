@@ -18,11 +18,17 @@
     "gradial",
     "insurance",
     "anthropic",
-    "warp"
+    "warp",
+    "activelyai",
+    "ophelia",
+    "kalshi",
+    "weave",
+    "remote"
   ],
   "lever": [
     "rise",
-    "findigs"
+    "findigs",
+    "nitra"
   ],
   "ashby": [
     "taktile",
@@ -94,7 +100,17 @@
     "rain",
     "probook",
     "backflip",
-    "merge"
+    "merge",
+    "credal",
+    "tenex",
+    "didero",
+    "capchase",
+    "langchain",
+    "solace",
+    "legora",
+    "playground",
+    "coram-ai",
+    "base"
   ],
   "checked": [
     "alloy",
@@ -298,6 +314,33 @@
     "probook",
     "backflip",
     "lunchbox",
-    "merge"
+    "merge",
+    "credal.ai",
+    "tenex",
+    "roam",
+    "actively ai",
+    "valence",
+    "hebbia",
+    "roon",
+    "didero",
+    "nitra",
+    "tenbin labs",
+    "quatrefoil data services",
+    "capchase",
+    "langchain",
+    "craniometrix",
+    "ophelia",
+    "solace",
+    "legora",
+    "assembled",
+    "vouch social",
+    "playground",
+    "kalshi",
+    "coram ai",
+    "weave",
+    "rightfit",
+    "base",
+    "remote ultrasound robot developer dopl",
+    "enigma"
   ]
 }
