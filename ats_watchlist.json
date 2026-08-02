@@ -28,7 +28,8 @@
     "founders",
     "threatlocker",
     "encore",
-    "squad"
+    "squad",
+    "tavily"
   ],
   "lever": [
     "rise",
@@ -133,7 +134,12 @@
     "synthetic",
     "rational-dynamics",
     "titan",
-    "rutter"
+    "rutter",
+    "exa",
+    "rilla",
+    "blitzy",
+    "eliseai",
+    "stable"
   ],
   "checked": [
     "alloy",
@@ -426,6 +432,14 @@
     "how is your enterprise tracking ai agent telemetry? groundco",
     "houston startup",
     "index ventures",
-    "fresh off its wiz payout, index ventures"
+    "fresh off its wiz payout, index ventures",
+    "tavily",
+    "exa",
+    "rilla",
+    "blitzy",
+    "lantern",
+    "credo health",
+    "eliseai",
+    "stable"
   ]
 }
