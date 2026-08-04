@@ -29,12 +29,15 @@
     "threatlocker",
     "encore",
     "squad",
-    "tavily"
+    "tavily",
+    "glide",
+    "obsidiansecurity"
   ],
   "lever": [
     "rise",
     "findigs",
-    "nitra"
+    "nitra",
+    "blue"
   ],
   "ashby": [
     "taktile",
@@ -142,7 +145,16 @@
     "stable",
     "arthur",
     "sailorhealth",
-    "clera"
+    "clera",
+    "aegis-ai",
+    "listenlabs",
+    "juicebox",
+    "ampersand",
+    "viktor",
+    "ekho",
+    "runlayer",
+    "kira",
+    "chartahealth"
   ],
   "checked": [
     "alloy",
@@ -447,6 +459,25 @@
     "magic (restaurant tech)",
     "arthur",
     "sailor health",
-    "clera"
+    "clera",
+    "blue machines ai",
+    "dyania health",
+    "aegis ai",
+    "regal ai",
+    "glide",
+    "listen labs",
+    "juicebox",
+    "ampersand",
+    "viktor",
+    "ekho",
+    "runlayer",
+    "kira learning",
+    "amigo ai",
+    "charta health",
+    "obsidian security",
+    "wayy",
+    "exclusive | cyber startup horizon3.ai",
+    "ai startup profound",
+    "the ai boom runs on metal. a two-year-old startup just"
   ]
 }
