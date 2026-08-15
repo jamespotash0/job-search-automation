@@ -168,7 +168,8 @@
     "sapiom",
     "liquid",
     "openai",
-    "lovable"
+    "lovable",
+    "phoenix"
   ],
   "checked": [
     "alloy",
@@ -584,6 +585,9 @@
     "yuno",
     "axiom",
     "quarkitech",
-    "seattle biotech indupro"
+    "seattle biotech indupro",
+    "phoenix startup miihealth ai",
+    "sophiie ai",
+    "remepy"
   ]
 }
