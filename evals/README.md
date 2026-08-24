@@ -98,3 +98,36 @@ out of noise, so a self-inconsistent verdict is now UNVERIFIABLE.
 `hardware/devices` on run 1 (wrong; the judge caught it) and
 `space/aerospace/defense` on run 2 (right). Same prompt, same model. A single
 clean run is therefore not proof — the value here is repeated runs, not one.
+
+### Run 3: adding the job board as an HQ source
+
+The marketing site was the wrong source. A company's own **job board** is a far
+better one, and it is independent of both the researcher's web search and the
+site copy — it is operational data maintained for a different purpose. It is
+also the more decision-relevant answer, since what matters for a job is where
+the ROLES are. Ramp's board literally labels its location `New York, NY (HQ)`.
+
+| check | site only | + job board |
+|---|---|---|
+| `hq` | 10 OK, 8 unverifiable | **16 OK, 1 unverifiable, 1 missing** |
+
+Graded by share, not by presence: `2/104 roles in San Francisco` means the
+company has an office there, not that it is the headquarters, so that returns
+WEAK rather than OK. An explicit `(HQ)` marker or a ≥25% share is a pass.
+
+### The failure this run caught
+
+`Recursion Pharmaceuticals` came back **WRONGLY KEPT** — a biotech company that
+should drop on sector, surviving into the digest. The cause was not a bad
+classification: `ai_lookup` returned `{}` entirely, because the API call failed
+and `ai_lookup` swallows exceptions and returns an empty dict. Both gates then
+fail open (deliberately — see `test_unknown_hq_fails_open`) and the company
+sails through. Re-running the same company classifies it correctly, so the
+failure is transient, not systematic.
+
+**Fail-open is still the right default** — failing closed would silently delete
+real companies, which is worse than occasionally letting a biotech through. But
+the pipeline cannot currently tell "researched and found nothing" apart from
+"the lookup errored", and those deserve different handling: the second is worth
+a retry, and worth showing in the digest rather than passing silently as
+unknown. Not yet fixed.

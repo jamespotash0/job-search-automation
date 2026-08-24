@@ -201,8 +201,10 @@ def test_board_hq_corroboration_needs_a_majority():
     # An explicit (HQ) marker is the strongest signal either way.
     equal(verdict(["New York, NY (HQ)"] * 9 + ["London"], "New York"), "OK")
     equal(verdict(["London (HQ)"] * 9, "New York"), "CONTRADICTED")
-    # City named on the board.
+    # City named on the board, as a meaningful share.
     equal(verdict(["San Francisco"] * 5 + ["London"] * 5, "San Francisco"), "OK")
+    # ...but a couple of roles in a city is an office, not proof of an HQ.
+    equal(verdict(["London"] * 102 + ["San Francisco"] * 2, "San Francisco"), "WEAK")
     # City absent -> country level, and a majority is required.
     equal(verdict(["SF Office"] * 40 + ["London"] * 6, "Pittsburgh"), "OK")
     equal(verdict(["London"] * 44 + ["Austin, TX"] * 2, "Pittsburgh"), "WEAK")

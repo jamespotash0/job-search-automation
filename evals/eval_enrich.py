@@ -251,10 +251,19 @@ def check_hq_via_board(enr, company):
             return (("OK" if hit else "CONTRADICTED"),
                     f"board marks {loc!r} as HQ ({n}/{total} roles)")
 
+    # An office in the claimed city is evidence; a couple of roles there is not
+    # evidence it is the HEADQUARTERS. Grade by share, so "2/104 roles in San
+    # Francisco" stops counting as a clean pass.
     for v in _city_variants(city):
         n = sum(c for l, c in locs.items() if v in l.lower())
-        if n:
+        if not n:
+            continue
+        share = n / total if total else 0
+        top = locs.most_common(1)[0]
+        if share >= 0.25 or v in top[0].lower():
             return "OK", f"{n}/{total} roles in {v!r} on its own board"
+        return "WEAK", (f"only {n}/{total} roles in {v!r}; board is mostly "
+                        f"{top[0]!r} - an office there, not necessarily the HQ")
     # City unconfirmed. The gate only reads hq_country, so fall back to country
     # level — and reuse companies_digest.location_tier as the US detector rather
     # than writing a second, untested one ("SF Office", "Remote (US)", "Austin,
