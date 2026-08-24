@@ -29,7 +29,13 @@ def test_short_keywords_do_not_match_inside_words():
           f"phantom skill hits in innocent text: {hits.get('resume skills')}")
     check(not hits.get("your domains"),
           f"phantom domain hits in innocent text: {hits.get('your domains')}")
-    equal(bd["total"], 0, "innocent text should score nothing")
+    check("title" not in hits, "an off-target title scored")
+    # The total is NOT zero, and should not be: a posting that states no years
+    # and no round earns the neutral unknown fraction on those two dimensions,
+    # because silence is not the same as a bad answer. What must be zero is
+    # every dimension that depends on matching text.
+    earned = {l for l in hits} - {"seniority fit", "stage"}
+    check(not earned, f"innocent text earned a text-matched dimension: {earned}")
 
 
 @case
@@ -128,7 +134,9 @@ def test_two_soft_stage_tells_earn_the_half_bonus():
                            "A high-growth team shipping fast, building from the ground up.")
     label, pts = _stage_part(bd)
     equal(label, "early stage (soft)")
-    equal(pts, 3)
+    # Worth less than a named round, more than nothing. Asserted as a relation,
+    # not a magic number, so a reweighting does not have to edit this test.
+    check(0 < pts < C.WEIGHTS["stage"], f"soft tells should be a partial bonus, got {pts}")
 
 
 @case
@@ -138,7 +146,7 @@ def test_a_named_round_beats_the_soft_tells():
                            "Seed-stage and high-growth, shipping fast from the ground up.")
     label, pts = _stage_part(bd)
     equal(label, "early stage")
-    equal(pts, 6)
+    equal(pts, C.WEIGHTS["stage"], "a named round should earn the full stage weight")
 
 
 @case
@@ -149,7 +157,9 @@ def test_late_stage_suppresses_the_soft_tells():
                            "from the ground up.")
     label, pts = _stage_part(bd)
     equal(label, "late stage")
-    equal(pts, -6)
+    # Under a weighted 0..1 model a zero IS the penalty: there is nothing below
+    # "this dimension contributes nothing".
+    equal(pts, 0, "late stage should earn nothing")
 
 
 @case
@@ -247,6 +257,128 @@ def test_ai_native_skills_are_matched_but_not_as_substrings():
         "Experimental landings for multivariates.")
     check(not [t for _, _, terms in innocent["parts"] for t in terms],
           f"phantom hits: {innocent['parts']}")
+
+
+# ---------------------------------------------------------------- v2 scoring
+
+
+@case
+def test_two_spellings_of_one_skill_count_once():
+    """A JD using "roadmap" and "roadmapping" wants one thing, not two. Without
+    this a posting that repeats itself outscored one that named more skills."""
+    jd = ("Own the roadmap and roadmapping, write PRDs and a PRD, "
+          "work on UI and UX and ui/ux, drive go-to-market and GTM.")
+    hits = C._hits(C._skill_re(), C._norm(jd))
+    equal(sorted(hits), ["go-to-market", "prd", "roadmap", "ui"])
+
+
+@case
+def test_synonyms_never_rewrite_what_you_matched_on():
+    """The email PRINTS these terms, so a mapping that changes meaning lies.
+    Only spelling variants may collapse."""
+    for near_synonym in ("real estate", "machine learning"):
+        equal(C._canon(near_synonym), near_synonym,
+              f"{near_synonym!r} must not be rewritten to something else")
+
+
+@case
+def test_verbosity_does_not_buy_points():
+    """The defect that motivated v2: skills were presence-counted over the whole
+    posting, so padding a JD raised its score. Measured corr(JD length, score)
+    was +0.39 across 1,826 real postings."""
+    core = ("Forward Deployed Product Manager. What you bring: 2+ years of "
+            "experience, roadmap ownership, PRDs, Figma, SQL. Seed-stage AI "
+            "workflow automation startup.")
+    padded = core + " " + ("We value ownership, impact and craft. " * 120)
+    a = C.score_breakdown("Forward Deployed Product Manager", core)["total"]
+    b = C.score_breakdown("Forward Deployed Product Manager", padded)["total"]
+    check(abs(a - b) <= 3, f"padding moved the score {a} -> {b}")
+
+
+@case
+def test_the_score_is_bounded_and_comparable():
+    """A 240-char X/Grok lead and an 8,000-char ATS posting for the same role
+    must be rankable against each other."""
+    total = sum(C.WEIGHTS.values())
+    equal(total, 100, "weights should sum to 100 so the score reads as a percent")
+    bd = C.score_breakdown(
+        "Forward Deployed Product Manager",
+        "Seed-stage AI workflow startup. 2+ years. Roadmap, PRDs, Figma, SQL, "
+        "discovery, prioritization.")
+    check(0 <= bd["total"] <= total, f"score {bd['total']} outside 0..{total}")
+
+
+@case
+def test_seniority_has_no_dead_zone():
+    """3-4 years used to score ZERO -- matching neither JUNIOR_SIGNALS (stopped
+    at 2+) nor SENIOR_SIGNALS (started at 5+). Half the corpus scored 0 on the
+    largest single signal, and the band closest to the candidate scored worst."""
+    prev = None
+    for yrs in (1, 2, 3, 4, 5, 6, 8, 10):
+        f = C.screen_facts(f"We want {yrs}+ years of experience")
+        frac, _ = C.seniority_fraction(f)
+        check(frac is not None, f"{yrs}+ years produced no verdict")
+        check(frac > 0, f"{yrs}+ years scored zero")
+        if prev is not None:
+            check(frac <= prev, f"fit should not RISE as the bar rises ({yrs})")
+        prev = frac
+
+
+@case
+def test_a_stretch_is_ranked_down_but_never_gated_out():
+    """The chosen posture: a stated bar is soft, especially at seed-Series B.
+    Gating on it hid half the in-lane market."""
+    f = C.screen_facts("We want 10+ years of experience")
+    frac, _ = C.seniority_fraction(f)
+    check(0 < frac < 0.5, f"a 10-year bar should rank low but stay visible: {frac}")
+
+
+@case
+def test_the_years_qualifier_picks_which_experience_counts():
+    """"3+ years of product management experience" is compared against your PM
+    years; "3+ years of experience" against your total. A reader assumes the
+    first counts product roles only."""
+    pm = C.screen_facts("3+ years of product management experience")
+    gen = C.screen_facts("3+ years of professional experience")
+    equal(pm.get("years_domain"), "pm")
+    equal(gen.get("years_domain"), "general")
+    check(C.seniority_fraction(pm)[0] <= C.seniority_fraction(gen)[0],
+          "a PM-qualified bar should be at least as demanding as a general one")
+
+
+@case
+def test_the_first_qualifier_wins_when_a_sentence_names_both():
+    """"10+ years of overall professional experience, with 5+ years in a product
+    management role" states the GENERAL bar first. Reading the whole window
+    mislabelled it as PM and compared 10 years against the PM number."""
+    f = C.screen_facts("10+ years of overall professional experience, with 5+ "
+                       "years in a product management role")
+    equal(f.get("years_min"), 10)
+    equal(f.get("years_domain"), "general")
+
+
+@case
+def test_title_score_does_not_double_count_overlapping_stems():
+    """"Forward Deployed Engineer" matches two stems and "Product Manager" one,
+    but both are exact target matches. The old scorer paid 24 vs 12 -- measuring
+    the stem list, not the fit."""
+    a = dict((l, p) for l, p, _ in
+             C.score_breakdown("Forward Deployed Engineer", "")["parts"])["title"]
+    b = dict((l, p) for l, p, _ in
+             C.score_breakdown("Product Manager", "")["parts"])["title"]
+    check(a <= b * 1.4, f"overlapping stems still inflate the title score: {a} vs {b}")
+    check(b > 0, "an exact target title scored nothing")
+
+
+@case
+def test_hyphenated_titles_score_the_same_as_spaced_ones():
+    """"Forward-Deployed Engineer" matched no stem at all -- scoring 0 AND being
+    dropped by the gate."""
+    for a, b in [("Forward-Deployed Engineer", "Forward Deployed Engineer"),
+                 ("Forward-Deployed Product Manager", "Forward Deployed Product Manager")]:
+        check(C.title_is_target(a), f"{a!r} was dropped by the gate")
+        equal(C.score_breakdown(a, "")["total"], C.score_breakdown(b, "")["total"],
+              f"{a!r} scored differently from {b!r}")
 
 
 if __name__ == "__main__":
