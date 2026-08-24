@@ -1,6 +1,8 @@
 # tests
 
-Stdlib only, no network, no API keys, ~1 second. `python tests/run.py` from the
+No network, no API keys, ~1 second. The harness is stdlib-only, but the
+modules under test are not — `funding_digest` imports `feedparser` at module
+scope, so run `pip install -r requirements.txt` first (CI does). `python tests/run.py` from the
 repo root, or `python tests/run.py gates` to run one module.
 
 | file | covers |
