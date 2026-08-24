@@ -1,0 +1,353 @@
+{
+ "_readme": "Real strings captured from the live Greenhouse/Ashby/Lever boards on 2026-08-24. Labels are the intended behaviour of the gates, not a recording of what the code did \u2014 a fixture that just echoes current output cannot catch a regression.",
+ "titles": [
+  {
+   "title": "Founding Forward Deployed Engineer",
+   "keep": true,
+   "why": "core FDE target"
+  },
+  {
+   "title": "Forward Deployed Engineer",
+   "keep": true,
+   "why": "core FDE target"
+  },
+  {
+   "title": "Forward-Deployed Product Manager - FDPM (US Remote)",
+   "keep": true,
+   "why": "FD PM, hyphenated"
+  },
+  {
+   "title": "Forward Deployed AI Engineer (New York)",
+   "keep": true,
+   "why": "FDE variant"
+  },
+  {
+   "title": "Deployment Strategist",
+   "keep": true,
+   "why": "named target"
+  },
+  {
+   "title": "Founding GTM Deployment Strategist",
+   "keep": true,
+   "why": "deployment strategist; GTM is a qualifier"
+  },
+  {
+   "title": "Product Manager",
+   "keep": true,
+   "why": "core PM"
+  },
+  {
+   "title": "AI Product Manager",
+   "keep": true,
+   "why": "core PM variant"
+  },
+  {
+   "title": "Technical Product Manager",
+   "keep": true,
+   "why": "core PM variant"
+  },
+  {
+   "title": "Product Manager | Agents",
+   "keep": true,
+   "why": "pipe-delimited PM"
+  },
+  {
+   "title": "Product Manager, Retail Experience & Platform",
+   "keep": true,
+   "why": "PM with a scope suffix"
+  },
+  {
+   "title": "Innovation Product Manager",
+   "keep": true,
+   "why": "PM variant"
+  },
+  {
+   "title": "Product Operations Manager | Housing",
+   "keep": true,
+   "why": "product ops target"
+  },
+  {
+   "title": "Founder's Office, Founder Associate",
+   "keep": true,
+   "why": "founder's-office target (curly apostrophe)"
+  },
+  {
+   "title": "Forward Deployed Investor",
+   "keep": false,
+   "why": "right stem, finance job"
+  },
+  {
+   "title": "Forward Deployed Banker",
+   "keep": false,
+   "why": "right stem, finance job"
+  },
+  {
+   "title": "Staff Forward Deployed Platform Engineer",
+   "keep": false,
+   "why": "staff = too senior"
+  },
+  {
+   "title": "Senior Product Manager - Platform",
+   "keep": false,
+   "why": "senior"
+  },
+  {
+   "title": "Product Manager II",
+   "keep": false,
+   "why": "II = too senior"
+  },
+  {
+   "title": "Director of Growth Strategy (Performance)",
+   "keep": false,
+   "why": "director"
+  },
+  {
+   "title": "Senior Director, GTM Sales Enablement",
+   "keep": false,
+   "why": "senior + director"
+  },
+  {
+   "title": "Lead Product Designer",
+   "keep": false,
+   "why": "lead, and design not product mgmt"
+  },
+  {
+   "title": "Senior Solutions Engineer",
+   "keep": false,
+   "why": "solutions engineer is out of lane"
+  },
+  {
+   "title": "GTM Engineer",
+   "keep": false,
+   "why": "GTM removed from targets"
+  },
+  {
+   "title": "Growth Strategy Analyst, GTM Data",
+   "keep": false,
+   "why": "GTM/growth removed"
+  },
+  {
+   "title": "Senior Software Engineer, Product",
+   "keep": false,
+   "why": "SWE"
+  },
+  {
+   "title": "Full Stack Software Engineer",
+   "keep": false,
+   "why": "SWE"
+  },
+  {
+   "title": "Machine Learning Engineer",
+   "keep": false,
+   "why": "SWE"
+  },
+  {
+   "title": "Staff Product Designer",
+   "keep": false,
+   "why": "design"
+  },
+  {
+   "title": "Senior Data Analyst - Product",
+   "keep": false,
+   "why": "analyst"
+  },
+  {
+   "title": "Engineering Manager",
+   "keep": false,
+   "why": "eng management"
+  },
+  {
+   "title": "Enterprise Account Executive | Housing",
+   "keep": false,
+   "why": "sales"
+  },
+  {
+   "title": "Talent Acquisition | Recruiter, Engineering",
+   "keep": false,
+   "why": "recruiting"
+  },
+  {
+   "title": "Product Delivery Specialist",
+   "keep": false,
+   "why": "not a target stem"
+  }
+ ],
+ "locations": [
+  {
+   "location": "New York, NY",
+   "tier": "nyc"
+  },
+  {
+   "location": "New York City",
+   "tier": "nyc"
+  },
+  {
+   "location": "NYC",
+   "tier": "nyc"
+  },
+  {
+   "location": "Manhattan",
+   "tier": "nyc"
+  },
+  {
+   "location": "Credal HQ (Brooklyn, NY)",
+   "tier": "nyc"
+  },
+  {
+   "location": "New York, New York, United States",
+   "tier": "nyc"
+  },
+  {
+   "location": "New York Office",
+   "tier": "nyc"
+  },
+  {
+   "location": "New York, NY | Austin, TX",
+   "tier": "nyc"
+  },
+  {
+   "location": "New York, NY or San Francisco, CA",
+   "tier": "nyc"
+  },
+  {
+   "location": "San Francisco",
+   "tier": "secondary"
+  },
+  {
+   "location": "San Francisco, CA",
+   "tier": "secondary"
+  },
+  {
+   "location": "San Francisco Office",
+   "tier": "secondary"
+  },
+  {
+   "location": "Sunnyvale, CA",
+   "tier": "secondary"
+  },
+  {
+   "location": "Palo Alto, CA",
+   "tier": "secondary"
+  },
+  {
+   "location": "Seattle, WA or Sunnyvale, CA",
+   "tier": "secondary"
+  },
+  {
+   "location": "United States",
+   "tier": "us-remote"
+  },
+  {
+   "location": "Remote, United States",
+   "tier": "us-remote"
+  },
+  {
+   "location": "Remote - United States",
+   "tier": "us-remote"
+  },
+  {
+   "location": "Remote (US)",
+   "tier": "us-remote"
+  },
+  {
+   "location": "Remote, US",
+   "tier": "us-remote"
+  },
+  {
+   "location": "Remote",
+   "tier": "us-remote"
+  },
+  {
+   "location": "Austin, TX",
+   "tier": "us-other"
+  },
+  {
+   "location": "Nashville, TN",
+   "tier": "us-other"
+  },
+  {
+   "location": "Boulder, CO",
+   "tier": "us-other"
+  },
+  {
+   "location": "Rockville, MD",
+   "tier": "us-other"
+  },
+  {
+   "location": "Northwest US",
+   "tier": ""
+  },
+  {
+   "location": "California",
+   "tier": "us-other"
+  },
+  {
+   "location": "Remote, TX",
+   "tier": ""
+  },
+  {
+   "location": "Remote, Texas",
+   "tier": ""
+  },
+  {
+   "location": "Remote, Oregon",
+   "tier": ""
+  },
+  {
+   "location": "Remote, WA",
+   "tier": ""
+  },
+  {
+   "location": "Atlanta, Georgia, United States; Remote",
+   "tier": ""
+  },
+  {
+   "location": "London",
+   "tier": ""
+  },
+  {
+   "location": "London, UK",
+   "tier": ""
+  },
+  {
+   "location": "Seoul",
+   "tier": ""
+  },
+  {
+   "location": "Tokyo",
+   "tier": ""
+  },
+  {
+   "location": "Sydney",
+   "tier": ""
+  },
+  {
+   "location": "Toronto",
+   "tier": ""
+  },
+  {
+   "location": "Amsterdam",
+   "tier": ""
+  },
+  {
+   "location": "India",
+   "tier": ""
+  },
+  {
+   "location": "Remote - Ireland",
+   "tier": ""
+  },
+  {
+   "location": "Remote - United Kingdom",
+   "tier": ""
+  },
+  {
+   "location": "Australia - Remote",
+   "tier": ""
+  },
+  {
+   "location": "Berlin Office",
+   "tier": ""
+  }
+ ]
+}

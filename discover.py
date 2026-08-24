@@ -46,12 +46,37 @@ def _profile():
         return {}
 
 
-def discover(roles, locations, exclude=None):
+# Two complementary search angles. The general one sweeps "who's hiring"; the
+# funded one works the other direction — start from companies that just closed a
+# round, then check whether the hiring that round pays for has started. The
+# funding digest only sees a raise the day it's announced; this catches the
+# company three weeks later, when the reqs actually go up.
+ANGLES = {
+    "hiring": (
+        "- LinkedIn posts where founders/employees say 'we're hiring' / 'my team is hiring'\n"
+        "- X/Twitter 'we're hiring' posts from founders and early employees\n"
+        "- 'who is hiring' articles, threads, and hiring-roundup newsletters (last ~3 weeks)\n"
+        "- Ashby / Greenhouse / Lever public job-board listings for these titles in the area\n"
+    ),
+    "funded": (
+        "- startups that announced a pre-seed/seed/Series A/Series B round in the LAST 90 DAYS "
+        "and are NOW hiring — check their careers page or ATS board, not just the funding news\n"
+        "- 'X raises $Y' coverage from TechCrunch / Axios Pro Rata / Fortune Term Sheet / "
+        "Business Insider, then the company's open roles\n"
+        "- recent YC / a16z / Sequoia / First Round / Union Square Ventures portfolio additions\n"
+        "- 'newly funded startups hiring' roundups and VC talent-page job boards "
+        "(e.g. jobs.a16z.com, jobs.gv.com, USV, Bessemer, Lerer Hippeau)\n"
+    ),
+}
+
+
+def discover(roles, locations, exclude=None, angle="hiring", secondary=None):
     """Ask Claude (with web search) for companies currently hiring these roles.
 
     `exclude` is the list of companies we've already probed — passed into the
     prompt so web search spends its slots on genuinely NEW companies instead of
-    re-surfacing names we'd only skip. Raises on a hard failure (no key, web
+    re-surfacing names we'd only skip. `angle` picks which set of search
+    surfaces to sweep (see ANGLES). Raises on a hard failure (no key, web
     search error, unparseable response) so the caller can flag the run.
     """
     api_key = os.environ.get("ANTHROPIC_API_KEY", "")   # read after load_dotenv()
@@ -59,6 +84,10 @@ def discover(roles, locations, exclude=None):
     if not api_key:
         raise RuntimeError("ANTHROPIC_API_KEY not set")
     loc = ", ".join(locations) if locations else "anywhere"
+    loc_line = f"Focus on {loc}"
+    if secondary:
+        loc_line += (f" — that is the priority. Also include {', '.join(secondary)} "
+                     "companies, but only after you've exhausted the primary area")
     # Cap the exclusion list so it can't balloon the prompt as `checked` grows;
     # the most-recently-added names are the ones web search is likeliest to hit.
     exclude = list(exclude or [])[-80:]
@@ -67,20 +96,16 @@ def discover(roles, locations, exclude=None):
         f"them: {', '.join(exclude)}.\n" if exclude else "")
     prompt = (
         f"Use web search to find companies that are CURRENTLY hiring for roles like: {roles}. "
-        f"Focus on {loc}. Strongly prefer small / early-stage startups (seed to Series B); "
+        f"{loc_line}. Strongly prefer small / early-stage startups (seed to Series B); "
         "exclude large public companies. Search several DIFFERENT angles (don't stop after "
         "one) — spend your searches across:\n"
-        "- LinkedIn posts where founders/employees say 'we're hiring' / 'my team is hiring'\n"
-        "- X/Twitter 'we're hiring' posts from founders and early employees\n"
-        "- 'who is hiring' articles, threads, and hiring-roundup newsletters (last ~3 weeks)\n"
-        "- Ashby / Greenhouse / Lever public job-board listings for these titles in the area\n"
-        "- recently-funded (seed/Series A) startup lists and YC/a16z/Sequoia portfolio pages\n"
+        + ANGLES.get(angle, ANGLES["hiring"])
         + skip_line +
         "Return ONLY a JSON array (no prose, no code fences) of objects:\n"
         '[{"name":"Company Name","domain":"company.com"}]\n'
         f"Up to {MAX_COMPANIES} companies. Use \"\" for a domain you cannot determine. "
         "Do NOT include software-engineering-only shops; focus on companies with "
-        "product / deployment / solutions / GTM / growth roles."
+        "product / forward-deployed / product-operations roles."
     )
     body = {
         # max_tokens must be generous: interleaved thinking + web-search results
@@ -133,19 +158,45 @@ def main():
     load_dotenv()
     p = _profile()
     roles = ", ".join(p.get("target_titles", [])) or (
-        "product manager, associate product manager, AI product manager, product "
-        "operations, product strategy, forward deployed engineer, deployment "
-        "strategist, AI strategist, GTM associate, go-to-market associate, growth "
-        "associate, revenue operations")
+        "product manager, associate product manager, AI product manager, technical "
+        "product manager, founding product manager, product owner, product "
+        "operations, product strategy, forward deployed engineer, forward deployed "
+        "product manager, associate forward deployed engineer, associate product "
+        "engineer, deployment strategist, founder's associate, founding associate, "
+        "AI product builder")
     locations = p.get("location_keywords") or ["new york"]
+    # Secondary metro: searched too, ranked behind NYC. Mirrors the companies
+    # digest's JOB_SECONDARY_LOCATIONS gate — no point discovering companies
+    # whose postings that gate would drop.
+    secondary = [x.strip() for x in os.environ.get(
+        "DISCOVER_SECONDARY_LOCATIONS", "san francisco,bay area").split(",") if x.strip()]
 
-    try:
-        comps = discover(roles, locations, exclude=wl.get_checked())
-    except Exception as e:
-        # Hard failure (no key / web search down / unparseable). Record it and
-        # exit non-zero so the run is flagged, loudly, not swallowed.
-        print(f"[discover] FAILED: {e}")
-        _write_status(ok=False, error=str(e), probed=0, added=0,
+    # Run both angles: who's-hiring, and just-raised-and-now-hiring. Each is its
+    # own web-search budget, so the funded sweep doesn't compete for slots with
+    # the general one — that competition is why funded companies used to get one
+    # search's worth of attention at most.
+    angles = [a.strip() for a in os.environ.get(
+        "DISCOVER_ANGLES", "hiring,funded").split(",") if a.strip()]
+    comps, errors, seen_names = [], [], set()
+    for angle in angles:
+        try:
+            got = discover(roles, locations, exclude=wl.get_checked(),
+                           angle=angle, secondary=secondary)
+        except Exception as e:
+            print(f"[discover] angle '{angle}' failed: {e}")
+            errors.append(f"{angle}: {e}")
+            continue
+        fresh = [c for c in got
+                 if (c.get("name") or "").lower().strip() not in seen_names]
+        seen_names.update((c.get("name") or "").lower().strip() for c in got)
+        comps += fresh
+        print(f"[discover] angle '{angle}': {len(got)} candidates ({len(fresh)} new)")
+
+    if not comps and errors:
+        # Every angle hard-failed (no key / web search down / unparseable).
+        # Record it and exit non-zero so the run is flagged, not swallowed.
+        print(f"[discover] FAILED: {'; '.join(errors)}")
+        _write_status(ok=False, error="; ".join(errors), probed=0, added=0,
                       watchlist_total=wl.token_count())
         raise SystemExit(1)
 
@@ -163,6 +214,13 @@ def main():
         if found:
             added += found
         print(f"   {name[:30]:30} -> {found or '— no public ATS token found'}")
+
+    # Give the board-less companies from earlier runs another look — a startup
+    # that had no public ATS when we first probed it often opens one weeks later.
+    try:
+        wl.reprobe_pending()
+    except Exception as e:
+        print(f"[discover] re-probe failed: {e}")
 
     total = wl.token_count()
     added_names = [f"{prov}:{tok}" for prov, tok in added]

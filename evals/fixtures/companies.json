@@ -1,0 +1,41 @@
+{
+ "_readme": [
+  "Ground truth for the enrich eval. `expect` is what the funding digest's two",
+  "gates SHOULD do with this company: 'keep' = US-headquartered AND in a",
+  "KEEP_CATEGORIES sector; 'drop' = fails one of those. `why` records which,",
+  "so a failure report says what was expected and on what basis.",
+  "",
+  "These labels are hand-written and are the weakest link in the eval - they are",
+  "one person's understanding of where a company is based. The harness does not",
+  "trust them blindly: it corroborates the researched HQ against the company's",
+  "OWN website, so a bad label tends to surface as a disagreement between the",
+  "label and the corroboration rather than as a silent pass.",
+  "",
+  "Entries with expect:'' are deliberate hard cases (genuinely dual-HQ or",
+  "ambiguous companies). They are observed, not graded - they exist to show how",
+  "the researcher behaves when there is no clean answer."
+ ],
+ "companies": [
+  {"name": "Ramp",                        "expect": "keep", "why": "US (New York), fintech"},
+  {"name": "Harvey",                      "expect": "keep", "why": "US (San Francisco), legal AI = ai/software"},
+  {"name": "Alloy",                       "expect": "keep", "why": "US (New York), identity/fintech"},
+  {"name": "Northspyre",                  "expect": "keep", "why": "US (Brooklyn), proptech/construction"},
+  {"name": "Vanta",                       "expect": "keep", "why": "US (San Francisco), compliance = b2b saas"},
+  {"name": "Abridge",                     "expect": "keep", "why": "US (Pittsburgh), healthtech - kept on purpose"},
+  {"name": "Sierra AI",                   "expect": "keep", "why": "US (San Francisco), ai/software"},
+  {"name": "Clay",                        "expect": "keep", "why": "US (New York), b2b saas"},
+
+  {"name": "Synthesia",                   "expect": "drop", "why": "geo: United Kingdom (London)"},
+  {"name": "Mistral AI",                  "expect": "drop", "why": "geo: France (Paris)"},
+  {"name": "Cohere",                      "expect": "drop", "why": "geo: Canada (Toronto)"},
+  {"name": "DeepL",                       "expect": "drop", "why": "geo: Germany (Cologne)"},
+
+  {"name": "Anduril Industries",          "expect": "drop", "why": "sector: defense"},
+  {"name": "Commonwealth Fusion Systems", "expect": "drop", "why": "sector: energy/climate"},
+  {"name": "Recursion Pharmaceuticals",   "expect": "drop", "why": "sector: biotech/pharma"},
+  {"name": "Boom Supersonic",             "expect": "drop", "why": "sector: aerospace"},
+
+  {"name": "Taktile",                     "expect": "",     "why": "hard case: Berlin-founded, New York presence"},
+  {"name": "Deel",                        "expect": "",     "why": "hard case: US-incorporated but fully distributed"}
+ ]
+}

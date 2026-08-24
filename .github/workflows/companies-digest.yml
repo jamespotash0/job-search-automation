@@ -77,6 +77,23 @@ jobs:
             echo "::warning::PROFILE_COMPILED_JSON not set — using generic default titles"
           fi
 
+      # Every knob documented in .env.example can be set as a repo *variable*
+      # (Settings -> Secrets and variables -> Actions -> Variables) — scoring
+      # weights, source toggles, caps. They land in the environment here, so
+      # retuning a scheduled run never means editing code. Secrets are passed at
+      # the step level below and always win over anything set here.
+      - name: Load tuning variables
+        env:
+          VARS_JSON: ${{ toJSON(vars) }}
+        run: |
+          python - <<'PY' >> "$GITHUB_ENV"
+          import json, os
+          for k, v in json.loads(os.environ["VARS_JSON"] or "{}").items():
+              v = str(v)
+              if "\n" not in v:            # $GITHUB_ENV is line-oriented
+                  print(f"{k}={v}")
+          PY
+
       - name: Send companies digest
         env:
           EMAIL_USER: ${{ secrets.EMAIL_USER }}

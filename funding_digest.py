@@ -23,6 +23,52 @@ from datetime import datetime, timezone, timedelta
 
 import feedparser
 
+def load_dotenv(path=".env"):
+    """Minimal .env loader, so a local run picks up keys without exporting them.
+    Must run BEFORE `import enrich` — that module reads its API keys at import
+    time, so loading the file afterwards would leave enrichment keyless."""
+    try:
+        with open(path) as f:
+            for line in f:
+                line = line.strip()
+                if line and not line.startswith("#") and "=" in line:
+                    k, v = line.split("=", 1)
+                    os.environ.setdefault(k.strip(), v.strip())
+    except Exception:
+        pass
+
+
+load_dotenv()
+
+
+# Same three env readers as companies_digest.py — kept local rather than
+# imported so each script still runs standalone. See that file for the details.
+def env_int(name, default):
+    """Integer setting; the default on anything unset or unparseable."""
+    try:
+        return int(str(os.environ.get(name, "")).strip())
+    except (TypeError, ValueError):
+        return default
+
+
+def env_flag(name, default):
+    """Boolean setting. 1/true/yes/on and 0/false/no/off; unset = the default."""
+    v = str(os.environ.get(name, "")).strip().lower()
+    if v in ("1", "true", "yes", "on"):
+        return True
+    if v in ("0", "false", "no", "off"):
+        return False
+    return default
+
+
+def env_list(name, default):
+    """Comma-separated list, lowercased. An explicitly empty value = empty list."""
+    raw = os.environ.get(name)
+    if raw is None:
+        return default
+    return [x.strip().lower() for x in raw.split(",") if x.strip()]
+
+
 try:
     import enrich as _enrich          # AI + Hunter enrichment (optional)
 except Exception:
@@ -38,10 +84,11 @@ except Exception:
 #   0    = disable enrichment entirely (pure free headlines)
 # Enriching all is a web-search + (optional) Hunter call per company, so cost
 # scales with how many raises come through that day (see "Costs" in the README).
-ENRICH_TOP_N = None
+# Env: FUNDING_ENRICH_TOP_N (blank/unset = enrich everything).
+ENRICH_TOP_N = env_int("FUNDING_ENRICH_TOP_N", None)
 
 # How far back to look. Run daily -> keep at ~28h so nothing slips through gaps.
-LOOKBACK_HOURS = 28
+LOOKBACK_HOURS = env_int("FUNDING_LOOKBACK_HOURS", 28)
 
 # Stage terms you care about (used to build search queries). Google News RSS
 # aggregates hundreds of outlets (TechCrunch, VentureBeat, Axios, Finsmes,
@@ -57,20 +104,32 @@ STAGE_QUERIES = [
     "New York startup raises seed",
     "New York startup Series A",
     "NYC startup funding",
+    "San Francisco startup raises seed",
+    "San Francisco startup Series A",
+    "Bay Area startup funding round",
 ]
 
 # Focus keywords. Items matching these float to the top ("Best matches").
 # Matched on WORD BOUNDARIES, not as substrings — plain `"ai" in blob` also fires
 # on "r-AI-ses"/"em-AI-l"/"ch-AI-n", which handed every funding headline a free
 # focus hit and pushed ~80% of the digest into "Best matches".
-FOCUS_KEYWORDS = [
+FOCUS_KEYWORDS = env_list("FUNDING_FOCUS_KEYWORDS", [
     "ai", "artificial intelligence", "agent", "agents", "agentic", "llm",
     "automation", "workflow", "workflows", "b2b", "saas", "developer",
     "infrastructure", "data", "platform",
-]
+])
 
 # Location terms that earn a bonus (leave list empty to ignore location).
-LOCATION_KEYWORDS = ["new york", "nyc", "brooklyn", "manhattan"]
+LOCATION_KEYWORDS = env_list("FUNDING_LOCATIONS",
+                             ["new york", "nyc", "brooklyn", "manhattan"])
+
+# Second-choice metro — worth surfacing, worth less than NYC. Kept separate from
+# LOCATION_KEYWORDS because profile.compiled.json overwrites that list, and
+# because an SF raise should not outrank a New York one at equal focus.
+SECONDARY_LOCATION_KEYWORDS = env_list("FUNDING_SECONDARY_LOCATIONS", [
+    "san francisco", "sf", "bay area", "palo alto", "menlo park",
+    "mountain view", "redwood city", "oakland", "silicon valley",
+])
 
 # Geography. "us" = only US-headquartered companies survive; NYC-metro ones then
 # float to the top via LOCATION_KEYWORDS. "any" = no geographic filter.
@@ -102,7 +161,12 @@ ROUND_RE = re.compile(r"\b(pre-?seed|seed|series\s+[a-e])\b", re.I)
 # ...and must not look like one of these, which all carry funding words but are
 # not "a startup just raised money and is about to hire":
 NOT_A_RAISE_RE = re.compile("|".join([
-    r"\b(fund|vehicle)\s+(i{1,3}|iv|v|one|two|three)\b",   # "Resilience I Fund"
+    r"\b(fund|vehicle)\s+(i{1,3}|iv|v|one|two|three)\b",   # "Acme Fund II"
+    # ...and the other word order, which is how these are actually written:
+    # "Resilience I Fund closes at $200M". The old pattern named that headline
+    # in its own comment and did not match it.
+    r"\b(i{1,3}|iv|v)\s+(fund|vehicle)\b",
+    r"\b(fund|vehicle)\s+clos(?:es|ed|ing)\b",
     r"\bclos(?:es|ed)\s+[^.]{0,40}\bfund\b",               # a VC closing a fund
     r"\b(vc|venture capital|venture)\s+firm\b",
     r"\bacquir(?:es|ed|ing)\b|\bacquisition\b|\bexits?\s+to\b|\bmerges?\s+with\b",
@@ -171,8 +235,8 @@ SUBSTACK_FEEDS = [
 ]
 # Newsletters post on their own cadence (often weekly) and are already on-topic,
 # so they get their own digest section instead of the 28h/funding-signal gate.
-SUBSTACK_LOOKBACK_DAYS = 14
-SUBSTACK_MAX = 6
+SUBSTACK_LOOKBACK_DAYS = env_int("SUBSTACK_LOOKBACK_DAYS", 14)
+SUBSTACK_MAX = env_int("SUBSTACK_MAX", 6)
 
 # Optional compiled profile (from setup_profile.py) — overrides the focus /
 # location keywords above so the funding digest follows the same profile.json as
@@ -193,13 +257,18 @@ def _apply_profile():
 
 _apply_profile()
 
+# ...and the environment wins over the profile, same rule as the companies
+# digest: an unset var changes nothing, a set one overrides for this run.
+FOCUS_KEYWORDS = env_list("FUNDING_FOCUS_KEYWORDS", FOCUS_KEYWORDS)
+LOCATION_KEYWORDS = env_list("FUNDING_LOCATIONS", LOCATION_KEYWORDS)
+
 # Max items to include in the email.
-MAX_ITEMS = 40
+MAX_ITEMS = env_int("FUNDING_MAX_ITEMS", 40)
 
 # Score at or above which a raise lands in "Best matches". Scores are computed on
 # the headline AND the researched description, so a genuine AI/B2B company clears
 # this comfortably while a one-keyword brush-past doesn't.
-BEST_SCORE = int(os.environ.get("BEST_SCORE", "6"))
+BEST_SCORE = env_int("FUNDING_BEST_SCORE", env_int("BEST_SCORE", 6))
 
 # Browser-ish UA — some feeds (e.g. VentureBeat) reject feedparser's default UA.
 FEED_UA = "Mozilla/5.0 (funding-digest; +https://github.com)"
@@ -255,6 +324,7 @@ def kw_matcher(keywords):
 
 _FOCUS_RE = kw_matcher(FOCUS_KEYWORDS)
 _LOC_RE = kw_matcher(LOCATION_KEYWORDS)
+_LOC2_RE = kw_matcher(SECONDARY_LOCATION_KEYWORDS)
 
 
 def is_funding(title: str, summary: str) -> bool:
@@ -325,12 +395,22 @@ def extract_round(title: str, summary: str):
     return stage, amount
 
 
+# What each signal in a funding headline is worth. BEST_SCORE (above) is the
+# line these have to clear, so raising a weight and leaving BEST_SCORE alone
+# widens "Best matches" — move both together.
+FOCUS_POINTS = env_int("FUNDING_FOCUS_POINTS", 2)      # per distinct focus term
+LOC_POINTS = env_int("FUNDING_LOC_POINTS", 3)          # per primary-location term
+LOC2_POINTS = env_int("FUNDING_LOC2_POINTS", 2)        # per secondary-metro term
+ROUND_POINTS = env_int("FUNDING_ROUND_POINTS", 1)      # names a round at all
+
+
 def score(title: str, summary: str) -> int:
     blob = f"{title} {summary}"
-    s = 2 * len(set(m.group(0).lower() for m in _FOCUS_RE.finditer(blob)))
-    s += 3 * len(set(m.group(0).lower() for m in _LOC_RE.finditer(blob)))
+    s = FOCUS_POINTS * len(set(m.group(0).lower() for m in _FOCUS_RE.finditer(blob)))
+    s += LOC_POINTS * len(set(m.group(0).lower() for m in _LOC_RE.finditer(blob)))
+    s += LOC2_POINTS * len(set(m.group(0).lower() for m in _LOC2_RE.finditer(blob)))
     if ROUND_RE.search(blob):
-        s += 1
+        s += ROUND_POINTS
     return s
 
 
@@ -701,32 +781,64 @@ if __name__ == "__main__":
             except Exception as e:
                 print(f"[warn] enrich {company}: {e}")
 
-        # Now that we know where each company sits and what it sells, drop what
-        # the headline alone couldn't rule out. Doing this before the watchlist
-        # write also keeps foreign/off-sector companies out of the companies digest.
-        kept = []
+        # Now that we know where each company sits and what it sells, decide what
+        # this company is good for. Two DIFFERENT questions, and conflating them
+        # was a bug:
+        #
+        #   "is this worth a cold email?"  -> about the COMPANY. A UK-headquartered
+        #       startup is not somewhere you'd cold-email a founder for a job, so
+        #       us_only_reject applies here.
+        #   "is this worth watching for jobs?" -> about the ROLE, which does not
+        #       exist yet. A London-HQ company with a New York office posts New
+        #       York roles, and the companies digest gates every posting on its
+        #       OWN location anyway. Dropping the company here meant its board was
+        #       never probed, so those NYC roles could never be seen at all.
+        #
+        # So the geo gate now filters the EMAIL only; the watchlist gets everyone
+        # still selling something in-sector, wherever they are headquartered.
+        emailable, watchable = [], []
         for i in items:
             enr = i.get("enrich") or {}
-            why = us_only_reject(enr)
-            if why:
-                print(f"[drop] {i['company']}: outside US — {why}")
-                continue
             why = off_sector_reject(enr)
             if why:
                 print(f"[drop] {i['company']}: off-sector — {why}")
                 continue
             i["score"] = rescore(i)
-            kept.append(i)
-        items = sorted(kept, key=lambda x: (x["score"], x["time"]), reverse=True)
-        print(f"[info] {len(items)} raises survived enrichment filters")
+            watchable.append(i)
+            why = us_only_reject(enr)
+            if why:
+                print(f"[drop-email] {i['company']}: HQ outside US — {why} "
+                      f"(still watching its board for US roles)")
+                continue
+            emailable.append(i)
+        watchable.sort(key=lambda x: (x["score"], x["time"]), reverse=True)
+        items = sorted(emailable, key=lambda x: (x["score"], x["time"]), reverse=True)
+        print(f"[info] {len(items)} raises in the email, "
+              f"{len(watchable)} companies going to the job watchlist")
 
-        # LOOP: detect each surviving company's ATS and feed the companies digest's watchlist
+        # LOOP: detect each surviving company's ATS and feed the companies digest's
+        # watchlist. The round itself travels with the company, so the companies
+        # digest can flag "🚀 raised $12M Series A" next to the reqs it pays for.
         if _wl is not None:
-            for i in items:
+            for i in watchable:                     # NOT `items` — see above
                 try:
-                    _wl.detect_and_add(i["company"], (i.get("enrich") or {}).get("domain"))
+                    _wl.detect_and_add(
+                        i["company"],
+                        (i.get("enrich") or {}).get("domain"),
+                        funding={"round": i.get("stage") or "", "amount": i.get("amount") or "",
+                                 "date": i["time"].strftime("%Y-%m-%d"), "url": i.get("link", "")},
+                    )
                 except Exception as e:
                     print(f"[warn] watchlist {i['company']}: {e}")
+
+            # ...then give the companies that had NO public board when we first saw
+            # them another look. A seed-stage startup usually opens its Greenhouse
+            # weeks after the announcement, and without this they stay invisible
+            # forever — probed once on announcement day, then cached as "checked".
+            try:
+                _wl.reprobe_pending()
+            except Exception as e:
+                print(f"[warn] watchlist re-probe: {e}")
     else:
         print("[info] enrichment disabled or enrich.py missing")
 

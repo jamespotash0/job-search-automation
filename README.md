@@ -1,183 +1,344 @@
 # Job-search automation
 
-Two daily email digests + a loop that connects them, to fuel founder-direct
-outreach and resume-matched job hunting. Runs free/near-free on GitHub Actions.
+Two daily email digests plus a loop that connects them: one finds startups that
+just raised (your outreach list), the other finds the newest job postings ranked
+against your resume (your apply list), and companies discovered by the first feed
+the second. Runs free or near-free on GitHub Actions.
 
 ```
-funding_digest.py ──detects ATS──► ats_watchlist.json ──feeds──► companies_digest.py
-     (who just raised,                (shared file)              (newest roles,
-      enriched w/ contacts)                                       ranked vs resume)
+getro.py ──┐                                    ┌──► companies_digest.py
+discover.py┼──► ats_watchlist.json ◄──────┐     │    (newest roles, scored
+funding_digest.py ──detects ATS + raise ──┘     │     against your resume)
+     (who just raised, enriched with contacts) ─┘
 ```
 
-## The three pieces
-1. **Funding digest** (`funding_digest.py`) — daily email of startups that just
-   raised, filtered to your focus, with AI company summaries + founder contacts
-   on the top matches. → your outreach targets.
-2. **Companies digest** (`companies_digest.py`) — 3x/day email of the newest
-   postings for your target roles, filtered to junior/early-career and ranked by
-   how well each matches your resume. → your apply list. Runs that find nothing
-   new stay silent (set `SEND_WHEN_EMPTY=1` to always send).
-3. **The loop** (`watchlist.py`) — companies from the funding digest auto-flow
-   into the companies digest's company watchlist.
+## The pieces
 
-## Files
-| File | What it is |
-|------|-----------|
-| `funding_digest.py` | Funding digest script |
-| `enrich.py` | AI + Hunter.io enrichment (imported by funding digest) |
-| `companies_digest.py` | Companies digest script |
-| `watchlist.py` | The loop (imported by both digests) |
-| `discover.py` | Web-searches "who's hiring" posts/articles → adds companies to the watchlist |
-| `setup_profile.py` | Compiles your resume + `profile.json` into the filters both digests use |
-| `.github/workflows/daily-digest.yml` | Funding digest schedule (8am ET) |
-| `.github/workflows/companies-digest.yml` | Companies digest schedule (9am/1pm/4pm ET) |
-| `requirements.txt` | Python deps |
+| Piece | What it does |
+|---|---|
+| **Funding digest** (`funding_digest.py`) | Daily email of startups that just raised, filtered to your sector/geography, with AI company summaries and founder contacts on the top matches. |
+| **Companies digest** (`companies_digest.py`) | 3x/day email of the newest postings for your target roles, gated on title/seniority/location and ranked by resume fit. Runs that find nothing new stay silent (`SEND_WHEN_EMPTY=1` to always send). |
+| **The loop** (`watchlist.py`) | Shared `ats_watchlist.json`. Companies from the funding digest flow into the job digest, and their postings get a 🚀 badge plus a score bonus. |
+| **Bulk feed** (`getro.py`) | Sweeps the public Getro API — the portfolio job boards of hundreds of VC funds — and reads real ATS tokens out of apply URLs. Keyless. This is what makes the watchlist big. |
+| **Long tail** (`discover.py`) | Web-searches "we're hiring" posts and hiring roundups, probes each company's ATS, adds the hits. Needs `ANTHROPIC_API_KEY`. |
 
-Per-piece detail lives in `docs/ENRICHMENT_README.md`, `docs/COMPANIES_README.md`,
-`docs/LOOP_README.md`.
+Per-piece detail: [docs/ENRICHMENT_README.md](docs/ENRICHMENT_README.md),
+[docs/COMPANIES_README.md](docs/COMPANIES_README.md),
+[docs/LOOP_README.md](docs/LOOP_README.md).
 
 ---
 
-## Use it yourself (fork & configure)
+## Quick start
 
-This repo is a template — everyone runs their own copy with their own email,
-keys, and job criteria. Nothing personal is committed; all secrets come from
-environment variables / GitHub Actions secrets.
+You need a Gmail address (or any SMTP account) and about ten minutes. Everything
+else is optional.
 
-1. **Fork** this repo (or click *Use this template* / clone it).
-2. **Add your secrets.** Locally: `cp .env.example .env` and fill it in. For the
-   scheduled runs: in *your* fork, **Settings → Secrets and variables → Actions**
-   and add the same keys (see the secrets table below). Only `EMAIL_*` are
-   required; the API keys are optional.
-3. **Make it yours — easy path (recommended): a profile from your resume.**
-   No code editing. Copy `profile.example.json` → `profile.json`, drop your
-   resume in `docs/`, and fill in five things:
-   ```jsonc
-   {
-     "resume_file": "docs/your_resume.pdf",   // .pdf / .txt / .md
-     "locations": ["new york", "remote"],      // [] = anywhere
-     "remote_ok": false,
-     "roles": "one sentence: the roles you want",
-     "startup_types": "one sentence: the companies you want",
-     "company_size": "small"                    // small | large | any
-   }
-   ```
-   Then run once:
-   ```bash
-   python setup_profile.py        # Claude reads your resume + sentences
-   ```
-   It writes `profile.compiled.json` (title/skill/domain/location filters), which
-   **both digests load automatically**. `profile.json` and `profile.compiled.json`
-   are gitignored (personal, per-forker — only `profile.example.json` is committed),
-   so to make *your* fork's GitHub Actions use them, force-add them in your fork:
-   `git add -f profile.json profile.compiled.json`. Re-run `setup_profile.py`
-   whenever your resume or `profile.json` changes. (Needs `ANTHROPIC_API_KEY`; your
-   resume never leaves the Anthropic API call.)
+### 1. Fork and install
 
-   **Advanced path:** skip the profile and edit the config blocks directly —
-   `RESUME` / `PREFER_LARGER` / the `GREENHOUSE_/LEVER_/ASHBY_/WORKDAY_COMPANIES`
-   watchlists in `companies_digest.py`, and `FOCUS_KEYWORDS` /
-   `LOCATION_KEYWORDS` in `funding_digest.py`. If no `profile.compiled.json` is
-   present, these apply.
-   (This repo's committed defaults are tuned to James as a worked example.)
-4. **Run it.** Actions tab → pick a workflow → *Run workflow*, or run locally
-   (see below). The schedules live in `.github/workflows/*.yml` (cron in UTC).
-
----
-
-## Setup with Claude Code (recommended)
-
-You have this whole folder. Easiest path: open it in Claude Code and let it do
-the GitHub wiring for you.
-
-### 1. Create the repo structure
-In the project folder, arrange files like this (the workflow files MUST live
-under `.github/workflows/`):
-
-```
-your-repo/
-├── funding_digest.py
-├── enrich.py
-├── companies_digest.py
-├── watchlist.py
-├── requirements.txt
-└── .github/
-    └── workflows/
-        ├── daily-digest.yml
-        └── companies-digest.yml
-```
-
-A prompt you can hand Claude Code:
-> "Move daily-digest.yml and companies-digest.yml into .github/workflows/, leave
->  the .py files at the repo root, then init a git repo, create a private GitHub
->  repo, and push."
-
-### 2. Add secrets
-In the GitHub repo: **Settings → Secrets and variables → Actions → New repository
-secret**. Add:
-
-| Secret | Required? | What |
-|--------|-----------|------|
-| `EMAIL_USER` | yes | Gmail address that sends the digests |
-| `EMAIL_PASS` | yes | Gmail **app password** (not your login) |
-| `EMAIL_TO` | yes | Where digests go (can equal EMAIL_USER) |
-| `ANTHROPIC_API_KEY` | for AI summaries | from console.anthropic.com |
-| `HUNTER_API_KEY` | for real emails | from hunter.io (optional) |
-
-Gmail app password: enable 2-Step Verification → Google Account → Security →
-App passwords → generate.
-
-### 3. Test each digest
-GitHub **Actions** tab → pick a workflow → **Run workflow**. Check your inbox in
-~1 min. With no email secrets set, the script prints the digest to the run log
-instead (good for a dry run).
-
-### 4. Tune to you
-- `funding_digest.py` CONFIG: stage/sector/location keywords, `ENRICH_TOP_N`.
-- `companies_digest.py` `RESUME` block: your titles/skills/domains.
-  `PREFER_LARGER` (True = big companies rank first; **set False for small/early**,
-  your best fit).
-- Add ATS tokens for target companies to `GREENHOUSE_COMPANIES` etc. — or let the
-  loop fill them in automatically. For Workday-based companies, add
-  tenant/wd/site entries to `WORKDAY_COMPANIES`.
-
-`RESUME` in `companies_digest.py` is pre-loaded from James Potash's resume, and
-the ATS lists are seeded with small/early-stage NYC startups in that lane (edra,
-probook, valon, credal, rogo, alloy, …). The funding digest pulls from Google News +
-TechCrunch + VentureBeat + EU-Startups + Tech.eu, plus a **From your newsletters**
-section from any Substack in `SUBSTACK_FEEDS` (currently *next play*).
-
----
-
-## Run locally (optional, no GitHub)
 ```bash
-python3 -m venv .venv                       # create an isolated environment
-.venv/bin/python -m pip install -r requirements.txt
-export EMAIL_USER=... EMAIL_PASS=... EMAIL_TO=...
-export ANTHROPIC_API_KEY=...   # optional
-export HUNTER_API_KEY=...       # optional
-.venv/bin/python funding_digest.py
-.venv/bin/python companies_digest.py
+git clone <your-fork> && cd claude_job_automation
+python3 -m venv .venv
+.venv/bin/python -m pip install -r requirements.txt   # one dependency: feedparser
 ```
-(Or activate the venv first with `source .venv/bin/activate`, then use plain
-`python`.)
-Then schedule with cron. (GitHub Actions is easier — it's free and needs no
-machine left on.)
+
+### 2. Set your secrets
+
+```bash
+cp .env.example .env      # then edit it
+```
+
+`.env` is gitignored. Only the email keys are required:
+
+| Key | Required? | What |
+|---|---|---|
+| `EMAIL_USER` | yes | Gmail address that sends the digests |
+| `EMAIL_PASS` | yes | Gmail **app password** (Google Account → Security → 2-Step Verification → App passwords), not your login password |
+| `EMAIL_TO` | yes | Where digests go; can equal `EMAIL_USER`, or a comma-separated list |
+| `ANTHROPIC_API_KEY` | optional | AI company summaries + `discover.py`. From console.anthropic.com |
+| `HUNTER_API_KEY` | optional | Verified founder emails. From hunter.io (free tier ~50/mo) |
+| `ADZUNA_APP_ID` / `ADZUNA_APP_KEY` | optional | Extra job aggregator. Free from developer.adzuna.com |
+| `GROK_API_KEY` (or `XAI_API_KEY`) | optional | Founder "we're hiring" posts on X. From console.x.ai |
+
+Without email keys the scripts print the digest to stdout instead of sending —
+which is the easiest dry run there is.
+
+### 3. Make it match your search
+
+Copy `profile.example.json` → `profile.json`, drop your resume in `docs/`, and
+fill in five fields:
+
+```jsonc
+{
+  "resume_file": "docs/your_resume.pdf",   // .pdf / .txt / .md
+  "locations": ["new york", "remote"],      // [] = anywhere
+  "remote_ok": false,
+  "roles": "one sentence: the roles you want",
+  "startup_types": "one sentence: the companies you want",
+  "company_size": "small"                   // small | large | any
+}
+```
+
+Then compile it once (needs `ANTHROPIC_API_KEY`; your resume is sent only to the
+Anthropic API, never committed):
+
+```bash
+.venv/bin/python setup_profile.py
+```
+
+That writes `profile.compiled.json` — the title / skill / domain / location
+filters both digests load automatically at startup. Re-run it whenever your
+resume or `profile.json` changes. Both files are gitignored, since this repo is
+public and they're personal.
+
+### 4. Run it
+
+```bash
+.venv/bin/python funding_digest.py     # who just raised
+.venv/bin/python companies_digest.py   # what they and 400 other boards posted
+.venv/bin/python getro.py              # bulk-fill the watchlist (run this first, once)
+```
+
+### 5. Put it on a schedule
+
+Push your fork and enable Actions. Three workflows ship with it:
+
+| Workflow | Schedule | Runs |
+|---|---|---|
+| `daily-digest.yml` | 8am ET | `getro.py` → `discover.py` → `funding_digest.py` |
+| `companies-digest.yml` | ~9am / 1pm / 4pm ET | `companies_digest.py` |
+| `tests.yml` | every push | `tests/run.py` |
+
+In your fork: **Settings → Secrets and variables → Actions → Secrets**, add the
+same keys from step 2. Then add one more, **`PROFILE_COMPILED_JSON`**: paste the
+entire contents of your local `profile.compiled.json`. Without it the scheduled
+runs fall back to the generic keywords baked into the scripts, and you get a
+digest tuned to someone else's job hunt.
+
+State (`ats_watchlist.json`, `seen_jobs.json`, `enrich_cache.json`,
+`hunter_usage.json`, `getro_networks.json`) persists on a `state` branch between
+runs, so the watchlist grows and you're never emailed the same posting twice.
+
+Trigger a run by hand from the **Actions** tab → pick a workflow → **Run
+workflow**. Check your inbox in about a minute.
+
+---
+
+## Tuning
+
+Three layers, each overriding the one before it:
+
+```
+code defaults  <  profile.compiled.json  <  environment variables
+```
+
+You can skip this section entirely. Every knob has a working default, and the
+defaults are what this repo runs on — an unset variable is not a missing
+setting. Come back when a digest shows you the wrong things.
+
+When you do, **everything tunable is documented in [`.env.example`](.env.example)**
+— scoring weights, title gates, geography tiers, which sources run, caps, and
+cost controls, each with its default written next to it. Uncomment only the line
+you want to change; the rest keep their defaults.
+
+Locally that means editing `.env`. For scheduled runs, set the same names as
+repo **variables** (Settings → Secrets and variables → Actions → *Variables*
+tab, not Secrets) — both digest workflows forward every repo variable into the
+run, so retuning a schedule never needs a code change.
+
+A few worth knowing about:
+
+| Want | Set |
+|---|---|
+| Different city | `JOB_PRIMARY_LOCATIONS=austin,texas` + `FUNDING_LOCATIONS=austin` |
+| Senior roles, not junior | `JOB_SENIORITY_EXCLUDE=intern,junior` and swap `JOB_JUNIOR_SIGNALS` / `JOB_SENIOR_SIGNALS` |
+| Engineering roles | `JOB_SWE_EXCLUDE=` (empty clears the gate) + `JOB_TARGET_TITLES=...` |
+| Later-stage companies | `JOB_EARLY_ROUNDS=series b,series c,series d` |
+| A fuller / quieter inbox | `JOB_BEST_MATCH_MIN` (score cutoff), `JOB_MAX_ITEMS`, `JOB_MAX_AGE_DAYS` |
+| Lower API spend | `FUNDING_ENRICH_TOP_N=8`, or `=0` to turn AI summaries off |
+| Fewer sources | `JOB_USE_MUSE=0`, `JOB_USE_ADZUNA=0`, … (one flag per source) |
+
+Lists are comma-separated, and an explicitly empty value means an empty list —
+`JOB_SECONDARY_LOCATIONS=` turns that tier off rather than restoring the default.
+Booleans take `1/true/yes/on` or `0/false/no/off`. Penalties (`JOB_TOO_SENIOR_PENALTY`,
+`JOB_LATE_STAGE_PENALTY`) are given as positive numbers and always subtract.
+
+### How a posting is scored
+
+Every email row prints its own arithmetic, so you can see which knob to turn:
+
+| Signal | Default | Env |
+|---|---|---|
+| Target-title hit | +12 each, cap 40 | `JOB_TITLE_POINTS` / `JOB_TITLE_MAX` |
+| JD asks for your years | +20 | `JOB_SENIORITY_FIT_POINTS` |
+| JD asks for far more | −25 | `JOB_TOO_SENIOR_PENALTY` |
+| Resume skill hit | +3 each, cap 24 | `JOB_SKILL_POINTS` / `JOB_SKILL_MAX` |
+| Domain hit | +2 each, cap 12 | `JOB_DOMAIN_POINTS` / `JOB_DOMAIN_MAX` |
+| Seed–Series B | +6 (+3 if only inferred from startup language) | `JOB_EARLY_STAGE_POINTS`, `JOB_EARLY_STAGE_SOFT_POINTS` |
+| Series D+ / public | −6 | `JOB_LATE_STAGE_PENALTY` |
+| Location tier | NYC +10, US-remote +5, SF/Bay +4, US on-site +1 | `JOB_LOC_BONUS_*` |
+| Company just raised | +8 | `JOB_FUNDED_BONUS` |
+
+Title, skill and domain terms come from `profile.compiled.json` (or
+`JOB_TARGET_TITLES` / `JOB_SKILLS` / `JOB_DOMAINS`). Title gates run *before*
+scoring: a posting that fails `title_is_target` or the location gate is never
+scored at all.
+
+Every row in the email carries a **Why N** line showing both halves of that
+arithmetic — what hit, and what didn't:
+
+```
+Why 72  |  +12 partial title match · associate product engineer
+        |  +20 seniority fit · 1-2 years
+        |  +24 strong skills match · claude code, spec, figma, qa +7
+        |  +6 good domain match · automation, agent, workflow
+   0  stage: no funding stage stated
+```
+
+Capped signals (title, skills, domains) are labelled *partial* / *good* /
+*strong* against their ceiling, because `+9 skills` means nothing until you know
+the cap is 24. The dimmed `0` line lists signals that scored **nothing** — an
+unstated funding stage, no domain overlap, a title that matched none of your
+targets. Those are worth zero by construction and stay out of the sum, so the
+printed parts always add up to the total. If a posting scores lower than you
+expect, that line is where the answer is.
+
+The funding digest scores headlines on the same principle, with its own weights
+(`FUNDING_FOCUS_POINTS`, `FUNDING_LOC_POINTS`, `FUNDING_LOC2_POINTS`,
+`FUNDING_ROUND_POINTS`) and its own section cutoff (`FUNDING_BEST_SCORE`).
+
+### The ATS watchlist
+
+The free job sources skew remote/tech; **the ATS watchlist is what makes the job
+digest good**. It fills itself three ways — `getro.py` in bulk, the funding
+digest as companies raise, `discover.py` for the long tail — and you can seed it
+by hand from any careers URL:
+
+```
+boards.greenhouse.io/<TOKEN>    jobs.lever.co/<TOKEN>    jobs.ashbyhq.com/<TOKEN>
+```
+
+Add tokens to `GREENHOUSE_COMPANIES` / `LEVER_COMPANIES` / `ASHBY_COMPANIES` in
+`companies_digest.py`; Workday boards need a tenant/wd/site entry in
+`WORKDAY_COMPANIES`. Pin the funds whose portfolios match your lane with
+`GETRO_NETWORKS="1200 803"`, and widen a single sweep with
+`python getro.py --scan 800`.
+
+---
+
+## Developer guide
+
+### Layout
+
+| File | Role |
+|---|---|
+| `funding_digest.py` | Feeds → raise detection → geo/sector gate → score → enrich → email |
+| `companies_digest.py` | Sources → title/location gates → score → dedupe → email |
+| `enrich.py` | Anthropic web-search research + Hunter.io email lookup, cached |
+| `watchlist.py` | `ats_watchlist.json` reader/writer: funded flags, stage facts, ATS probing, re-probe queue |
+| `getro.py` | Getro network sweep; also harvests company-size buckets |
+| `discover.py` | AI web-search company discovery |
+| `setup_profile.py` | Resume + `profile.json` → `profile.compiled.json` |
+| `tests/` | Stdlib-only unit suite, no network |
+| `evals/` | Accuracy checks for the model-decided parts (costs API calls) |
+
+State files, all JSON on disk and on the `state` branch in CI:
+`ats_watchlist.json` (companies + ATS tokens + funded/stage facts),
+`seen_jobs.json` (already-emailed postings, `JOB_SEEN_TTL_DAYS`),
+`enrich_cache.json` (per-company research, versioned by `SCHEMA_VERSION`),
+`hunter_usage.json` (monthly quota counter), `getro_networks.json` (known
+network ids so a sweep doesn't re-probe dead ones).
+
+### Conventions
+
+- **Stdlib plus `feedparser`.** That's the whole dependency list, including the
+  test runner. Don't add one without a strong reason.
+- **Config reads the environment first.** Every knob is `env_int` / `env_flag` /
+  `env_list` with the default inline, and every one is documented in
+  `.env.example`. A new tunable that isn't in that file is invisible to forkers.
+- **Environment beats the compiled profile**, which beats the code default. The
+  profile is applied at import, then the env overrides are re-applied under it.
+- **Match keywords on word boundaries** (`kw_matcher`), never as substrings.
+  This is the repo's oldest recurring bug: `ai` fires inside "em**ai**l" and
+  "r**ai**ses", `ui` inside "b**ui**lding", `sf` inside "Dussel**dorf**". Title
+  stems are the deliberate exception — they're meant to match inside a longer
+  title.
+- **Show the arithmetic.** Scores carry a `parts` breakdown that the email
+  prints. If a change makes the parts stop summing to the total, the email is
+  lying — there's a test for exactly that.
+- **Gates before spend.** Anything that costs an API call (enrichment, Hunter,
+  discovery) runs after the free filters, and caches its result.
+
+### Tests
+
+```bash
+python tests/run.py            # everything, ~1s, no network, no keys
+python tests/run.py gates      # just the modules matching "gates"
+```
+
+`tests/fixtures/` holds strings captured from live Greenhouse / Ashby / Lever
+boards; the **labels are hand-written intent**, not recorded output. Never
+regenerate them from what the code currently returns — that re-records a bug
+instead of catching it. `tests/README.md` has the rationale.
+
+Accuracy checks that need the network and an API key live in `evals/` and are
+deliberately outside `tests/run.py`:
+
+```bash
+python evals/eval_enrich.py --limit 3      # cheap smoke test
+python tests/verify_grok_quotes.py         # checks X quotes against source posts
+```
+
+### Adding a job source
+
+1. Write `fetch_<source>()` in `companies_digest.py` returning dicts with
+   `title`, `company`, `location`, `url`, `content`, `source`, and `posted_ts`
+   when the API gives a date.
+2. Add a `USE_<SOURCE> = env_flag("JOB_USE_<SOURCE>", True)` toggle next to the
+   others, and gate it on its API key if it needs one.
+3. Call it in the collection block, document the toggle in `.env.example`, and
+   add the key to the workflow's `env:` if it needs a secret.
+
+Everything downstream — gates, scoring, dedupe, email — is source-agnostic.
+
+---
 
 ## Costs
-- Digests + email + job sources: **free**.
-- `ANTHROPIC_API_KEY`: `ENRICH_TOP_N=None` (default) summarizes **every** raise —
-  one web-search call each, so cost scales with the day's volume (often 10–40
-  raises). Set `ENRICH_TOP_N` to an integer (e.g. `8`) to cap spend, or `0` to
-  turn summaries off entirely.
-- `HUNTER_API_KEY`: free tier ~50/mo; the script rations it and falls back to
-  pattern-guessed emails (marked UNVERIFIED) after the cap.
 
-## Honest limits (read once)
-- Free job sources skew remote/tech; the **ATS watchlist is what makes the job
-  digest good** — seed it from the funding digest + add a few by hand.
+- Digests, email, and all job sources: **free**.
+- `ANTHROPIC_API_KEY`: with `FUNDING_ENRICH_TOP_N` unset, **every** raise gets a
+  web-search call, so cost scales with the day's volume (often 10–40 raises).
+  Set it to an integer to cap spend, or `0` to turn summaries off. `discover.py`
+  adds one sweep per angle per run.
+- `HUNTER_API_KEY`: free tier ~50/mo; the script rations it against
+  `hunter_usage.json` and falls back to pattern-guessed emails (marked
+  UNVERIFIED) after the cap.
+- `GROK_API_KEY`: ~$0.005 per X search, so cents per month.
+
+## Honest limits
+
+- **Location:** hybrid, on-site and remote are all kept. Ranking prefers your
+  primary metro (+10), then US-remote (+5, because you can do it from home
+  today), then the secondary metro (+4), then on-site elsewhere in the US (+1).
+  Only non-US roles and state-scoped remote ("Remote, TX" = Texas residents) are
+  dropped. Every row carries a `hybrid` / `on-site` chip, amber when the office
+  isn't in your metro.
+- The email is the **top N by score**, sorted before it's cut. A role posted to
+  several cities collapses to its best-ranked location, so a company advertising
+  NYC + SF shows up as the NYC one.
+- Two sections, capped separately: **Best matches** (`JOB_BEST_MATCH_MIN` and up,
+  `JOB_MAX_ITEMS`) and **Worth a look** (below it, `JOB_MAX_ITEMS_REST`). Separate
+  caps on purpose — one combined cap never reached the sub-threshold postings, so
+  they were dropped rather than relegated.
+- A big watchlist fetches a LOT to keep a little: ~380 boards yield ~21k
+  postings, of which a few hundred clear the title gate and ~130 the location
+  gate. That's the ATS approach working as intended — but it does mean your
+  title and location gates decide almost everything that reaches your inbox.
 - No free source gives verified founder emails at scale; guessed ones are
-  guesses — confirm before you send.
-- LinkedIn/most VC sites can't be scraped; the AI reads them via web search, and
-  LinkedIn appears as a click-to-search link.
+  guesses. Confirm before you send.
+- LinkedIn and most VC sites can't be scraped; the AI reads them via web search,
+  and LinkedIn appears as a click-to-search link.
 - Keyword matching is a strong first filter, not judgment. Skim the top few.
+
+This repo's committed defaults are tuned to one person's search (NYC,
+early-career product roles) as a worked example. `profile.json` plus the
+environment variables are how you make it yours without touching the code.

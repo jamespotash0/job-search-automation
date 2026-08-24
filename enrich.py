@@ -22,6 +22,24 @@ import json
 import urllib.request
 from datetime import datetime
 
+
+def load_dotenv(path=".env"):
+    """Minimal .env loader. Callers that import this module usually load .env
+    themselves first; setdefault means whoever gets there first wins and this is
+    a no-op on GitHub Actions, where the values arrive as repo secrets."""
+    try:
+        with open(path) as f:
+            for line in f:
+                line = line.strip()
+                if line and not line.startswith("#") and "=" in line:
+                    k, v = line.split("=", 1)
+                    os.environ.setdefault(k.strip(), v.strip())
+    except Exception:
+        pass
+
+
+load_dotenv()
+
 ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY", "")
 HUNTER_API_KEY    = os.environ.get("HUNTER_API_KEY", "")
 
@@ -194,6 +212,13 @@ def pattern_to_email(pattern, first, last, domain):
              .replace("{first}", first).replace("{last}", last)
              .replace("{f}", first[:1]).replace("{l}", last[:1]))
     if "{" in email:
+        return ""
+    # A placeholder that resolved to nothing leaves a hole: "{first}.{last}"
+    # with no last name becomes "jane." -> jane.@acme.ai, which is malformed and
+    # would still be sent. Reject anything with an empty name component.
+    if not email or email.startswith((".", "-", "_")) or email.endswith((".", "-", "_")):
+        return ""
+    if re.search(r"[._-]{2,}", email):
         return ""
     return f"{email}@{domain}"
 

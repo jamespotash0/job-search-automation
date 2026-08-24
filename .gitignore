@@ -3,6 +3,9 @@ seen_jobs.json
 enrich_cache.json
 hunter_usage.json
 ats_watchlist.json
+# Getro's learned map of live VC-board collection ids. Generated state,
+# persisted to the `state` branch by the daily workflow — not source.
+getro_networks.json
 __pycache__/
 *.pyc
 .venv/

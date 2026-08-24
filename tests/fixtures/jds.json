@@ -1,0 +1,86 @@
+{
+ "_readme": "`real` entries are verbatim excerpts from live Greenhouse/Ashby postings captured 2026-08-24, run through strip_html exactly as production does. `synthetic` entries cover paths no board in that capture happened to exercise; they are labelled so nobody reads them as evidence about real-world phrasing.",
+ "cases": [
+  {
+   "origin": "real: Founding Forward Deployed Engineer",
+   "jd": "ach deployment makes the next one faster. Who we\u2019re looking for 5+ years of hands-on experience developing production-ready software, with a proven track record of delivering robust, hrough the details and what compensation could look like for you specifically! This position has a salary range of $166,000 to $250,000. Benefits and Perks Unlimited PTO and flexible work policy Em",
+   "expect": {
+    "years": "5+ yrs",
+    "years_min": 5,
+    "comp": "$166k\u2013$250k"
+   }
+  },
+  {
+   "origin": "real: Product Manager, Retail Experience & Platform",
+   "jd": "adeoff analyses) ABOUT YOU Required : 10+ years of overall professional experience, with 5+ years in a product management role Demonstrated ownershi",
+   "expect": {
+    "years": "10+ yrs",
+    "years_min": 10
+   }
+  },
+  {
+   "origin": "real: Product Manager, Growth",
+   "jd": "ructures, and engagement mechanisms that increase user participation and lifetime value. WHAT YOU BRING - 4\u20136 years of Product Management experience. - 2\u20134 years of dedicated Growth Product Management experience. - Demons",
+   "expect": {
+    "years": "4\u20136 yrs",
+    "years_min": 4
+   }
+  },
+  {
+   "origin": "real: Forward Deployed AI Engineer (New York)",
+   "jd": "r. - You're a strong communicator who can clearly explain your work to teammates and customers - You have 3+ years of professional experience Don\u2019t meet all of the above traits? We\u2019d still love to hear from you. We\u2019re l",
+   "expect": {
+    "years": "3+ yrs",
+    "years_min": 3
+   }
+  },
+  {
+   "origin": "synthetic: hybrid + days + no sponsorship",
+   "jd": "We are looking for someone with 2-4 years of product experience. This is a hybrid role, 3 days a week in our NYC office. We are unable to provide visa sponsorship at this time.",
+   "expect": {
+    "years": "2\u20134 yrs",
+    "years_min": 2,
+    "work_model": "Hybrid \u00b7 3d in office",
+    "sponsorship": "No visa sponsorship"
+   }
+  },
+  {
+   "origin": "synthetic: fully remote + equity + sponsors",
+   "jd": "Minimum of 3 years of experience. Fully remote across the US. Competitive salary, stock options, and visa sponsorship is available.",
+   "expect": {
+    "years": "3+ yrs",
+    "years_min": 3,
+    "work_model": "Remote",
+    "equity": "Equity",
+    "sponsorship": "Sponsors visas"
+   }
+  },
+  {
+   "origin": "synthetic: $k-shorthand band",
+   "jd": "Comp is $140k-$180k depending on experience. At least 2 years required.",
+   "expect": {
+    "years": "2+ yrs",
+    "years_min": 2,
+    "comp": "$140k\u2013$180k"
+   }
+  },
+  {
+   "origin": "synthetic: fundraise figure is not a salary",
+   "jd": "We just raised $12,000,000 in Series A funding. Our ARR passed $30,000,000 last year. No experience minimum stated.",
+   "expect": {}
+  },
+  {
+   "origin": "synthetic: founders' tenure is not the requirement",
+   "jd": "Our founders spent 20 years in logistics before starting the company. We want 2-4 years of product experience.",
+   "expect": {
+    "years": "2\u20134 yrs",
+    "years_min": 2
+   }
+  },
+  {
+   "origin": "synthetic: nothing stated",
+   "jd": "Join our team and help us build the future of work. We move fast and care deeply.",
+   "expect": {}
+  }
+ ]
+}

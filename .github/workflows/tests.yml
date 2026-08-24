@@ -1,0 +1,26 @@
+name: tests
+
+# The digests run unattended three times a day; a broken gate is invisible until
+# a week of empty emails goes by. Run the suite on every push that touches the
+# code it covers, and on the digest workflows themselves.
+on:
+  push:
+    paths:
+      - "**.py"
+      - "tests/**"
+      - ".github/workflows/tests.yml"
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      # The suite is stdlib-only and hits no network: no install step, no API
+      # keys, no fixtures fetched at runtime. It finishes in about a second.
+      - name: Run tests
+        run: python tests/run.py

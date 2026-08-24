@@ -54,14 +54,24 @@ jobs:
       - name: Restore state
         run: |
           git fetch -q origin state 2>/dev/null || true
-          for f in enrich_cache.json hunter_usage.json ats_watchlist.json; do
+          for f in enrich_cache.json hunter_usage.json ats_watchlist.json getro_networks.json; do
             git cat-file -e "origin/state:$f" 2>/dev/null \
               && git show "origin/state:$f" > "$f" && echo "restored $f" || true
           done
 
+      # Bulk-feed the watchlist from the public Getro API (the portfolio job
+      # boards of hundreds of VC funds). Every job it returns carries a real
+      # apply URL, so ATS tokens are READ rather than guessed — it adds
+      # companies by the hundred where discover.py adds them by the handful.
+      # Keyless, and non-fatal: a sweep failure never blocks the digest.
+      - name: Sweep VC job boards (Getro)
+        continue-on-error: true
+        run: python getro.py
+
       # Web-search LinkedIn "we're hiring" posts / hiring roundups for companies
       # hiring your roles, probe their ATS, and add hits to ats_watchlist.json.
-      # Non-fatal: a discovery failure never blocks the digest.
+      # Still worth running after the sweep: it reaches companies that are on no
+      # VC board at all. Non-fatal: a discovery failure never blocks the digest.
       - name: Discover hiring companies
         continue-on-error: true
         env:
@@ -85,6 +95,23 @@ jobs:
             echo "::warning::PROFILE_COMPILED_JSON not set — digest will use generic default keywords"
           fi
 
+      # Every knob documented in .env.example can be set as a repo *variable*
+      # (Settings -> Secrets and variables -> Actions -> Variables) — scoring
+      # weights, source toggles, caps. They land in the environment here, so
+      # retuning a scheduled run never means editing code. Secrets are passed at
+      # the step level below and always win over anything set here.
+      - name: Load tuning variables
+        env:
+          VARS_JSON: ${{ toJSON(vars) }}
+        run: |
+          python - <<'PY' >> "$GITHUB_ENV"
+          import json, os
+          for k, v in json.loads(os.environ["VARS_JSON"] or "{}").items():
+              v = str(v)
+              if "\n" not in v:            # $GITHUB_ENV is line-oriented
+                  print(f"{k}={v}")
+          PY
+
       - name: Send digest
         env:
           EMAIL_USER:        ${{ secrets.EMAIL_USER }}
@@ -100,5 +127,5 @@ jobs:
       - name: Persist state
         if: always()
         env:
-          FILES: "enrich_cache.json hunter_usage.json ats_watchlist.json"
+          FILES: "enrich_cache.json hunter_usage.json ats_watchlist.json getro_networks.json"
         run: bash .github/persist-state.sh
