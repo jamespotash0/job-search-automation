@@ -203,16 +203,6 @@ def test_misses_are_worth_zero_and_stay_out_of_the_arithmetic():
 
 
 @case
-def test_strength_label_measures_against_the_cap():
-    equal(C.strength_label("resume skills", C.SKILL_MAX), "strong skills match")
-    equal(C.strength_label("resume skills", 3), "partial skills match")
-    equal(C.strength_label("your domains", C.DOMAIN_MAX // 2), "good domain match")
-    # Signals with no ceiling keep their bare label.
-    equal(C.strength_label("seniority fit", 20), "seniority fit")
-    equal(C.strength_label("just raised", 8), "just raised")
-
-
-@case
 def test_the_email_shows_no_arithmetic():
     """The card used to print "+26 seniority fit | +17 strong skills match" and a
     dimmed list of zero-weighted misses. That is a window into the machinery, not

@@ -1286,58 +1286,53 @@ def screen_facts(content):
     return f
 
 
+# How these read when written by a person. Blanket .upper() turned "saas" into
+# "SAAS"; blanket sentence-case turned "ai" into "Ai". Neither is how anyone
+# writes them, and the digest prints these terms verbatim.
+_TERM_CASE = {
+    "saas": "SaaS", "paas": "PaaS", "iaas": "IaaS", "devops": "DevOps",
+    "github": "GitHub", "postgres": "Postgres", "typescript": "TypeScript",
+    "javascript": "JavaScript", "nodejs": "Node.js", "figma": "Figma",
+    "notion": "Notion", "jira": "Jira", "looker": "Looker", "python": "Python",
+    "a/b": "A/B", "ui/ux": "UI/UX", "go-to-market": "go-to-market",
+}
+_ACRONYMS = {"ai", "llm", "llms", "ui", "ux", "api", "apis", "sql", "b2b", "b2c",
+             "gtm", "prd", "prds", "qa", "crm", "ml", "nlp", "kpi", "roi",
+             "sdk", "cli", "seo", "arr", "sso"}
+
+
+def _pretty_term(t):
+    """'ai' -> 'AI', 'saas' -> 'SaaS'. Multi-word terms get each word treated,
+    so "ai agents" reads "AI agents" rather than being left alone."""
+    low = t.lower()
+    if low in _TERM_CASE:
+        return _TERM_CASE[low]
+    if low in _ACRONYMS:
+        return low.upper()
+    if " " in low:
+        return " ".join(_pretty_term(w) for w in low.split(" "))
+    return t
+
+
 def fit_sentence(item):
-    """One plain-English line: why this posting is in front of you, and the one
-    thing most likely to disqualify it. The score says how much; this says why."""
+    """One line on what the work actually is.
+
+    Deliberately says nothing about years or location: both are chips directly
+    above, and repeating them was how a single card came to state the experience
+    bar three times — once as a chip, once here, and once in a trailing gap line.
+    """
     bd = item.get("breakdown") or {}
     by = {label: terms for label, _, terms in (bd.get("parts") or [])}
-    facts = item.get("facts") or {}
-    clauses = []
-
-    titles = by.get("title") or []
-    if titles:
-        # Longest stem = the most specific thing it matched ("associate forward
-        # deployed engineer" beats "forward deployed").
-        clauses.append(f"hits your <b style=\"font-weight:600\">"
-                       f"{html.escape(max(titles, key=len))}</b> target")
-
-    # The seniority clause says WHICH of your two experience numbers the bar was
-    # compared against, because "3+ years of product experience" and "3+ years of
-    # experience" are different questions and the answer changes the verdict.
-    want = facts.get("years_min")
-    if want is not None:
-        pm = (facts.get("years_domain") == "pm")
-        mine = RESUME.get("years_pm") if pm else RESUME.get("years")
-        mine = RESUME.get("years", 0) if mine is None else mine
-        qual = " product" if pm else ""
-        gap = want - mine
-        if gap <= 0:
-            clauses.append(f"wants {facts['years']}{qual}, you have {mine}")
-        elif gap <= 1:
-            clauses.append(f"wants {facts['years']}{qual} vs your {mine} \u2014 close")
-        elif gap <= 2:
-            clauses.append(f"wants {facts['years']}{qual} vs your {mine} \u2014 "
-                           f"worth applying")
-        else:
-            clauses.append(f"wants {facts['years']}{qual} vs your {mine} \u2014 "
-                           f"a {gap:g}-year stretch")
-    elif by.get("seniority fit"):
-        clauses.append("no years stated")
-
     doms = by.get("your domains") or []
+    skills = by.get("resume skills") or []
+    bits = []
     if doms:
-        clauses.append("in " + ", ".join(doms[:3]))
-    # (stage is a filter now, so it no longer appears in `parts`)
-    if item.get("funding"):
-        clauses.append(html.escape(funding_label(item["funding"])))
-    tier = LOC_LABEL.get(item.get("loc_tier"), "")
-    if tier:
-        clauses.append(tier)
-    if not clauses:
+        bits.append(", ".join(_pretty_term(d) for d in doms[:3]))
+    if skills:
+        bits.append("asks for " + ", ".join(_pretty_term(k) for k in skills[:3]))
+    if not bits:
         return ""
-    line = clauses[0][0].upper() + clauses[0][1:] + ", " + ", ".join(clauses[1:]) \
-        if len(clauses) > 1 else clauses[0][0].upper() + clauses[0][1:]
-    return line.rstrip(", ") + "."
+    return " \u00b7 ".join(html.escape(b) for b in bits)
 
 
 # Built on first use, not at import: _apply_profile() may have replaced
@@ -1968,63 +1963,30 @@ HAIRLINE, CANVAS, CARD = "#e5e5ea", "#f5f5f7", "#ffffff"
 ACCENT, GOOD, WARM = "#0066cc", "#248a3d", "#a2600d"
 
 
-def _chip(text, color=INK2, bg=CANVAS, bold=False):
+# Every chip carries a verdict, not just a fact. Green: this suits you. Grey:
+# neutral, nothing to say. Amber: partly against you. Red: against you. The point
+# is that the row can be read at a glance without reading any of the words.
+TONES = {
+    "good":    ("#1c7c3f", "#e9f6ed", "#c3e5cd"),
+    "neutral": (INK2,      CANVAS,    HAIRLINE),
+    "warn":    ("#8a5a00", "#fdf4e3", "#f0dcb4"),
+    "bad":     ("#a3231b", "#fdecea", "#f5c9c4"),
+}
+
+
+def _chip(text, tone="neutral", bold=False):
+    color, bg, border = TONES.get(tone, TONES["neutral"])
     return (f"<span style=\"display:inline-block;padding:3px 9px;margin:0 6px 6px 0;"
-            f"border-radius:999px;background:{bg};color:{color};font-size:12px;"
-            f"line-height:16px;font-weight:{600 if bold else 500};"
-            f"white-space:nowrap\">{text}</span>")
-
-
-def _outline_chip(text, color=INK, border=HAIRLINE):
-    return (f"<span style=\"display:inline-block;padding:3px 9px;margin:0 6px 6px 0;"
-            f"border:1px solid {border};border-radius:7px;background:{CARD};"
-            f"color:{color};font-size:12px;line-height:16px;font-weight:500;"
-            f"white-space:nowrap\">{text}</span>")
-
-
-# How close a capped signal came to its ceiling, as a word. "+9 skills" means
-# nothing on its own — against a cap of 24 it means "partial", and that is the
-# difference between a posting worth opening and one worth skipping.
-# Only the signals where "how close to the ceiling" is meaningful. Seniority and
-# stage are judgements, not coverage, so "good seniority fit" would overstate
-# what the number knows — they keep their bare label.
-_CAPS = {k: (lambda k=k: WEIGHTS[k])
-         for k in ("title", "resume skills", "your domains")}
-_MATCH_WORD = {"title": "title match", "resume skills": "skills match",
-               "your domains": "domain match"}
-
-
-def strength_label(label, pts):
-    """'strong skills match' / 'partial title match', or the bare label for a
-    signal that has no ceiling to be measured against (stage, location, funding)."""
-    cap = _CAPS.get(label)
-    if not cap or pts <= 0:
-        return label
-    ceiling = cap() or 0
-    if ceiling <= 0:
-        return label
-    frac = pts / ceiling
-    word = "strong" if frac >= 0.75 else "good" if frac >= 0.4 else "partial"
-    return f"{word} {_MATCH_WORD[label]}"
+            f"border:1px solid {border};border-radius:7px;background:{bg};"
+            f"color:{color};font-size:12px;line-height:16px;"
+            f"font-weight:{600 if bold else 500};white-space:nowrap\">{text}</span>")
 
 
 def match_line(item):
-    """What this role asks of you, in plain language. No arithmetic.
-
-    The digest used to print the scoring components and their point values. That
-    was a window into the machinery, not information: "+26 seniority fit · +17
-    strong skills match" tells you nothing you can act on. What you can act on is
-    the bar the posting sets and where you fall against it.
-    """
-    bd = item.get("breakdown") or {}
-    gaps = [reason for label, reason in (bd.get("misses") or [])
-            if label in ("seniority", "skills", "domains")]
-    if not gaps:
-        return ""
-    return (f"<div style=\"font-family:{FONT};margin:8px 0 0;font-size:12px;"
-            f"line-height:18px;color:{INK3}\">"
-            + "&nbsp;&nbsp;&middot;&nbsp;&nbsp;".join(html.escape(g) for g in gaps)
-            + "</div>")
+    """Removed. It printed the seniority gap a third time, after the chip and the
+    fit sentence had both already said it. Kept as a no-op so callers that still
+    reference it do not need editing."""
+    return ""
 
 
 def context_block(item):
@@ -2093,55 +2055,80 @@ def fit_word(q):
 def card(item, dim=False):
     esc = html.escape
     title_size = "15px" if dim else "17px"
+    facts = item.get("facts") or {}
+    tier = item.get("loc_tier") or ""
     chips = []
-    if item.get("location"):
-        chips.append(_chip(esc(item["location"])))
+
+    # --- where. ONE chip, not two. The posting's own location string carries the
+    # detail; the tier is only appended when it adds something the string does
+    # not already say ("Remote" -> "Remote · US"), which is what stopped the row
+    # reading "Remote" followed immediately by "US-remote".
+    loc = (item.get("location") or "").strip()
+    tier_word = {"nyc": "NYC", "secondary": "SF/Bay", "us-remote": "US",
+                 "us-other": "US"}.get(tier, "")
+    loc_text = esc(loc) if loc else esc(tier_word or "\u2014")
+    if loc and tier_word and tier_word.lower() not in loc.lower() \
+            and not (tier == "nyc" and "new york" in loc.lower()):
+        loc_text += f" \u00b7 {tier_word}"
+    chips.append(_chip(loc_text,
+                       "good" if tier == "nyc" else
+                       "warn" if tier in ("secondary", "us-other") else "neutral"))
+
+    # --- the experience bar. Stated ONCE, with the comparison built in, so the
+    # fit sentence below has nothing left to repeat.
+    if facts.get("years"):
+        req = facts.get("years_min")
+        pm = facts.get("years_domain") == "pm"
+        mine = RESUME.get("years_pm") if pm else RESUME.get("years")
+        mine = RESUME.get("years", 0) if mine is None else mine
+        gap = (req - mine) if req is not None else 0
+        chips.append(_chip(
+            f"{esc(facts['years'])}{' product' if pm else ''} \u00b7 you have {mine:g}",
+            "good" if gap <= 0 else "warn" if gap <= 2 else "bad", bold=gap > 2))
+
+    # --- how you'd work it. One chip: the parsed work model when the JD states
+    # one, else what the location implies. These used to be two separate chips
+    # saying the same thing ("on-site" and "Onsite").
+    mode = facts.get("work_model") or {
+        "onsite": "Onsite", "hybrid": "Hybrid", "remote": "Remote"}.get(
+            item.get("work_mode") or "", "")
+    # "Remote" is only worth a chip when the location line did NOT already say
+    # so. A remote-listed role captioned "Remote" twice is the same redundancy
+    # as "Remote" followed by "US-remote".
+    if mode.lower().startswith("remote") and "remote" in (loc or "").lower():
+        mode = ""
+    if mode:
+        commute = mode.lower().startswith(("onsite", "hybrid"))
+        chips.append(_chip(esc(mode),
+                           "warn" if commute and tier not in ("nyc", "") else "neutral"))
+
+    if facts.get("comp"):
+        chips.append(_chip(esc(facts["comp"])))
+    if facts.get("equity"):
+        chips.append(_chip(esc(facts["equity"])))
+    if facts.get("sponsorship"):
+        chips.append(_chip(esc(facts["sponsorship"]),
+                           "bad" if facts["sponsorship"].startswith("No") else "good"))
+
     sz = COMPANY_SIZE.get((item.get("company") or "").lower())
     if sz:
-        chips.append(_chip(f"~{sz} people"))
-    tier = LOC_LABEL.get(item.get("loc_tier"), "")
-    if tier and tier != "NYC":
-        chips.append(_chip(tier))
-    # On-site and hybrid are worth stating outright; "remote" is already obvious
-    # from the location line and the US-remote tier chip.
-    mode = item.get("work_mode")
-    if mode in ("onsite", "hybrid"):
-        away = mode == "onsite" and item.get("loc_tier") not in ("nyc", "")
-        chips.append(_chip("hybrid" if mode == "hybrid" else "on-site",
-                           color=WARM if away else INK2,
-                           bg="#fdf4e3" if away else CANVAS))
+        chips.append(_chip(f"~{sz} people", "good" if sz <= 200 else "neutral"))
+
     age = age_label(item.get("posted_ts"))
     if age:
         fresh = age in ("today", "1d ago")
-        chips.append(_chip(age, color=GOOD if fresh else INK2,
-                           bg="#eaf6ee" if fresh else CANVAS, bold=fresh))
+        chips.append(_chip(age, "good" if fresh else "neutral", bold=fresh))
+
     # 🚀 marks a posting at a company the funding digest saw raise recently — the
     # reason the req exists, and the best cold-outreach hook you get.
     if item.get("funding"):
         chips.append(_chip("\U0001F680 " + esc(funding_label(item["funding"])),
-                           color=WARM, bg="#fdf3e3", bold=True))
+                           "good", bold=True))
     elif item.get("round"):
-        chips.append(_chip(esc(item["round"]), color=WARM, bg="#fdf3e3"))
-    chips.append(_chip(esc(item.get("source", "")), color=INK3))
+        chips.append(_chip(esc(item["round"])))
+    chips.append(_chip(esc(item.get("source", ""))))
 
-    # Screening facts get their own outlined row, visually separate from the
-    # metadata chips: these are the ones you actually rule the job out on.
-    facts = item.get("facts") or {}
-    fchips = []
-    if facts.get("years"):
-        stretch = facts.get("years_min", 0) > RESUME.get("years", 0) + 1
-        fchips.append(_outline_chip(
-            esc(facts["years"]) + (" \u26a0" if stretch else ""),
-            color=WARM if stretch else INK, border="#f0dcb4" if stretch else HAIRLINE))
-    for k in ("comp", "work_model", "equity", "sponsorship"):
-        if facts.get(k):
-            warn = k == "sponsorship" and facts[k].startswith("No")
-            fchips.append(_outline_chip(esc(facts[k]),
-                                        color=WARM if warn else INK,
-                                        border="#f0dcb4" if warn else HAIRLINE))
-    facts_row = (f"<div style=\"margin:9px 0 -6px\">{''.join(fchips)}</div>"
-                 if fchips else "")
-
+    facts_row = ""
     fit = fit_sentence(item)
     fit_row = (f"<div style=\"font-family:{FONT};margin:11px 0 0;font-size:13px;"
                f"line-height:20px;color:{INK}\">{fit}</div>") if fit else ""
@@ -2192,21 +2179,9 @@ def section(label, sub, items, dim=False):
 
 
 def scoring_footer():
-    """A short plain-English note on what the ranking means. Deliberately not a
-    table of weights: the point values are an implementation detail, and printing
-    them invited you to audit arithmetic instead of reading the roles."""
-    return (
-        f"<div style=\"font-family:{FONT};margin:30px 0 0;padding:14px 18px;"
-        f"background:{CARD};border:1px solid {HAIRLINE};border-radius:14px;"
-        f"font-size:12px;line-height:19px;color:{INK3}\">"
-        f"Ranked mainly by how the role's experience bar compares with yours "
-        f"({RESUME.get('years_pm')} years in product, {RESUME.get('years')} overall), "
-        f"then by how much of the job description matches your resume. "
-        f"Location and stage are filters, not scores \u2014 a posting is here "
-        f"because it already passed them."
-        + (f" Roles asking for more than {MAX_YEARS} years are filtered out; "
-           f"ones that state no bar always get through." if MAX_YEARS else "")
-        + "</div>")
+    """Removed at the owner's request. It explained the ranking machinery, which
+    is not something you act on when reading job postings."""
+    return ""
 
 
 def _shell(inner):

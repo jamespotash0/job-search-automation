@@ -9,6 +9,7 @@ escaped markup came back as visible `<li>` litter).
 """
 import json
 import os
+import re
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -91,12 +92,60 @@ def test_jd_window_is_big_enough_to_reach_the_requirements():
 
 
 @case
-def test_fit_sentence_flags_a_years_stretch():
-    item = {"breakdown": {"parts": [("title", 12, ["product manager"])]},
-            "facts": {"years": "8+ yrs", "years_min": 8}, "loc_tier": "nyc", "funding": {}}
-    check("stretch" in C.fit_sentence(item), C.fit_sentence(item))
-    item["facts"] = {"years": "2–4 yrs", "years_min": 2}
-    check("you have" in C.fit_sentence(item), C.fit_sentence(item))
+def test_the_fit_sentence_does_not_repeat_the_chips():
+    """A card stated the experience bar THREE times: as a chip, in this
+    sentence, and again in a trailing gap line. The chips own years and
+    location; this sentence owns what the work actually is."""
+    item = {"breakdown": C.score_breakdown(
+                "Product Manager",
+                "5+ years of product management experience. Roadmap, PRDs, "
+                "Figma. AI workflow automation."),
+            "facts": C.screen_facts("5+ years of product management experience"),
+            "loc_tier": "nyc", "funding": {}}
+    line = C.fit_sentence(item).lower()
+    for banned in ("yrs", "years", "stretch", "nyc", "us-remote"):
+        check(banned not in line, f"fit sentence repeats {banned!r}: {line!r}")
+    check(line, "fit sentence should still say what the work is")
+
+
+@case
+def test_the_card_states_the_experience_bar_exactly_once():
+    item = {"title": "Product Manager", "company": "acme", "url": "http://x",
+            "location": "Remote", "source": "Lever", "posted_ts": None,
+            "loc_tier": "us-remote", "funding": {}, "work_mode": "remote",
+            "facts": C.screen_facts("5+ years of product management experience")}
+    item["breakdown"] = C.score_breakdown(
+        "Product Manager", "5+ years of product management experience. Roadmap.")
+    item["q"] = item["breakdown"]["total"]
+    text = re.sub(r"<[^>]+>", " ", C.card(item)).lower()
+    equal(text.count("5+ yrs"), 1, f"the bar is stated more than once: {text}")
+    # ...and the location is not printed twice either ("Remote" + "US-remote").
+    check(text.count("remote") <= 2, f"location repeated: {text}")
+
+
+@case
+def test_matched_terms_are_cased_the_way_people_write_them():
+    """These are printed verbatim in the digest. Blanket .upper() gave "SAAS";
+    blanket sentence-case gave "Ai"."""
+    for raw, want in [("ai", "AI"), ("saas", "SaaS"), ("b2b", "B2B"),
+                      ("ai agents", "AI agents"), ("prd", "PRD"),
+                      ("typescript", "TypeScript"), ("roadmap", "roadmap"),
+                      ("real estate", "real estate")]:
+        equal(C._pretty_term(raw), want)
+
+
+@case
+def test_a_remote_role_is_not_labelled_remote_twice():
+    """"Remote" as a location and "Remote" as a work mode is the same redundancy
+    as "Remote" followed by "US-remote"."""
+    item = {"title": "Product Manager", "company": "acme", "url": "http://x",
+            "location": "Remote", "source": "Lever", "posted_ts": None,
+            "loc_tier": "us-remote", "funding": {}, "work_mode": "remote",
+            "facts": {"work_model": "Remote"}}
+    item["breakdown"] = C.score_breakdown("Product Manager", "2+ years. Roadmap.")
+    item["q"] = item["breakdown"]["total"]
+    text = re.sub(r"<[^>]+>", " ", C.card(item)).lower()
+    equal(text.count("remote"), 1, f"remote appears more than once: {text}")
 
 
 if __name__ == "__main__":
