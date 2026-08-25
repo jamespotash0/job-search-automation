@@ -78,14 +78,21 @@ except Exception:
 # CONFIG — tune these to your search
 # --------------------------------------------------------------------------
 
-# Enrich raises with an AI company summary + founder email.
-#   None = enrich EVERY collected raise (fullest digest, most API spend)
-#   N    = only the top N ranked raises
-#   0    = disable enrichment entirely (pure free headlines)
-# Enriching all is a web-search + (optional) Hunter call per company, so cost
-# scales with how many raises come through that day (see "Costs" in the README).
-# Env: FUNDING_ENRICH_TOP_N (blank/unset = enrich everything).
-ENRICH_TOP_N = env_int("FUNDING_ENRICH_TOP_N", None)
+# Enrich raises with an AI company summary + founder email. Each enrichment is
+# one web-search LLM call plus an optional Hunter lookup, so this is the only
+# setting in the repo that can run up a real bill.
+#
+#   N     = only the top N ranked raises  (the default, so a fresh fork cannot
+#           surprise anyone with a bill on day one)
+#   "all" = every collected raise, up to FUNDING_MAX_ITEMS (40). Fullest digest,
+#           most spend — opt in deliberately.
+#   0     = no enrichment at all: free headlines only, no LLM key needed.
+#
+# This used to default to "all". A fork that enabled Actions without reading the
+# README got up to 40 paid calls a day on their own key, which is a poor way to
+# find out what something costs.
+_ENRICH_RAW = (os.environ.get("FUNDING_ENRICH_TOP_N") or "").strip().lower()
+ENRICH_TOP_N = None if _ENRICH_RAW == "all" else env_int("FUNDING_ENRICH_TOP_N", 10)
 
 # How far back to look. Run daily -> keep at ~28h so nothing slips through gaps.
 LOOKBACK_HOURS = env_int("FUNDING_LOOKBACK_HOURS", 28)
@@ -781,7 +788,10 @@ if __name__ == "__main__":
         except Exception:
             _wl = None
         targets = items if ENRICH_TOP_N is None else items[:ENRICH_TOP_N]
-        print(f"[info] enriching {len(targets)} of {len(items)} raises")
+        print(f"[info] enriching {len(targets)} of {len(items)} raises"
+              + ("" if ENRICH_TOP_N is None else
+                 f" (cap FUNDING_ENRICH_TOP_N={ENRICH_TOP_N}; "
+                 f"set it to 'all' for every raise, 0 to disable)"))
         for i in targets:
             company = i["company"]
             try:

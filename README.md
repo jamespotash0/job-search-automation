@@ -357,7 +357,7 @@ Two paid APIs, both optional, both yours to sign up for:
 
 | Key | Provider | Roughly what it costs |
 |---|---|---|
-| `ANTHROPIC_API_KEY` **or** `OPENAI_API_KEY` | console.anthropic.com / platform.openai.com | The biggest line. With `FUNDING_ENRICH_TOP_N` unset, **every** raise gets a web-search call, so it scales with the day's volume (often 10–40 raises). Set it to an integer to cap spend, or `0` to turn summaries off. `discover.py` adds one sweep per angle per run. |
+| `ANTHROPIC_API_KEY` **or** `OPENAI_API_KEY` | console.anthropic.com / platform.openai.com | The biggest line, and the only setting here that can run up a bill. It is **capped at 10 raises per run by default** — set `FUNDING_ENRICH_TOP_N=all` for every raise (up to 40/day), an integer to change the cap, or `0` to turn enrichment off entirely and need no LLM key at all. `discover.py` adds one sweep per angle per run (2 by default). |
 | `GROK_API_KEY` | console.x.ai | ~$0.005 per X search — cents per month. |
 
 `HUNTER_API_KEY` (hunter.io) has a free tier of ~50 lookups/month; the script
