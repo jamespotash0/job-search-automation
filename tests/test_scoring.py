@@ -427,5 +427,37 @@ def test_parts_still_sum_to_the_total_after_scaling():
         equal(sum(p[1] for p in bd["parts"]), bd["total"], jd[:40])
 
 
+@case
+def test_selling_to_big_companies_is_not_being_one():
+    """The stage filter conflated "is a big company" with "sells to big
+    companies" -- which is how most seed-stage AI startups describe themselves.
+    On the real corpus it dropped three early-stage roles on the strength of
+    "deploy them in secure environments to fortune 500 companies"."""
+    for jd in ("We deploy them in secure environments to fortune 500 companies. "
+               "We are a fast-moving team of engineers.",
+               "The leading provider of agentic tools for frontier LLMs, "
+               "fortune 500 organizations, and b2b saas companies.",
+               "Our investors have taken companies to IPO before."):
+        equal(C.late_stage_prose(jd), [], f"false positive on: {jd[:52]}")
+
+
+@case
+def test_a_company_describing_itself_as_late_stage_still_counts():
+    check(C.late_stage_prose("We are a publicly traded company on NASDAQ: ACME."),
+          "missed a real public company")
+    check(C.late_stage_prose("We recently raised a $250 million Series E round."),
+          "missed a real late round")
+    check(C.late_stage_prose("We are a fortune 500 company with thousands of employees."),
+          "missed a self-described large company")
+
+
+@case
+def test_the_late_stage_filter_is_off_by_default():
+    """Dropping a company for its stage costs real roles, and the prose evidence
+    is weak. It is opt-in."""
+    check(not C.EXCLUDE_LATE_STAGE,
+          "the late-stage filter should default off (JOB_EXCLUDE_LATE_STAGE=1 opts in)")
+
+
 if __name__ == "__main__":
     main("scoring")

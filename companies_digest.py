@@ -436,14 +436,29 @@ EARLY_STAGE_SIGNALS = [
     "early-stage", "founding team", "stealth", "backed by", "raised our",
 ]
 LATE_STAGE_SIGNALS = [
-    "publicly traded", "public company", "fortune 500", "nasdaq:", "nyse:",
-    "10,000 employees", "20,000 employees", "enterprise-scale",
-    # Rounds past your stated seed-to-B band, and the tells of a company that
-    # already exited. Word-boundary matched (see _late_re) because "ipo" as a
-    # substring fires inside "ipod" and "participio".
-    "series d", "series e", "series f", "ipo", "publicly listed",
-    "1,000 employees", "5,000 employees", "thousands of employees",
+    # Terms that can only be about the company itself.
+    "publicly traded", "public company", "nasdaq:", "nyse:", "publicly listed",
+    "series d", "series e", "series f",
+    # ...and terms that describe the company ONLY when it is talking about
+    # itself. "fortune 500" and "enterprise-scale" appear far more often as a
+    # description of who a startup SELLS TO: "deploy them in secure environments
+    # to fortune 500 companies" is a seed-stage JD, and matching it dropped
+    # three real early-stage roles from the digest. These require a
+    # self-referential phrase nearby — see _late_self_reference().
+    "fortune 500", "enterprise-scale", "1,000 employees", "5,000 employees",
+    "10,000 employees", "20,000 employees", "thousands of employees", "ipo",
 ]
+
+# The subset above that needs "we are / our company / joining a ..." nearby
+# before it counts as evidence about the employer.
+CUSTOMER_AMBIGUOUS = {
+    "fortune 500", "enterprise-scale", "ipo", "1,000 employees",
+    "5,000 employees", "10,000 employees", "20,000 employees",
+    "thousands of employees",
+}
+_SELF_REF = re.compile(
+    r"\b(we are|we're|our company|our team of|join(?:ing)? (?:a|an|our)|"
+    r"the company is|company is a|we have grown|we employ)\b", re.I)
 
 # Softer early-stage tells — the language a seed-to-B company uses when the JD
 # never names a round. The Courted APM posting is the case: "high-growth SaaS
@@ -1342,6 +1357,26 @@ def _soft_re():
     return _SOFT_RE
 
 
+def late_stage_prose(content):
+    """Late-stage tells that are actually ABOUT THIS COMPANY.
+
+    An unqualified keyword match conflates "is a big company" with "sells to big
+    companies" — the second is how most seed-stage AI startups describe
+    themselves, and it was dropping them from the digest.
+    """
+    c = _norm(content)
+    out = []
+    for hit in _hits(_late_re(), c):
+        if hit not in CUSTOMER_AMBIGUOUS:
+            out.append(hit)
+            continue
+        m = re.search(rf"(?<![a-z0-9]){re.escape(hit)}(?![a-z0-9])", c)
+        window = c[max(0, m.start() - 120):m.start()] if m else ""
+        if _SELF_REF.search(window):
+            out.append(hit)
+    return out
+
+
 def _late_re():
     global _LATE_RE
     if _LATE_RE is None:
@@ -1657,8 +1692,11 @@ FUNDED_BONUS = 0
 # Stage is a preference, so it filters rather than scores. A company that is
 # publicly traded or clearly late-stage is dropped; everything else is kept and
 # its stage is shown. Set JOB_EXCLUDE_LATE_STAGE=0 to keep them.
+# Off by default. Dropping a company for being late-stage costs you real roles,
+# and the prose evidence for "late-stage" is unreliable — see SELF_LATE_SIGNALS.
+# Set JOB_EXCLUDE_LATE_STAGE=1 to turn it on.
 EXCLUDE_LATE_STAGE = os.environ.get(
-    "JOB_EXCLUDE_LATE_STAGE", "1").lower() not in ("0", "false", "no")
+    "JOB_EXCLUDE_LATE_STAGE", "0").lower() in ("1", "true", "yes")
 
 # Hard ceiling on the experience bar you are willing to see. A role asking eight
 # years is not a role you are getting with two or three, and ranking it low still
@@ -2361,7 +2399,7 @@ def main():
         if EXCLUDE_LATE_STAGE:
             pts = stage_points(stage.get("round")) if stage else None
             late_by_round = pts is not None and pts < 0
-            late_by_prose = pts is None and bool(_hits(_late_re(), _norm(j["content"])))
+            late_by_prose = pts is None and bool(late_stage_prose(j["content"]))
             if late_by_round or late_by_prose:
                 dropped_late += 1
                 continue
