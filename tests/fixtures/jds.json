@@ -1,5 +1,5 @@
 {
- "_readme": "`real` entries are verbatim excerpts from live Greenhouse/Ashby postings captured 2026-08-24, run through strip_html exactly as production does. `synthetic` entries cover paths no board in that capture happened to exercise; they are labelled so nobody reads them as evidence about real-world phrasing. `years_domain` records whether the bar is qualified as PRODUCT experience (compared against years_pm) or general experience (compared against years); each label here was checked against the words following the number, not recorded from output.",
+ "_readme": "`real` entries are verbatim excerpts from live Greenhouse/Ashby postings captured 2026-08-24, run through strip_html exactly as production does. `synthetic` entries cover paths no board in that capture happened to exercise; they are labelled so nobody reads them as evidence about real-world phrasing.",
  "cases": [
   {
    "origin": "real: Founding Forward Deployed Engineer",
@@ -7,8 +7,7 @@
    "expect": {
     "years": "5+ yrs",
     "years_min": 5,
-    "comp": "$166k\u2013$250k",
-    "years_domain": "general"
+    "comp": "$166k\u2013$250k"
    }
   },
   {
@@ -16,8 +15,7 @@
    "jd": "adeoff analyses) ABOUT YOU Required : 10+ years of overall professional experience, with 5+ years in a product management role Demonstrated ownershi",
    "expect": {
     "years": "10+ yrs",
-    "years_min": 10,
-    "years_domain": "general"
+    "years_min": 10
    }
   },
   {
@@ -25,8 +23,7 @@
    "jd": "ructures, and engagement mechanisms that increase user participation and lifetime value. WHAT YOU BRING - 4\u20136 years of Product Management experience. - 2\u20134 years of dedicated Growth Product Management experience. - Demons",
    "expect": {
     "years": "4\u20136 yrs",
-    "years_min": 4,
-    "years_domain": "pm"
+    "years_min": 4
    }
   },
   {
@@ -34,8 +31,7 @@
    "jd": "r. - You're a strong communicator who can clearly explain your work to teammates and customers - You have 3+ years of professional experience Don\u2019t meet all of the above traits? We\u2019d still love to hear from you. We\u2019re l",
    "expect": {
     "years": "3+ yrs",
-    "years_min": 3,
-    "years_domain": "general"
+    "years_min": 3
    }
   },
   {
@@ -45,8 +41,7 @@
     "years": "2\u20134 yrs",
     "years_min": 2,
     "work_model": "Hybrid \u00b7 3d in office",
-    "sponsorship": "No visa sponsorship",
-    "years_domain": "pm"
+    "sponsorship": "No visa sponsorship"
    }
   },
   {
@@ -57,8 +52,7 @@
     "years_min": 3,
     "work_model": "Remote",
     "equity": "Equity",
-    "sponsorship": "Sponsors visas",
-    "years_domain": "general"
+    "sponsorship": "Sponsors visas"
    }
   },
   {
@@ -67,8 +61,7 @@
    "expect": {
     "years": "2+ yrs",
     "years_min": 2,
-    "comp": "$140k\u2013$180k",
-    "years_domain": "general"
+    "comp": "$140k\u2013$180k"
    }
   },
   {
@@ -81,8 +74,7 @@
    "jd": "Our founders spent 20 years in logistics before starting the company. We want 2-4 years of product experience.",
    "expect": {
     "years": "2\u20134 yrs",
-    "years_min": 2,
-    "years_domain": "pm"
+    "years_min": 2
    }
   },
   {

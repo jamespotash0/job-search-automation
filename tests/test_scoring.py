@@ -320,30 +320,6 @@ def test_a_stretch_is_ranked_down_but_never_gated_out():
 
 
 @case
-def test_the_years_qualifier_picks_which_experience_counts():
-    """"3+ years of product management experience" is compared against your PM
-    years; "3+ years of experience" against your total. A reader assumes the
-    first counts product roles only."""
-    pm = C.screen_facts("3+ years of product management experience")
-    gen = C.screen_facts("3+ years of professional experience")
-    equal(pm.get("years_domain"), "pm")
-    equal(gen.get("years_domain"), "general")
-    check(C.seniority_fraction(pm)[0] <= C.seniority_fraction(gen)[0],
-          "a PM-qualified bar should be at least as demanding as a general one")
-
-
-@case
-def test_the_first_qualifier_wins_when_a_sentence_names_both():
-    """"10+ years of overall professional experience, with 5+ years in a product
-    management role" states the GENERAL bar first. Reading the whole window
-    mislabelled it as PM and compared 10 years against the PM number."""
-    f = C.screen_facts("10+ years of overall professional experience, with 5+ "
-                       "years in a product management role")
-    equal(f.get("years_min"), 10)
-    equal(f.get("years_domain"), "general")
-
-
-@case
 def test_title_is_a_filter_and_never_a_score():
     """title_is_target() already decided the posting is in lane. Paying points
     for the title again just raised the floor under every posting that survived
@@ -375,7 +351,7 @@ def test_a_bar_years_above_yours_scores_near_zero():
     scores = {}
     for y in (2, 4, 6, 8, 10):
         scores[y] = C.score_breakdown(
-            "Product Manager", f"{y}+ years of product management experience. {kw}")["total"]
+            "Product Manager", f"{y}+ years of experience. {kw}")["total"]
     check(scores[2] >= 90, f"a role at your level should score high: {scores[2]}")
     check(scores[8] <= 5, f"an 8-year bar should be near zero, got {scores[8]}")
     check(scores[10] <= scores[8], "the curve should not turn back up")
@@ -388,10 +364,10 @@ def test_keywords_cannot_rescue_a_role_you_are_years_short_of():
     """Keywords SCALE WITH the experience fit rather than adding beside it.
     Additively, a role wanting eight years still collected the full keyword
     weight and landed around 20."""
-    loaded = ("10+ years of product management experience. Roadmap, roadmapping, "
+    loaded = ("10+ years of experience. Roadmap, roadmapping, "
               "PRDs, discovery, prioritization, Figma, SQL, Notion, Jira, B2B, "
               "SaaS, AI, agents, LLM, workflow, automation, fintech, proptech.")
-    bare = "10+ years of product management experience."
+    bare = "10+ years of experience."
     a = C.score_breakdown("Product Manager", loaded)["total"]
     b = C.score_breakdown("Product Manager", bare)["total"]
     check(a <= 10, f"a keyword-stuffed 10-year role still scored {a}")
@@ -546,6 +522,21 @@ def test_relocation_scales_rather_than_subtracts():
         check(0 <= away <= home, f"{away} should sit between 0 and {home}")
         bd = C.score_breakdown("Product Manager", jd, "secondary", "onsite")
         equal(sum(p[1] for p in bd["parts"]), bd["total"], "parts must still sum")
+
+
+@case
+def test_seniority_uses_one_experience_number():
+    """There was briefly a second number for product-titled years, compared
+    against bars qualified as "N years of PRODUCT MANAGEMENT experience". It
+    worked, but it made every seniority verdict depend on parsing which KIND of
+    experience a sentence meant — a lot of machinery riding on a regex, for a
+    distinction of half a year."""
+    check("years_pm" not in C.RESUME, "the second experience number is back")
+    qualified = C.screen_facts("5+ years of product management experience")
+    plain = C.screen_facts("5+ years of experience")
+    equal(qualified.get("years_min"), plain.get("years_min"))
+    equal(C.seniority_fraction(qualified)[0], C.seniority_fraction(plain)[0],
+          "a qualified bar and a plain one of the same size must score alike")
 
 
 if __name__ == "__main__":

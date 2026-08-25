@@ -135,8 +135,7 @@ def local_checks():
         check(OK, "compiled profile is current",
               f"{len(compiled.get('target_titles', []))} titles")
 
-    for field, why in (("years_pm", "PM-vs-general experience comparison"),
-                       ("max_years", "experience-bar filter")):
+    for field, why in (("max_years", "experience-bar filter"),):
         if compiled.get(field) is None:
             check(WARN, f"{field} not compiled", f"{why} falls back to a default",
                   f"add \"{field}\" to profile.json, then re-run setup_profile.py")

@@ -163,13 +163,13 @@ RESUME = {
         "accessibility", "captioning", "telecom", "enterprise",
         "developer", "infrastructure", "fintech", "b2b", "saas",
     ],
-    # Two experience numbers, because JDs ask two different questions.
-    # "years": total relevant professional experience, used when a JD just says
-    # "N years of experience". "years_pm": time in product-titled roles, used
-    # when the bar is explicitly about product management — which is how a
-    # reader would count it. Set both in profile.json.
+    # Your years of experience, compared against whatever bar a posting states.
+    # There was briefly a second number for product-titled years only, compared
+    # against bars qualified as "N years of PRODUCT MANAGEMENT experience". It
+    # worked, but it made every seniority verdict depend on parsing which KIND
+    # of experience a sentence meant — a lot of machinery riding on a regex, for
+    # a distinction of half a year. One number, one comparison.
     "years": 3,
-    "years_pm": 2.5,
 }
 
 # --- Title gates. All three are env-overridable comma-separated lists, since a
@@ -546,7 +546,7 @@ def _apply_profile():
         print(f"[profile] could not read profile.compiled.json ({e}) — using "
               f"the built-in filters. Run: python setup_profile.py")
         return
-    for k in ("target_titles", "skills", "domains", "years", "years_pm"):
+    for k in ("target_titles", "skills", "domains", "years"):
         if p.get(k):
             RESUME[k] = p[k]
     if p.get("location_keywords") is not None:
@@ -581,7 +581,6 @@ REMOTE_OK = env_flag("JOB_REMOTE_OK", REMOTE_OK)
 PREFER_LARGER = env_flag("JOB_PREFER_LARGER", PREFER_LARGER)
 MAX_AGE_DAYS = env_int("JOB_MAX_AGE_DAYS", MAX_AGE_DAYS)
 MAX_YEARS = env_int("JOB_MAX_YEARS", MAX_YEARS)
-RESUME["years_pm"] = env_int("JOB_YEARS_PM", RESUME.get("years_pm") or RESUME["years"])
 
 # Secrets
 EMAIL_USER = os.environ.get("EMAIL_USER", "")
@@ -1277,11 +1276,7 @@ def screen_facts(content):
                 f["years"] = f"{n}+ yrs"
                 f["years_min"] = n
                 at = m.end()
-    # Whether the bar is qualified as PRODUCT experience decides which of your
-    # two experience numbers it should be compared against — a reader assumes
-    # "3+ years of product management experience" counts PM roles only.
-    if at is not None:
-        f["years_domain"] = years_domain(c, at)
+
 
     # Comp: two salary-shaped numbers = a posted band. Anything outside a
     # plausible salary window is a fundraise figure or an ARR brag, not pay.
@@ -1568,45 +1563,15 @@ def requirements_block(content):
 
 
 # --- seniority --------------------------------------------------------------
-# Which of your two experience numbers a requirement is really asking about.
-# "3+ years of PRODUCT MANAGEMENT experience" is a different question from
-# "3+ years of experience", and a reader assumes the former counts PM roles
-# only. Judged from the words right after the number.
-_PM_QUALIFIER = re.compile(
-    r"\b(product manage\w*|product owner|product experience|as a (?:pm|product "
-    r"manager)|in product|apm)\b", re.I)
-# An explicitly GENERAL qualifier. Needed because a single sentence often carries
-# both: "10+ years of overall professional experience, with 5+ years in a product
-# management role" states the general bar first and the product bar second.
-# Whichever qualifier comes FIRST is the one describing this number.
-_GENERAL_QUALIFIER = re.compile(
-    r"\b(overall|professional|industry|work(?:ing)?|relevant|total|combined)\s+"
-    r"experience\b|\bexperience\s+in\s+(?:tech|software|industry)\b", re.I)
-
-
-def years_domain(content, years_phrase_end=None):
-    """"pm" if THIS years requirement is qualified as product experience.
-
-    Read from the words immediately following the number, and only the first
-    qualifier counts — a sentence naming both bars would otherwise be read as
-    whichever kind appears anywhere in the window.
-    """
-    c = content or ""
-    window = c[years_phrase_end:years_phrase_end + 60] if years_phrase_end else c[:200]
-    pm = _PM_QUALIFIER.search(window)
-    gen = _GENERAL_QUALIFIER.search(window)
-    if pm and gen:
-        return "pm" if pm.start() < gen.start() else "general"
-    return "pm" if pm else "general"
-
-
 # How much a stated bar ABOVE your experience should cost. Deliberately a
 # gradient and never a gate: a stated bar is soft in practice, especially at the
 # seed-to-Series-B startups this is pointed at, and gating on it hid half the
 # in-lane market at 2.5 years. One or two years over is the "apply anyway" band
 # and barely costs; a five-year gap ranks low but stays visible.
-STRETCH_CURVE = [(0, 1.00), (1, 0.85), (2, 0.60), (3, 0.35), (4, 0.18),
-                 (5, 0.08)]
+# Gap between the stated bar and your years -> what the role is worth. Beyond a
+# four-year gap it hits the floor: "8+ years" against three is not a long shot,
+# it is a different job, and the score should read as such.
+STRETCH_CURVE = [(0, 1.00), (1, 0.85), (2, 0.60), (3, 0.32), (4, 0.12)]
 STRETCH_FLOOR = 0.02
 
 
@@ -1619,10 +1584,7 @@ def seniority_fraction(facts, content=""):
     req = facts.get("years_min")
     if req is None:
         return None, "no years-of-experience stated"
-    dom = facts.get("years_domain") or "general"
-    mine = RESUME.get("years_pm") if dom == "pm" else RESUME.get("years")
-    if mine is None:
-        mine = RESUME.get("years", 0)
+    mine = RESUME.get("years", 0)
     gap = req - mine
     if gap <= 0:
         return 1.0, f"wants {facts.get('years')}, you have {mine}"
@@ -1633,8 +1595,7 @@ def seniority_fraction(facts, content=""):
             break
     else:
         frac = STRETCH_FLOOR
-    qual = " of product experience" if dom == "pm" else ""
-    return frac, f"wants {facts.get('years')}{qual} vs your {mine}"
+    return frac, f"wants {facts.get('years')} vs your {mine}"
 
 
 def _title_fraction(hits):
@@ -2148,13 +2109,11 @@ def card(item, dim=False):
     # fit sentence below has nothing left to repeat.
     if facts.get("years"):
         req = facts.get("years_min")
-        pm = facts.get("years_domain") == "pm"
-        mine = RESUME.get("years_pm") if pm else RESUME.get("years")
-        mine = RESUME.get("years", 0) if mine is None else mine
+        mine = RESUME.get("years", 0)
         gap = (req - mine) if req is not None else 0
-        chips.append(_chip(
-            f"{esc(facts['years'])}{' product' if pm else ''} \u00b7 you have {mine:g}",
-            "good" if gap <= 0 else "warn" if gap <= 2 else "bad", bold=gap > 2))
+        chips.append(_chip(f"{esc(facts['years'])} \u00b7 you have {mine:g}",
+                           "good" if gap <= 0 else "warn" if gap <= 2 else "bad",
+                           bold=gap > 2))
 
     # --- how you'd work it. One chip: the parsed work model when the JD states
     # one, else what the location implies. These used to be two separate chips

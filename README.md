@@ -84,8 +84,7 @@ Anthropic API, never committed):
 Two more worth setting, because they do most of the ranking:
 
 ```jsonc
-  "years_experience": 3,    // total relevant experience — vs "N years of experience"
-  "years_pm": 2.5,          // years in your TARGET title — vs "N years of PRODUCT experience"
+  "years_experience": 3,    // compared against whatever bar a posting states
   "max_years": 5            // postings asking for more than this are filtered out
 ```
 
