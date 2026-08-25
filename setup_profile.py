@@ -134,7 +134,18 @@ def compile_profile(profile):
         "remote_ok": bool(profile.get("remote_ok", False)),
         "prefer_larger": size == "large",
         "max_age_days": int(profile.get("max_age_days", 21)),
+        # Time in product-titled roles, kept separate from total professional
+        # experience: "3+ years of product management experience" is compared
+        # against this, "3+ years of experience" against `years`.
+        "years_pm": float(profile.get("years_pm")
+                          or profile.get("years_experience") or 3),
+        # Hard ceiling on the experience bar a posting may ask for. Absent =
+        # keep the code default.
+        "max_years": (int(profile["max_years"])
+                      if profile.get("max_years") is not None else None),
     }
+    if compiled["max_years"] is None:
+        del compiled["max_years"]
     return compiled
 
 
@@ -183,7 +194,9 @@ def main():
     print(f"     titles={len(compiled['target_titles'])}  skills={len(compiled['skills'])}"
           f"  domains={len(compiled['domains'])}  focus={len(compiled['focus_keywords'])}")
     print(f"     locations={compiled['location_keywords']}  remote_ok={compiled['remote_ok']}"
-          f"  prefer_larger={compiled['prefer_larger']}  max_age_days={compiled['max_age_days']}")
+          f"  prefer_larger={compiled['prefer_larger']}  max_age_days={compiled['max_age_days']}"
+          f"  years_pm={compiled['years_pm']}"
+          + (f"  max_years={compiled['max_years']}" if "max_years" in compiled else ""))
     print("     Both digests will load this automatically. Commit it so GitHub Actions uses it.")
 
 

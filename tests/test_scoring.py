@@ -459,5 +459,42 @@ def test_the_late_stage_filter_is_off_by_default():
           "the late-stage filter should default off (JOB_EXCLUDE_LATE_STAGE=1 opts in)")
 
 
+@case
+def test_max_years_follows_the_repo_config_precedence():
+    """code default < profile.compiled.json < env var. This one matters because
+    the repo is public: the loose default is for forkers, and the personal 0-3
+    window lives in profile.json, which ships as the PROFILE_COMPILED_JSON
+    secret rather than in git."""
+    import json as _json
+    import subprocess
+    import tempfile
+    root = os.path.dirname(HERE)
+    compiled = {"target_titles": ["product manager"], "skills": ["roadmap"],
+                "domains": ["ai"], "years": 3, "years_pm": 2.5,
+                "location_keywords": ["new york"], "remote_ok": False,
+                "prefer_larger": False, "max_age_days": 21, "max_years": 3}
+    path = os.path.join(root, "profile.compiled.json")
+    pre_existing = os.path.exists(path)
+    if pre_existing:                      # never clobber a real profile
+        return
+    probe = "import companies_digest as C;print(C.MAX_YEARS)"
+
+    def run(env_extra):
+        env = {k: v for k, v in os.environ.items() if k != "JOB_MAX_YEARS"}
+        env.update(env_extra)
+        r = subprocess.run([sys.executable, "-c", probe], cwd=root,
+                           capture_output=True, text=True, env=env)
+        return r.stdout.strip().splitlines()[-1]
+
+    equal(run({}), "5", "code default")
+    with open(path, "w") as f:
+        _json.dump(compiled, f)
+    try:
+        equal(run({}), "3", "profile should beat the code default")
+        equal(run({"JOB_MAX_YEARS": "4"}), "4", "env should beat the profile")
+    finally:
+        os.remove(path)
+
+
 if __name__ == "__main__":
     main("scoring")

@@ -503,6 +503,13 @@ SEND_WHEN_EMPTY = os.environ.get("SEND_WHEN_EMPTY", "").lower() in ("1", "true",
 # age. Set to 0 to disable age filtering entirely. Overridable via profile.json.
 MAX_AGE_DAYS = 21
 
+# Hard ceiling on the experience bar you are willing to see. A role asking eight
+# years is not one you get with two or three, and ranking it low still left it in
+# the list. 0 disables the filter. A posting that states NO bar always passes —
+# silence is not a requirement, and about half of all postings state nothing.
+# The repo default is deliberately loose; set `max_years` in YOUR profile.json.
+MAX_YEARS = 5
+
 # ==========================================================================
 # Optional compiled profile (from setup_profile.py). If profile.compiled.json
 # exists it overrides RESUME + location/size/recency settings above — so anyone
@@ -511,6 +518,7 @@ MAX_AGE_DAYS = 21
 # ==========================================================================
 def _apply_profile():
     global NYC_KEYWORDS, REMOTE_OK, REQUIRE_NYC, PREFER_LARGER, MAX_AGE_DAYS
+    global MAX_YEARS
     try:
         with open("profile.compiled.json") as f:
             p = json.load(f)
@@ -528,9 +536,11 @@ def _apply_profile():
         PREFER_LARGER = bool(p["prefer_larger"])
     if p.get("max_age_days") is not None:
         MAX_AGE_DAYS = int(p["max_age_days"])
+    if p.get("max_years") is not None:
+        MAX_YEARS = int(p["max_years"])
     print(f"[profile] using profile.compiled.json — {len(RESUME['target_titles'])} titles, "
           f"{len(NYC_KEYWORDS)} location keywords, remote_ok={REMOTE_OK}, "
-          f"max_age_days={MAX_AGE_DAYS}")
+          f"max_age_days={MAX_AGE_DAYS}, max_years={MAX_YEARS}")
 
 
 _apply_profile()
@@ -548,6 +558,8 @@ REQUIRE_NYC = env_flag("JOB_REQUIRE_LOCATION", bool(NYC_KEYWORDS))
 REMOTE_OK = env_flag("JOB_REMOTE_OK", REMOTE_OK)
 PREFER_LARGER = env_flag("JOB_PREFER_LARGER", PREFER_LARGER)
 MAX_AGE_DAYS = env_int("JOB_MAX_AGE_DAYS", MAX_AGE_DAYS)
+MAX_YEARS = env_int("JOB_MAX_YEARS", MAX_YEARS)
+RESUME["years_pm"] = env_int("JOB_YEARS_PM", RESUME.get("years_pm") or RESUME["years"])
 
 # Secrets
 EMAIL_USER = os.environ.get("EMAIL_USER", "")
@@ -1698,12 +1710,6 @@ FUNDED_BONUS = 0
 EXCLUDE_LATE_STAGE = os.environ.get(
     "JOB_EXCLUDE_LATE_STAGE", "0").lower() in ("1", "true", "yes")
 
-# Hard ceiling on the experience bar you are willing to see. A role asking eight
-# years is not a role you are getting with two or three, and ranking it low still
-# left it in the list. Set JOB_MAX_YEARS=4 to see only 0-4 year roles; 0 disables
-# the filter. A posting that states NO bar always passes — silence is not a
-# ten-year requirement, and half of all postings state nothing.
-MAX_YEARS = env_int("JOB_MAX_YEARS", 5)
 
 _FUNDED = {}
 _FUNDED_BY_TOKEN = {}
