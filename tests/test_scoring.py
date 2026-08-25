@@ -471,7 +471,11 @@ def test_max_years_follows_the_repo_config_precedence():
     probe = "import companies_digest as C;print(C.MAX_YEARS)"
 
     def run(env_extra):
-        env = {k: v for k, v in os.environ.items() if k != "JOB_MAX_YEARS"}
+        # This test is specifically about the profile layer, so it must NOT
+        # inherit the suite's JOB_IGNORE_PROFILE=1 — that flag exists to make
+        # every OTHER test ignore the profile.
+        env = {k: v for k, v in os.environ.items()
+               if k not in ("JOB_MAX_YEARS", "JOB_IGNORE_PROFILE")}
         env.update(env_extra)
         r = subprocess.run([sys.executable, "-c", probe], cwd=root,
                            capture_output=True, text=True, env=env)
