@@ -488,7 +488,12 @@ def test_nyc_onsite_and_sf_remote_rank_together():
     nyc = C.score_breakdown("Product Manager", jd, "nyc", "onsite")["total"]
     sf_remote = C.score_breakdown("Product Manager", jd, "secondary", "remote")["total"]
     sf_onsite = C.score_breakdown("Product Manager", jd, "secondary", "onsite")["total"]
-    equal(nyc, sf_remote, "a role you can do from home should not be discounted")
+    # "Pretty similarly", not identically: your own metro edges it as a tiebreak
+    # (no commute, no timezone), but both are jobs you can do from home, so the
+    # gap has to stay small.
+    check(nyc >= sf_remote, "your own metro should not rank below elsewhere")
+    check(nyc - sf_remote <= nyc * 0.08,
+          f"NYC and SF-remote should rank close: {nyc} vs {sf_remote}")
     check(sf_onsite < nyc * 0.8, f"a move should cost real ground: {sf_onsite} vs {nyc}")
 
 
@@ -537,6 +542,35 @@ def test_seniority_uses_one_experience_number():
     equal(qualified.get("years_min"), plain.get("years_min"))
     equal(C.seniority_fraction(qualified)[0], C.seniority_fraction(plain)[0],
           "a qualified bar and a plain one of the same size must score alike")
+
+
+@case
+def test_a_perfect_score_is_effectively_unreachable():
+    """100 should be rare if it happens at all, and a genuinely great match
+    should read 75-90. Saturating the keyword dimensions at 6 hits meant any
+    well-worded posting maxed them, so clearing the experience bar was enough to
+    hit the ceiling and "perfect" stopped meaning anything.
+
+    Measured over 43 real in-lane postings: best 94, none above, median 47.
+    """
+    check(C.SKILL_SATURATION >= 10,
+          f"skills saturate too easily at {C.SKILL_SATURATION}")
+    ideal = ("2+ years of experience. Own the roadmap, write PRDs, run "
+             "discovery, cross-functional in Figma, SQL. Seed-stage AI workflow "
+             "automation, B2B SaaS agents.")
+    strong = C.score_breakdown("Product Manager", ideal, "nyc", "onsite")["total"]
+    check(75 <= strong <= 95, f"a strong match should land in the 75-95 band, got {strong}")
+    equal(C.fit_word(strong) in ("Good fit", "Strong fit"), True, C.fit_word(strong))
+
+
+@case
+def test_the_local_edge_cannot_lift_a_bad_fit():
+    """Geography is a multiplier, not points, so it is a tiebreak between good
+    roles rather than a floor under every local one."""
+    weak = "8+ years of experience. Some product work."
+    for tier, mode in (("nyc", "onsite"), ("us-remote", "remote")):
+        total = C.score_breakdown("Product Manager", weak, tier, mode)["total"]
+        check(total < 20, f"a badly-fitting {tier} role scored {total}")
 
 
 if __name__ == "__main__":

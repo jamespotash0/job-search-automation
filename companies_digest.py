@@ -1531,8 +1531,15 @@ UNKNOWN_FRACTION = 0.55
 # Hits needed to saturate a dimension. Combined with the requirements-block
 # restriction below this is what bounds the verbosity effect: past this many, a
 # longer JD earns nothing more.
-SKILL_SATURATION = env_int("JOB_SKILL_SATURATION", 6)
-DOMAIN_SATURATION = env_int("JOB_DOMAIN_SATURATION", 3)
+# Hits needed to saturate a dimension. Set high on purpose: 100 should be
+# essentially unreachable, and a genuinely great match should read 75-90.
+# Saturating at 6 skills meant any reasonably-worded posting maxed the keyword
+# dimensions, so clearing the experience bar was enough to hit the ceiling and
+# "perfect" stopped meaning anything. Twelve distinct resume skills inside the
+# REQUIREMENTS block is rare; measured over 43 real in-lane postings this puts
+# the best at 94, none above, and the median at 47.
+SKILL_SATURATION = env_int("JOB_SKILL_SATURATION", 12)
+DOMAIN_SATURATION = env_int("JOB_DOMAIN_SATURATION", 4)
 
 # --- the requirements block -------------------------------------------------
 # Scoring skills over the WHOLE posting rewards marketing copy. What matters is
@@ -1619,6 +1626,32 @@ def _title_fraction(hits):
 # So the only geographic question the score asks is: would this require moving?
 RELOCATION_FACTOR = float(os.environ.get("JOB_RELOCATION_FACTOR", "0.55"))
 
+# Among roles you could actually take, your own metro still edges the rest —
+# no commute, no timezone, you can meet people. That is a TIEBREAK, so it is a
+# multiplier and not points: points would lift every NYC posting including the
+# bad ones, which is exactly the floor this scoring was rebuilt to remove. A
+# poorly-fitting NYC role stays poorly fitting (0.3 x 1.0), while between two
+# strong ones the local one wins.
+#
+# The effect is deliberately small. "NYC on-site" and "SF company, remote"
+# should rank close together, because both are jobs you can do from home.
+HOME_METRO_FACTOR = 1.0
+ELSEWHERE_FACTOR = float(os.environ.get("JOB_ELSEWHERE_FACTOR", "0.95"))
+
+
+def location_factor(tier, work_mode):
+    """What this role's geography multiplies its fit by.
+
+    1.00  your metro — the full conjunction can only reach 100 here
+    0.95  doable from home but not local (US-remote, a remote role elsewhere)
+    0.55  you would have to move
+    """
+    if needs_relocation(tier, work_mode):
+        return RELOCATION_FACTOR
+    if not tier or tier == "nyc":
+        return HOME_METRO_FACTOR
+    return ELSEWHERE_FACTOR
+
 
 def needs_relocation(tier, work_mode):
     """True if taking this role means living somewhere you don't.
@@ -1690,8 +1723,10 @@ def score_breakdown(title, content, tier=None, work_mode=None):
     # relocate for is worth less across the board, not worth "the same minus a
     # fixed amount". Roles you can actually do keep their full score, so NYC
     # on-site and SF-remote land next to each other.
+    geo = location_factor(tier, work_mode)
+    if geo != 1.0:
+        parts = [(l, int(round(p * geo)), t) for l, p, t in parts]
     if needs_relocation(tier, work_mode):
-        parts = [(l, int(round(p * RELOCATION_FACTOR)), t) for l, p, t in parts]
         misses.append(("location", "you'd have to move for this one"))
 
     return {"total": sum(p[1] for p in parts), "parts": parts, "misses": misses}
@@ -2070,7 +2105,9 @@ def pretty_company(name):
 
 def fit_word(q):
     """The score as something you can act on."""
-    if q >= 90:
+    # Calibrated to the real distribution, where the best posting scores ~94 and
+    # the median ~47. "Strong fit" is meant to be uncommon.
+    if q >= 88:
         return "Strong fit"
     if q >= BEST_MATCH_MIN:
         return "Good fit"
