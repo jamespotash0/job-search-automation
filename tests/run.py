@@ -10,6 +10,11 @@ ROOT = os.path.dirname(HERE)
 
 
 def main():
+    # Pin the subject under test to the repo defaults. A personal
+    # profile.compiled.json on disk would otherwise silently replace the target
+    # titles, skills and domains, so the suite would be testing one thing here
+    # and a different thing in CI.
+    os.environ["JOB_IGNORE_PROFILE"] = "1"
     only = sys.argv[1] if len(sys.argv) > 1 else ""
     mods = sorted(glob.glob(os.path.join(HERE, "test_*.py")))
     mods = [m for m in mods if only in os.path.basename(m)]

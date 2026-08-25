@@ -516,9 +516,17 @@ MAX_YEARS = 5
 # can configure everything from profile.json + their resume without editing code.
 # Absent = the defaults above apply (this repo's default is tuned to James).
 # ==========================================================================
+# Tests must exercise the CODE, not whatever profile happens to be on this
+# machine. Without this the suite passes locally against a personal profile and
+# in CI against the defaults — two different subjects, one green tick.
+IGNORE_PROFILE = os.environ.get("JOB_IGNORE_PROFILE", "").lower() in ("1", "true", "yes")
+
+
 def _apply_profile():
     global NYC_KEYWORDS, REMOTE_OK, REQUIRE_NYC, PREFER_LARGER, MAX_AGE_DAYS
     global MAX_YEARS
+    if IGNORE_PROFILE:
+        return
     try:
         with open("profile.compiled.json") as f:
             p = json.load(f)
@@ -1164,10 +1172,19 @@ def _norm(text):
 
 
 def _fold_punct(text):
-    """Hyphens and slashes between words become spaces, so "Forward-Deployed"
-    and "Go/To/Market" match the same stems as their spaced spellings. Applied
-    for MATCHING only — the original string is what gets displayed."""
-    return re.sub(r"\s+", " ", re.sub(r"[-/\u2010-\u2015]+", " ", text or "")).strip()
+    """Fold the punctuation that separates spellings of the same title.
+
+    Hyphens and slashes become spaces, so "Forward-Deployed" matches the stems
+    written "Forward Deployed". Apostrophes are dropped and "founders" is
+    singularised, so "Founder's Associate", "Founders Associate" and "Founder
+    Associate" are one thing — otherwise the stem list has to enumerate every
+    spelling, and a compiled profile only ever guesses a couple of them.
+
+    Applied for MATCHING only; the original string is what gets displayed.
+    """
+    t = re.sub(r"['\u2018\u2019]", "", text or "")          # founder's -> founders
+    t = re.sub(r"\bfounders\b", "founder", t)              # founders  -> founder
+    return re.sub(r"\s+", " ", re.sub(r"[-/\u2010-\u2015]+", " ", t)).strip()
 
 
 def title_is_target(title):
@@ -1178,7 +1195,9 @@ def title_is_target(title):
         return False
     if any(x in t for x in OFF_LANE_EXCLUDE):  # right stem, wrong profession
         return False
-    return any(x in t for x in RESUME["target_titles"])
+    # Stems are folded the same way as the title, so a stem written
+    # "founder's associate" matches a title folded to "founder associate".
+    return any(_fold_punct(x) in t for x in RESUME["target_titles"])
 
 
 # --------------------------- screening facts pulled straight from the JD

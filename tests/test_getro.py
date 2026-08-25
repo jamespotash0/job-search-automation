@@ -14,6 +14,7 @@ import os
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+os.environ.setdefault("JOB_IGNORE_PROFILE", "1")   # test the code, not a local profile
 sys.path.insert(0, os.path.dirname(HERE))
 
 import getro as G                     # noqa: E402

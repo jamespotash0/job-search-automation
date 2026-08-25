@@ -243,6 +243,8 @@ SUBSTACK_MAX = env_int("SUBSTACK_MAX", 6)
 # the companies digest. Absent = the defaults above apply.
 def _apply_profile():
     global FOCUS_KEYWORDS, LOCATION_KEYWORDS
+    if os.environ.get("JOB_IGNORE_PROFILE", "").lower() in ("1", "true", "yes"):
+        return                        # tests pin the subject to the repo defaults
     try:
         with open("profile.compiled.json") as f:
             p = json.load(f)

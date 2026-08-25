@@ -11,6 +11,7 @@ repo root, or `python tests/run.py gates` to run one module.
 | `test_facts.py` | `screen_facts`, `strip_html`, `fit_sentence` — the screening line |
 | `test_scoring.py` | `score_breakdown` and the substring traps it keeps falling into |
 | `verify_grok_quotes.py` | **not** part of `run.py` — hits the network, see below |
+| `check_profile.py` | **not** part of `run.py` — validates YOUR compiled profile, see below |
 
 ## Fixtures are real, labels are intentional
 
@@ -80,3 +81,26 @@ quotation, and the attribution line reads "summarized from a post by @handle"
 rather than "posted by". The field still feeds the scoring blob, where being
 approximate costs nothing. Re-run this check before ever presenting Grok output
 as someone's words again.
+
+## check_profile.py — the other half of the gate tests
+
+`run.py` sets `JOB_IGNORE_PROFILE=1` so the suite tests the CODE. Without that
+it tested whatever `profile.compiled.json` happened to be on the machine: green
+locally against a personal profile, green in CI against the defaults — two
+different subjects, one tick.
+
+But the compiled profile is what production actually runs on, and it is written
+by a model from a prose sentence in `profile.json`, so it drifts. `setup_profile.py`
+once produced a list with no bare `forward deployed` stem, which silently dropped
+every "Forward Deployed AI Engineer" posting.
+
+So run this after every `setup_profile.py`, before pushing the secret:
+
+```
+python setup_profile.py
+python tests/check_profile.py          # real gate, real profile, 34 labelled postings
+gh secret set PROFILE_COMPILED_JSON < profile.compiled.json
+```
+
+It also flags stems shorter than four characters, which match far too much —
+another thing a model-written list does.
