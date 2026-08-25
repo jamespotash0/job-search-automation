@@ -112,7 +112,20 @@ scripts, which are the repo author's job search, not yours. They now say so
 loudly on startup rather than quietly producing a plausible digest for someone
 else's career.
 
-### 4. Run it
+### 4. Check it before you run it
+
+```bash
+.venv/bin/python doctor.py           # local + GitHub checks
+.venv/bin/python doctor.py --local   # skip the GitHub half
+```
+
+Every problem it looks for is **silent in production**: a missing
+`PROFILE_COMPILED_JSON` secret doesn't error, it emails you someone else's job
+search; an empty watchlist doesn't error, it emails you three postings instead
+of thirty; a compiled profile older than your resume doesn't error, it quietly
+uses last month's filters. `✗` means wrong results, `!` means a source is off.
+
+### 5. Run it
 
 ```bash
 .venv/bin/python funding_digest.py     # who just raised
@@ -120,7 +133,7 @@ else's career.
 .venv/bin/python getro.py              # bulk-fill the watchlist (run this first, once)
 ```
 
-### 5. Put it on a schedule
+### 6. Put it on a schedule
 
 Push your fork and enable Actions. Three workflows ship with it:
 

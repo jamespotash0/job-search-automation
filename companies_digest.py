@@ -2347,6 +2347,12 @@ def main():
             print(f"[loop] {len(sizes)} company sizes from the watchlist")
     except Exception as e:
         print(f"[info] watchlist not available: {e}")
+    # A fresh checkout has an empty watchlist, so the ATS boards -- the source
+    # that finds most postings -- contribute nothing and the run looks like "not
+    # much is hiring". getro.py fills it in one pass from public VC job boards.
+    if len(gh) + len(lv) + len(ash) + len(wk) + len(sr) + len(rip) < 20:
+        print("[setup] the ATS watchlist is nearly empty, so most job boards are "
+              "not being read. Run:  python getro.py")
     _load_funded()
     _load_stage()
 
@@ -2391,6 +2397,13 @@ def main():
     print(f"[info] fetched {len(raw)} raw postings")
 
     seen = load_seen()
+    if not seen:
+        # Not an error — but worth saying, because the first digest is much
+        # bigger than every later one and that surprises people into thinking
+        # the filters are broken.
+        print("[setup] no seen-jobs history yet: this first run treats every "
+              f"posting as new, so expect a fuller digest than usual "
+              f"(capped at {MAX_ITEMS}).")
     now_ts = datetime.now(timezone.utc).timestamp()
     age_cutoff = (now_ts - MAX_AGE_DAYS * 86400) if MAX_AGE_DAYS else 0
     picked, ids_this_run, seen_titles = [], set(), set()
