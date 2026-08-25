@@ -1616,7 +1616,31 @@ def _title_fraction(hits):
     return min(1.0, 0.75 + 0.25 * (min(words, 4) - 1) / 3)
 
 
-def score_breakdown(title, content):
+# Location matters, but not as "which metro". What matters is whether the role
+# can be done from where you live. A San Francisco company hiring REMOTE is as
+# workable from Brooklyn as a New York company hiring on-site; a San Francisco
+# company hiring on-site is a house move. Ranking by metro put those two SF roles
+# side by side and split the two workable ones apart.
+#
+# So the only geographic question the score asks is: would this require moving?
+RELOCATION_FACTOR = float(os.environ.get("JOB_RELOCATION_FACTOR", "0.55"))
+
+
+def needs_relocation(tier, work_mode):
+    """True if taking this role means living somewhere you don't.
+
+    Your metro is always fine, whatever the work mode. Anywhere else is fine ONLY
+    if the role is remote. Unknown work mode outside your metro is treated as
+    on-site, which is what an unqualified city on a posting usually means.
+    """
+    if not tier or tier == "nyc":
+        return False          # your metro, or geography unknown — never penalise
+    if tier == "us-remote":
+        return False
+    return (work_mode or "onsite") != "remote"
+
+
+def score_breakdown(title, content, tier=None, work_mode=None):
     """A 0-100 fit score AND the evidence behind it.
 
     The score is dominated by whether you clear the role's experience bar, read
@@ -1666,6 +1690,15 @@ def score_breakdown(title, content):
             min(1.0, len(domains_hit) / DOMAIN_SATURATION) * frac, domains_hit)
     else:
         misses.append(("domains", "not in a domain you've worked in"))
+
+    # --- would this mean moving? Applied as a scale over everything rather than
+    # a subtraction, for the same reason keywords are: a role you would have to
+    # relocate for is worth less across the board, not worth "the same minus a
+    # fixed amount". Roles you can actually do keep their full score, so NYC
+    # on-site and SF-remote land next to each other.
+    if needs_relocation(tier, work_mode):
+        parts = [(l, int(round(p * RELOCATION_FACTOR)), t) for l, p, t in parts]
+        misses.append(("location", "you'd have to move for this one"))
 
     return {"total": sum(p[1] for p in parts), "parts": parts, "misses": misses}
 
@@ -2070,9 +2103,13 @@ def card(item, dim=False):
     if loc and tier_word and tier_word.lower() not in loc.lower() \
             and not (tier == "nyc" and "new york" in loc.lower()):
         loc_text += f" \u00b7 {tier_word}"
+    # Coloured by whether you could actually take it, not by which metro it is
+    # in. A remote role at an SF company is not amber — you'd do it from home.
+    relocate = needs_relocation(tier, item.get("work_mode"))
+    if relocate:
+        loc_text += " \u00b7 relocate"
     chips.append(_chip(loc_text,
-                       "good" if tier == "nyc" else
-                       "warn" if tier in ("secondary", "us-other") else "neutral"))
+                       "warn" if relocate else "good" if tier == "nyc" else "neutral"))
 
     # --- the experience bar. Stated ONCE, with the comparison built in, so the
     # fit sentence below has nothing left to repeat.
@@ -2098,9 +2135,9 @@ def card(item, dim=False):
     if mode.lower().startswith("remote") and "remote" in (loc or "").lower():
         mode = ""
     if mode:
-        commute = mode.lower().startswith(("onsite", "hybrid"))
-        chips.append(_chip(esc(mode),
-                           "warn" if commute and tier not in ("nyc", "") else "neutral"))
+        # Never amber on its own: the location chip already carries the "you'd
+        # have to move" verdict, and colouring both said it twice.
+        chips.append(_chip(esc(mode)))
 
     if facts.get("comp"):
         chips.append(_chip(esc(facts["comp"])))
@@ -2366,7 +2403,8 @@ def main():
             dropped_years += 1
             continue
 
-        bd = score_breakdown(j["title"], j["content"])
+        mode = work_mode(j.get("location", ""), j.get("content", ""))
+        bd = score_breakdown(j["title"], j["content"], tier, mode)
         if bd["total"] <= 0:
             continue
 
@@ -2386,7 +2424,7 @@ def main():
                 continue
 
         j["loc_tier"] = tier
-        j["work_mode"] = work_mode(j.get("location", ""), j.get("content", ""))
+        j["work_mode"] = mode
         j["funding"] = funding_note(j.get("company", ""))
         j["stage"] = stage
         j["breakdown"] = bd

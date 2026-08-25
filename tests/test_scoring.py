@@ -486,5 +486,62 @@ def test_max_years_follows_the_repo_config_precedence():
         os.remove(path)
 
 
+@case
+def test_geography_asks_whether_you_would_have_to_move():
+    """Not "which metro". A San Francisco company hiring REMOTE is as workable
+    from Brooklyn as a New York company hiring on-site; ranking by metro put the
+    two SF roles together and split the two workable ones apart."""
+    for tier, mode, moving in [
+            ("nyc", "onsite", False), ("nyc", "remote", False),
+            ("nyc", "hybrid", False), ("us-remote", "remote", False),
+            ("secondary", "remote", False),      # SF company, remote role
+            ("secondary", "hybrid", True), ("secondary", "onsite", True),
+            ("us-other", "onsite", True), ("us-other", "remote", False)]:
+        equal(C.needs_relocation(tier, mode), moving, f"{tier}/{mode}")
+
+
+@case
+def test_nyc_onsite_and_sf_remote_rank_together():
+    jd = ("2+ years of product experience. Roadmap, PRDs, Figma. Seed-stage "
+          "AI workflow startup, B2B SaaS.")
+    nyc = C.score_breakdown("Product Manager", jd, "nyc", "onsite")["total"]
+    sf_remote = C.score_breakdown("Product Manager", jd, "secondary", "remote")["total"]
+    sf_onsite = C.score_breakdown("Product Manager", jd, "secondary", "onsite")["total"]
+    equal(nyc, sf_remote, "a role you can do from home should not be discounted")
+    check(sf_onsite < nyc * 0.8, f"a move should cost real ground: {sf_onsite} vs {nyc}")
+
+
+@case
+def test_unknown_geography_is_never_penalised():
+    """score_breakdown is called without geography in plenty of places. Unknown
+    must mean "no opinion", not "assume they'd have to move" -- the same
+    fail-open rule the funding digest's HQ gate uses."""
+    equal(C.needs_relocation(None, None), False)
+    equal(C.needs_relocation("", "onsite"), False)
+
+
+@case
+def test_an_unqualified_city_is_treated_as_onsite():
+    """A posting that just says "Austin, TX" with no work mode means on-site."""
+    equal(C.needs_relocation("us-other", None), True)
+    equal(C.needs_relocation("us-other", ""), True)
+
+
+@case
+def test_relocation_scales_rather_than_subtracts():
+    """Same reason keywords scale: a role you'd have to move for is worth less
+    across the board, not "the same minus a fixed amount" -- which would flip
+    sign on a weak posting."""
+    weak = "Join our team."
+    strong = ("2+ years of product experience. Roadmap, PRDs, Figma, SQL, "
+              "discovery. Seed-stage AI workflow startup, B2B SaaS.")
+    for jd in (weak, strong):
+        home = C.score_breakdown("Product Manager", jd, "nyc", "onsite")["total"]
+        away = C.score_breakdown("Product Manager", jd, "secondary", "onsite")["total"]
+        check(0 <= away <= home, f"{away} should sit between 0 and {home}")
+        bd = C.score_breakdown("Product Manager", jd, "secondary", "onsite")
+        equal(sum(p[1] for p in bd["parts"]), bd["total"], "parts must still sum")
+
+
 if __name__ == "__main__":
     main("scoring")
