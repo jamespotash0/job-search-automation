@@ -80,19 +80,17 @@ def test_senior_requirement_is_penalised():
 
 
 @case
-def test_location_and_funding_are_ranking_not_gating():
-    """Both bonuses are applied AFTER the total<=0 cut, so neither can resurrect
-    an off-resume posting. This asserts the constants that make that true."""
-    equal(C.LOC_BONUS["nyc"], 10)
-    # NYC first; then a US-remote role (doable from Brooklyn) ahead of SF/Bay
-    # (which means relocating); a non-NYC US on-site role ranks last but is still
-    # shown. Every acceptable tier must score above the ""/drop tier.
-    order = ["nyc", "us-remote", "secondary", "us-other"]
-    vals = [C.LOC_BONUS[t] for t in order]
-    check(vals == sorted(vals, reverse=True),
-          f"location tiers out of order: {list(zip(order, vals))}")
-    check(min(vals) > C.LOC_BONUS[""], "every kept tier must outrank a drop")
-    check(C.FUNDED_BONUS > 0, "a fresh raise should help, not hurt")
+def test_location_and_funding_award_no_points():
+    """Both are preferences. location_tier() keeps or drops and the tier is shown
+    as a chip; a recent raise is shown as a badge. Neither may move the score --
+    a NYC posting that wants ten years is still a role you will not get, and a
+    location bonus made exactly that kind of posting look competitive."""
+    check(not hasattr(C, "LOC_BONUS") or not any(C.LOC_BONUS.values()),
+          "location still awards points")
+    equal(C.FUNDED_BONUS, 0, "a recent raise still moves the score")
+    # ...but both must still be usable as filters / labels.
+    equal(C.location_tier("New York, NY", ""), "nyc")
+    check("NYC" in C.LOC_LABEL.values(), "the location tier label is gone")
 
 
 @case
@@ -120,46 +118,29 @@ def _stage_part(bd):
 
 
 @case
-def test_one_soft_stage_tell_earns_nothing():
-    """"We move fast" is in half the postings on earth. A lone soft tell must
-    not pay, or the bonus stops discriminating between anything."""
-    bd = C.score_breakdown("Product Manager", "We ship fast. 10 years of history.")
-    label, pts = _stage_part(bd)
-    check(label is None, f"a single soft tell paid out: {label} {pts:+d}")
+def test_stage_earns_no_points_at_all():
+    """Stage is a PREFERENCE, so it filters instead of scoring. It used to add up
+    to 10, which helped build a floor under postings that fit badly: an 8+ year
+    PM req at a big lab scored 58 on title + skills + stage no matter how far off
+    the experience bar was."""
+    for body in ("Seed-stage and high-growth, shipping fast from the ground up.",
+                 "A high-growth publicly traded company.",
+                 "We move fast."):
+        bd = C.score_breakdown("Product Manager", body)
+        labels = {l for l, _, _ in bd["parts"]}
+        check(not (labels & {"early stage", "early stage (soft)", "late stage", "stage"}),
+              f"stage scored: {labels}")
 
 
 @case
-def test_two_soft_stage_tells_earn_the_half_bonus():
-    bd = C.score_breakdown("Product Manager",
-                           "A high-growth team shipping fast, building from the ground up.")
-    label, pts = _stage_part(bd)
-    equal(label, "early stage (soft)")
-    # Worth less than a named round, more than nothing. Asserted as a relation,
-    # not a magic number, so a reweighting does not have to edit this test.
-    check(0 < pts < C.WEIGHTS["stage"], f"soft tells should be a partial bonus, got {pts}")
-
-
-@case
-def test_a_named_round_beats_the_soft_tells():
-    """Hard and soft must never stack — the round is the better evidence."""
-    bd = C.score_breakdown("Product Manager",
-                           "Seed-stage and high-growth, shipping fast from the ground up.")
-    label, pts = _stage_part(bd)
-    equal(label, "early stage")
-    equal(pts, C.WEIGHTS["stage"], "a named round should earn the full stage weight")
-
-
-@case
-def test_late_stage_suppresses_the_soft_tells():
-    """A scale-up describes itself in exactly the same vocabulary."""
-    bd = C.score_breakdown("Product Manager",
-                           "A high-growth publicly traded company shipping fast "
-                           "from the ground up.")
-    label, pts = _stage_part(bd)
-    equal(label, "late stage")
-    # Under a weighted 0..1 model a zero IS the penalty: there is nothing below
-    # "this dimension contributes nothing".
-    equal(pts, 0, "late stage should earn nothing")
+def test_the_score_has_only_the_three_dimensions_that_measure_fit():
+    """Title, location and stage are filters. Anything else in `parts` means a
+    floor is creeping back under postings that do not fit."""
+    equal(set(C.WEIGHTS), {"seniority fit", "resume skills", "your domains"})
+    bd = C.score_breakdown("Forward Deployed Product Manager",
+                           "Seed-stage NYC startup. 2+ years. Roadmap, PRDs, Figma.")
+    check({l for l, _, _ in bd["parts"]} <= set(C.WEIGHTS),
+          f"unexpected scored dimension: {[l for l, _, _ in bd['parts']]}")
 
 
 @case
@@ -189,12 +170,12 @@ def test_stage_points_rank_the_rounds_against_your_band():
 
 @case
 def test_misses_name_the_signals_that_did_not_fire():
-    bd = C.score_breakdown("Product Manager", "We sell boots. Apply within.")
+    """A score is only half an explanation: the email prints these as the plain
+    reason a role is not a better match."""
+    bd = C.score_breakdown("Product Manager", "Join our team.")
     got = {label for label, _ in bd["misses"]}
-    for want in ("seniority", "skills", "domains", "stage"):
+    for want in ("seniority", "skills", "domains"):
         check(want in got, f"missing miss {want!r}; got {got}")
-    for _, reason in bd["misses"]:
-        check(reason and reason[0].islower(), f"reason should read as a clause: {reason!r}")
 
 
 @case
@@ -232,12 +213,23 @@ def test_strength_label_measures_against_the_cap():
 
 
 @case
-def test_the_why_line_shows_both_hits_and_gaps():
-    bd = C.score_breakdown("Product Manager", "2+ years. Roadmap and PRDs.")
-    line = C.match_line({"breakdown": bd, "q": bd["total"]})
-    check("Why" in line, "no 'Why N' header")
-    check("seniority fit" in line, "hits missing from the why line")
-    check("no funding stage stated" in line, f"gaps missing from the why line: {line}")
+def test_the_email_shows_no_arithmetic():
+    """The card used to print "+26 seniority fit | +17 strong skills match" and a
+    dimmed list of zero-weighted misses. That is a window into the machinery, not
+    information you can act on."""
+    item = {"title": "Product Manager", "company": "acme", "url": "http://x",
+            "location": "New York, NY", "source": "Ashby", "posted_ts": None,
+            "loc_tier": "nyc", "funding": {}, "facts": {"years": "5+ yrs",
+            "years_min": 5, "years_domain": "pm"}}
+    item["breakdown"] = C.score_breakdown("Product Manager",
+                                          "5+ years of product management experience")
+    item["q"] = item["breakdown"]["total"]
+    html_out = C.card(item)
+    for banned in ("Why ", "+65", "+25", "&minus;", "\u2212"):
+        check(banned not in html_out, f"card still prints arithmetic: {banned!r}")
+    check("Strong fit" in html_out or "Good fit" in html_out
+          or "Worth a look" in html_out or "A stretch" in html_out,
+          "card shows no plain-language fit label")
 
 
 @case
@@ -255,8 +247,11 @@ def test_ai_native_skills_are_matched_but_not_as_substrings():
         "Office Manager",
         "Claudette inspects the specimen per specification in Qatar. "
         "Experimental landings for multivariates.")
-    check(not [t for _, _, terms in innocent["parts"] for t in terms],
-          f"phantom hits: {innocent['parts']}")
+    # Only the keyword dimensions may be empty-handed here; the seniority
+    # dimension legitimately carries its own "no bar stated" explanation.
+    keyword_terms = [t for label, _, terms in innocent["parts"]
+                     if label in ("resume skills", "your domains") for t in terms]
+    check(not keyword_terms, f"phantom hits: {keyword_terms}")
 
 
 # ---------------------------------------------------------------- v2 scoring
@@ -358,16 +353,15 @@ def test_the_first_qualifier_wins_when_a_sentence_names_both():
 
 
 @case
-def test_title_score_does_not_double_count_overlapping_stems():
-    """"Forward Deployed Engineer" matches two stems and "Product Manager" one,
-    but both are exact target matches. The old scorer paid 24 vs 12 -- measuring
-    the stem list, not the fit."""
-    a = dict((l, p) for l, p, _ in
-             C.score_breakdown("Forward Deployed Engineer", "")["parts"])["title"]
-    b = dict((l, p) for l, p, _ in
-             C.score_breakdown("Product Manager", "")["parts"])["title"]
-    check(a <= b * 1.4, f"overlapping stems still inflate the title score: {a} vs {b}")
-    check(b > 0, "an exact target title scored nothing")
+def test_title_is_a_filter_and_never_a_score():
+    """title_is_target() already decided the posting is in lane. Paying points
+    for the title again just raised the floor under every posting that survived
+    -- and paid MORE for titles that happened to match two overlapping stems
+    ("Forward Deployed Engineer" 24 vs "Product Manager" 12, both exact)."""
+    for t in ("Forward Deployed Engineer", "Product Manager",
+              "Forward Deployed Product Manager"):
+        labels = {l for l, _, _ in C.score_breakdown(t, "")["parts"]}
+        check("title" not in labels, f"{t!r} scored points for its title")
 
 
 @case
@@ -377,8 +371,60 @@ def test_hyphenated_titles_score_the_same_as_spaced_ones():
     for a, b in [("Forward-Deployed Engineer", "Forward Deployed Engineer"),
                  ("Forward-Deployed Product Manager", "Forward Deployed Product Manager")]:
         check(C.title_is_target(a), f"{a!r} was dropped by the gate")
-        equal(C.score_breakdown(a, "")["total"], C.score_breakdown(b, "")["total"],
+        equal(C.score_breakdown(a, "x")["total"], C.score_breakdown(b, "x")["total"],
               f"{a!r} scored differently from {b!r}")
+
+
+@case
+def test_a_bar_years_above_yours_scores_near_zero():
+    """Ranking a role low still left it in the list. A role wanting eight years
+    is not a role you get with two or three, and the score should say so."""
+    kw = ("Own the roadmap, write PRDs, run discovery, cross-functional in "
+          "Figma, SQL. AI agents, B2B SaaS workflow automation.")
+    scores = {}
+    for y in (2, 4, 6, 8, 10):
+        scores[y] = C.score_breakdown(
+            "Product Manager", f"{y}+ years of product management experience. {kw}")["total"]
+    check(scores[2] >= 90, f"a role at your level should score high: {scores[2]}")
+    check(scores[8] <= 5, f"an 8-year bar should be near zero, got {scores[8]}")
+    check(scores[10] <= scores[8], "the curve should not turn back up")
+    ordered = [scores[y] for y in (2, 4, 6, 8, 10)]
+    equal(ordered, sorted(ordered, reverse=True), f"not monotonic: {scores}")
+
+
+@case
+def test_keywords_cannot_rescue_a_role_you_are_years_short_of():
+    """Keywords SCALE WITH the experience fit rather than adding beside it.
+    Additively, a role wanting eight years still collected the full keyword
+    weight and landed around 20."""
+    loaded = ("10+ years of product management experience. Roadmap, roadmapping, "
+              "PRDs, discovery, prioritization, Figma, SQL, Notion, Jira, B2B, "
+              "SaaS, AI, agents, LLM, workflow, automation, fintech, proptech.")
+    bare = "10+ years of product management experience."
+    a = C.score_breakdown("Product Manager", loaded)["total"]
+    b = C.score_breakdown("Product Manager", bare)["total"]
+    check(a <= 10, f"a keyword-stuffed 10-year role still scored {a}")
+    check(a - b <= 8, f"keywords moved a hopeless role by {a - b}")
+
+
+@case
+def test_the_years_filter_lets_unknown_through():
+    """Half of all postings state no bar. Silence is not a ten-year requirement,
+    so an unstated bar must never be filtered out."""
+    check(C.screen_facts("Join our team and build the future.").get("years_min") is None,
+          "this fixture should state no bar")
+    check(C.MAX_YEARS > 0, "the filter should be on by default")
+
+
+@case
+def test_parts_still_sum_to_the_total_after_scaling():
+    """Keyword scaling multiplies each part, so the arithmetic must still close
+    even though the email no longer prints it."""
+    for jd in ("2+ years of product experience. Roadmap, PRDs, Figma.",
+               "8+ years of product management experience. Roadmap, PRDs.",
+               "Join our team."):
+        bd = C.score_breakdown("Product Manager", jd)
+        equal(sum(p[1] for p in bd["parts"]), bd["total"], jd[:40])
 
 
 if __name__ == "__main__":

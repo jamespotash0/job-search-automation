@@ -1300,8 +1300,7 @@ def fit_sentence(item):
     doms = by.get("your domains") or []
     if doms:
         clauses.append("in " + ", ".join(doms[:3]))
-    if by.get("early stage"):
-        clauses.append("early-stage")
+    # (stage is a filter now, so it no longer appears in `parts`)
     if item.get("funding"):
         clauses.append(html.escape(funding_label(item["funding"])))
     tier = LOC_LABEL.get(item.get("loc_tier"), "")
@@ -1435,12 +1434,23 @@ LATE_STAGE_PENALTY = -abs(env_int("JOB_LATE_STAGE_PENALTY", 6))
 # is bounded, comparable across sources (an X/Grok lead carries ~900 chars, an
 # ATS posting 8,000), and every dimension is legible on its own.
 # ==========================================================================
+# v3: the score answers ONE question — how well does this role's experience bar
+# fit yours — and uses keyword overlap only to separate roles that fit it about
+# equally. Everything else is a FILTER, not a score:
+#
+#   title    — title_is_target() already decided the posting is in lane. Paying
+#              points for it again just raised the floor under every posting.
+#   location — a personal preference. location_tier() keeps or drops; it does
+#              not make a badly-fitting role look better.
+#   stage    — same. A late-stage company is filtered, not discounted.
+#
+# Why: an 8+ year PM req at a big lab used to score 58, because title (25) plus
+# skills (20) plus stage (6) built a ~51 floor no matter how badly the seniority
+# fit — 4 out of 30 — actually matched. The floor was the bias.
 WEIGHTS = {
-    "title": env_int("JOB_W_TITLE", 30),
-    "seniority fit": env_int("JOB_W_SENIORITY", 30),
-    "resume skills": env_int("JOB_W_SKILLS", 20),
+    "seniority fit": env_int("JOB_W_SENIORITY", 65),
+    "resume skills": env_int("JOB_W_SKILLS", 25),
     "your domains": env_int("JOB_W_DOMAINS", 10),
-    "stage": env_int("JOB_W_STAGE", 10),
 }
 
 # An absent signal is not a bad signal. A JD that never states years should not
@@ -1520,8 +1530,9 @@ def years_domain(content, years_phrase_end=None):
 # seed-to-Series-B startups this is pointed at, and gating on it hid half the
 # in-lane market at 2.5 years. One or two years over is the "apply anyway" band
 # and barely costs; a five-year gap ranks low but stays visible.
-STRETCH_CURVE = [(0, 1.00), (1, 0.88), (2, 0.70), (3, 0.50), (4, 0.32)]
-STRETCH_FLOOR = 0.15
+STRETCH_CURVE = [(0, 1.00), (1, 0.85), (2, 0.60), (3, 0.35), (4, 0.18),
+                 (5, 0.08)]
+STRETCH_FLOOR = 0.02
 
 
 def seniority_fraction(facts, content=""):
@@ -1564,121 +1575,97 @@ def _title_fraction(hits):
 
 
 def score_breakdown(title, content):
-    """A 0-100 resume-fit score AND the evidence behind it.
+    """A 0-100 fit score AND the evidence behind it.
 
-    Each dimension is scored 0..1 on its own terms and multiplied by its weight
-    in WEIGHTS, so the total is bounded and a posting from a 900-character X/Grok
-    lead is comparable with one from an 8,000-character ATS posting. Returns
-        {"total": int,
-         "parts":  [(label, points, [terms]), ...],   # what moved the number
-         "misses": [(label, reason), ...]}            # what scored NOTHING
+    The score is dominated by whether you clear the role's experience bar, read
+    from the whole posting — the stated number when there is one, the JD's own
+    seniority language when there is not. Keyword overlap is the tiebreak
+    between roles that fit that bar about equally, never the thing that carries
+    a badly-fitting role.
 
-    `misses` exists because a score is only half an explanation. A 45 with
-    "+20 seniority fit, +9 skills" tells you what fired; it does not tell you the
-    posting named no round and matched none of your domains, which is the actual
-    reason it isn't a 70. Misses are worth 0 by construction and are kept OUT of
-    `parts`, so the printed arithmetic still sums to the total.
+    Returns {"total", "parts": [(label, points, terms)], "misses": [(label, why)]}.
+    Title, location and stage are absent on purpose: they are filters applied
+    elsewhere, and scoring them put a floor under every posting that survived.
     """
     t, c = _norm(title), _norm(content)
     parts, misses = [], []
 
     def add(label, frac, terms):
-        return add_as(label, label, frac, terms)
-
-    def add_as(label, weight_key, frac, terms):
-        """Emit `label` but draw its points from WEIGHTS[weight_key], so the
-        stage dimension can keep its three distinct, informative labels
-        ("early stage" / "early stage (soft)" / "late stage") while sharing one
-        weight."""
-        pts = int(round(WEIGHTS[weight_key] * frac))
+        pts = int(round(WEIGHTS[label] * frac))
         if pts:
             parts.append((label, pts, terms))
         return pts
 
-    # --- role fit. Punctuation is folded first: "Forward-Deployed Engineer" is
-    # the same job as "Forward Deployed Engineer", and without this it matched no
-    # stem at all -- scoring 0 and being dropped by the gate outright.
-    t_match = _fold_punct(t)
-    titles_hit = [x for x in RESUME["target_titles"] if x in t_match]
-    if titles_hit:
-        add("title", _title_fraction(titles_hit), titles_hit)
-    else:
-        # Only reachable from a source that bypasses the title gate (HN's
-        # "Who is hiring" thread matches on body text). Everywhere else this
-        # miss is impossible — the posting would never have been collected.
-        misses.append(("title", "matches none of your target titles"))
-
-    # --- seniority. The JD's own stated number first; the keyword lists are the
-    # fallback for a posting that never states one. They used to be the only
-    # signal, which is how 3-4 years -- the band closest to you -- scored zero.
+    # --- experience bar: the whole question, read from the whole posting.
     facts = screen_facts(content)
     frac, why = seniority_fraction(facts, c)
     if frac is None:
-        jr = [x for x in JUNIOR_SIGNALS if x in c]
-        sr = [x for x in SENIOR_SIGNALS if x in c]
-        if jr and not sr:
-            add("seniority fit", 1.0, jr[:3])
-        elif sr and not jr:
-            add("seniority fit", 0.35, sr[:3])
-        elif jr and sr:
-            # Contradictory copy ("2+ years" in one bullet, "5+" in another).
-            # Neither reading is trustworthy, so treat it as unstated.
-            add("seniority fit", UNKNOWN_FRACTION, jr[:2] + sr[:2])
-            misses.append(("seniority", "the posting states two different bars"))
-        else:
-            add("seniority fit", UNKNOWN_FRACTION, [])
-            misses.append(("seniority", why))
-    else:
-        add("seniority fit", frac, [why])
-        if frac < 1.0:
-            misses.append(("seniority", why + " — a stretch"))
+        frac, why = _seniority_from_prose(t, c)
+    add("seniority fit", frac, [why])
+    if frac < 1.0:
+        misses.append(("seniority", why))
 
-    # --- skills, scored over the REQUIREMENTS block rather than the whole
-    # posting, and saturating. Presence-counting across a whole JD is what made
-    # a verbose posting outrank a well-matched one.
+    # --- keywords, as the tiebreak — and SCALED BY the experience fit, not added
+    # beside it. Additively, a role wanting 8 years still collected the full 35
+    # keyword points and landed around 20; multiplied, it lands near zero, which
+    # is the honest answer. Keyword overlap separates roles you could get; it
+    # cannot carry one you are five years short of.
     req = _norm(requirements_block(content))
     skills_hit = _hits(_skill_re(), t + " " + req)
     if skills_hit:
-        add("resume skills", min(1.0, len(skills_hit) / SKILL_SATURATION), skills_hit)
+        add("resume skills",
+            min(1.0, len(skills_hit) / SKILL_SATURATION) * frac, skills_hit)
     else:
         misses.append(("skills", "no overlap with your resume skills"))
 
     domains_hit = _hits(_domain_re(), t + " " + c)
     if domains_hit:
-        add("your domains", min(1.0, len(domains_hit) / DOMAIN_SATURATION), domains_hit)
+        add("your domains",
+            min(1.0, len(domains_hit) / DOMAIN_SATURATION) * frac, domains_hit)
     else:
         misses.append(("domains", "not in a domain you've worked in"))
 
-    # --- stage. A named round wins outright; the soft tells are the fallback for
-    # a JD that never states one, and are ignored entirely when anything says
-    # late-stage.
-    early = [x for x in EARLY_STAGE_SIGNALS if x in c]
-    late = _hits(_late_re(), c)
-    if late:
-        # Late stage scores nothing and says so, rather than going negative:
-        # under a weighted model a zero already IS the penalty.
-        misses.append(("stage", f"late stage ({', '.join(late[:2])})"))
-        parts.append(("late stage", 0, late[:3]))
-    elif early:
-        add_as("early stage", "stage", 1.0, early[:3])
-    else:
-        soft = _hits(_soft_re(), c)
-        if len(soft) >= EARLY_STAGE_SOFT_MIN:
-            add_as("early stage (soft)", "stage", 0.6, soft[:3])
-        else:
-            add_as("stage", "stage", UNKNOWN_FRACTION, [])
-            misses.append(("stage", "no funding stage stated"))
-
     return {"total": sum(p[1] for p in parts), "parts": parts, "misses": misses}
+
+
+# Seniority when the posting states no number: the union of what the rest of the
+# JD says. Weaker evidence than a stated bar, so it never reaches full marks.
+def _seniority_from_prose(title, content):
+    jr = [x for x in JUNIOR_SIGNALS if x in content]
+    sr = [x for x in SENIOR_SIGNALS if x in content]
+    senior_title = any(x in title for x in SENIORITY_EXCLUDE) or _LEAD_RE.search(title)
+    if senior_title:
+        return 0.30, "the title itself reads senior"
+    if jr and not sr:
+        return 0.90, f"reads early-career ({jr[0]})"
+    if sr and not jr:
+        return 0.40, f"the posting leans senior ({sr[0]})"
+    if jr and sr:
+        return UNKNOWN_FRACTION, "the posting states two different bars"
+    return UNKNOWN_FRACTION, "no experience bar stated"
 
 
 def qualification_score(title, content):
     return score_breakdown(title, content)["total"]
 
 
-# Extra points for a posting at a company that raised recently — the whole
-# premise of the loop is that a fresh round is what turns into a new req.
-FUNDED_BONUS = int(os.environ.get("JOB_FUNDED_BONUS", "8"))
+# A recent raise is shown as a badge — it is the best cold-outreach hook you get
+# — but it no longer moves the score. Whether a company just raised says nothing
+# about whether you clear the bar for the role.
+FUNDED_BONUS = 0
+
+# Stage is a preference, so it filters rather than scores. A company that is
+# publicly traded or clearly late-stage is dropped; everything else is kept and
+# its stage is shown. Set JOB_EXCLUDE_LATE_STAGE=0 to keep them.
+EXCLUDE_LATE_STAGE = os.environ.get(
+    "JOB_EXCLUDE_LATE_STAGE", "1").lower() not in ("0", "false", "no")
+
+# Hard ceiling on the experience bar you are willing to see. A role asking eight
+# years is not a role you are getting with two or three, and ranking it low still
+# left it in the list. Set JOB_MAX_YEARS=4 to see only 0-4 year roles; 0 disables
+# the filter. A posting that states NO bar always passes — silence is not a
+# ten-year requirement, and half of all postings state nothing.
+MAX_YEARS = env_int("JOB_MAX_YEARS", 5)
 
 _FUNDED = {}
 _FUNDED_BY_TOKEN = {}
@@ -1792,13 +1779,10 @@ _SECONDARY_RE = kw_matcher(SECONDARY_LOC_KEYWORDS)
 # NYC today, whereas on-site in the Bay means relocating, which is the same cost
 # as any other out-of-town office. On-site elsewhere in the US ranks last but is
 # no longer thrown away.
-LOC_BONUS = {
-    "nyc": env_int("JOB_LOC_BONUS_PRIMARY", 10),
-    "us-remote": env_int("JOB_LOC_BONUS_REMOTE", 5),
-    "secondary": env_int("JOB_LOC_BONUS_SECONDARY", 4),
-    "us-other": env_int("JOB_LOC_BONUS_OTHER", 1),
-    "": 0,
-}
+# Location is a personal preference, not a measure of fit: location_tier() keeps
+# or drops a posting, and the tier is shown as a chip. It deliberately awards no
+# points — a NYC posting that wants ten years is still a role you won't get, and
+# a location bonus was making exactly that kind of posting look competitive.
 LOC_LABEL = {"nyc": "NYC", "secondary": "SF/Bay", "us-remote": "US-remote",
              "us-other": "US on-site"}
 
@@ -1981,48 +1965,22 @@ def strength_label(label, pts):
 
 
 def match_line(item):
-    """'Why 83' — the resume evidence behind the score, in plain language.
+    """What this role asks of you, in plain language. No arithmetic.
 
-    This is the answer to "how is it matching my resume": every component that
-    moved the number, with the actual terms that hit, and then — dimmed, worth
-    zero — the signals that did NOT fire. A missing title match or an unstated
-    stage is as much of an explanation as a hit, and it used to be invisible.
-    Nothing is hidden in code.
+    The digest used to print the scoring components and their point values. That
+    was a window into the machinery, not information: "+26 seniority fit · +17
+    strong skills match" tells you nothing you can act on. What you can act on is
+    the bar the posting sets and where you fall against it.
     """
     bd = item.get("breakdown") or {}
-    parts = bd.get("parts") or []
-    misses = bd.get("misses") or []
-    if not parts and not misses:
+    gaps = [reason for label, reason in (bd.get("misses") or [])
+            if label in ("seniority", "skills", "domains")]
+    if not gaps:
         return ""
-    bits = []
-    for label, pts, terms in parts:
-        label = strength_label(label, pts)
-        shown = ", ".join(terms[:4])
-        if len(terms) > 4:
-            shown += f" +{len(terms) - 4}"
-        color = "#b3261e" if pts < 0 else INK2
-        sign = "+" if pts > 0 else "\u2212"
-        detail = (" \u00b7 " + html.escape(shown)) if shown else ""
-        piece = (f"<span style=\"color:{color}\"><b style=\"font-weight:600\">"
-                 f"{sign}{abs(pts)}</b> {html.escape(label)}{detail}</span>")
-        bits.append(piece)
-    sep = (f"<span style=\"color:{HAIRLINE}\">&nbsp;&nbsp;|&nbsp;&nbsp;</span>")
-    body = sep.join(bits)
-    if misses:
-        # Second line, dimmed and explicitly zero-weighted, so it reads as
-        # "here is what it didn't get credit for" and never as arithmetic.
-        gaps = "&nbsp;&nbsp;&middot;&nbsp;&nbsp;".join(
-            f"no {html.escape(label)} \u2014 {html.escape(reason)}"
-            if label in ("title", "skills", "domains") else
-            f"{html.escape(label)}: {html.escape(reason)}"
-            for label, reason in misses)
-        body += (f"<div style=\"margin:6px 0 0;color:{HAIRLINE}\">"
-                 f"<b style=\"font-weight:600\">0</b> {gaps}</div>")
-    return (f"<div style=\"font-family:{FONT};margin:10px 0 0;padding:10px 12px;"
-            f"background:{CANVAS};border-radius:10px;font-size:12px;"
-            f"line-height:21px;color:{INK3}\">"
-            f"<span style=\"color:{INK3};font-weight:600\">Why {item['q']}</span>"
-            f"{sep}" + body + "</div>")
+    return (f"<div style=\"font-family:{FONT};margin:8px 0 0;font-size:12px;"
+            f"line-height:18px;color:{INK3}\">"
+            + "&nbsp;&nbsp;&middot;&nbsp;&nbsp;".join(html.escape(g) for g in gaps)
+            + "</div>")
 
 
 def context_block(item):
@@ -2075,6 +2033,17 @@ def pretty_company(name):
     words = [w for w in re.split(r"[-_]+", n) if w]
     return " ".join(w.upper() if w.lower() in _TOKEN_UPPER else w.capitalize()
                     for w in words)
+
+
+def fit_word(q):
+    """The score as something you can act on."""
+    if q >= 90:
+        return "Strong fit"
+    if q >= BEST_MATCH_MIN:
+        return "Good fit"
+    if q >= 50:
+        return "Worth a look"
+    return "A stretch"
 
 
 def card(item, dim=False):
@@ -2134,9 +2103,12 @@ def card(item, dim=False):
                f"line-height:20px;color:{INK}\">{fit}</div>") if fit else ""
 
     comp = esc(pretty_company(item.get("company"))) or "\u2014"
-    score_color = GOOD if item["q"] >= BEST_MATCH_MIN else INK3
-    score_bg = "#eaf6ee" if item["q"] >= BEST_MATCH_MIN else CANVAS
-    score_text = str(item["q"]).replace("-", "\u2212")
+    # A word, not a number. The number is a ranking device for the code; what you
+    # need to know is whether you clear this role's bar.
+    score_text = fit_word(item["q"])
+    strong = item["q"] >= BEST_MATCH_MIN
+    score_color = GOOD if strong else INK3
+    score_bg = "#eaf6ee" if strong else CANVAS
     return (
         f"<table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" "
         f"style=\"background:{CARD};border:1px solid {HAIRLINE};border-radius:14px;"
@@ -2151,10 +2123,10 @@ def card(item, dim=False):
         f"<div style=\"margin:0 0 -6px\">{''.join(chips)}</div>"
         f"{facts_row}"
         f"</td>"
-        f"<td valign=\"top\" width=\"52\" align=\"right\" style=\"font-family:{FONT}\">"
-        f"<span style=\"display:inline-block;min-width:32px;padding:4px 9px;"
+        f"<td valign=\"top\" width=\"86\" align=\"right\" style=\"font-family:{FONT}\">"
+        f"<span style=\"display:inline-block;padding:4px 10px;"
         f"border-radius:9px;background:{score_bg};color:{score_color};"
-        f"font-size:15px;font-weight:600;text-align:center\">{score_text}</span>"
+        f"font-size:12px;font-weight:600;white-space:nowrap\">{score_text}</span>"
         f"</td></tr></table>"
         f"{fit_row}"
         f"{context_block(item)}"
@@ -2176,46 +2148,21 @@ def section(label, sub, items, dim=False):
 
 
 def scoring_footer():
-    """How the number is built, stated once at the bottom so the digest is
-    self-explanatory six months from now."""
-    W = WEIGHTS
-    rules = [
-        ("Title match", f"up to {W['title']}",
-         "any target title scores; the most specific one scores highest"),
-        ("Seniority fit", f"up to {W['seniority fit']}",
-         f"the JD's own stated years vs yours ({RESUME.get('years_pm')} in product, "
-         f"{RESUME.get('years')} overall) \u2014 a bar above yours ranks lower, "
-         f"never hidden"),
-        ("Resume skills", f"up to {W['resume skills']}",
-         "matched in the REQUIREMENTS block, not the marketing copy"),
-        ("Your domains", f"up to {W['your domains']}",
-         "AI, workflow, proptech, fintech\u2026"),
-        ("Stage", f"up to {W['stage']}",
-         "a named round (seed\u2013B) beats JD prose; late-stage scores nothing"),
-        ("Location", f"+{LOC_BONUS['nyc']} / +{LOC_BONUS['secondary']} / "
-         f"+{LOC_BONUS['us-remote']}", "NYC / SF\u2013Bay / US-remote \u2014 a bonus "
-         "on top of the 100"),
-        ("Just raised", f"+{FUNDED_BONUS}", "the funding digest saw them close a round"),
-    ]
-    rows = "".join(
-        f"<tr><td style=\"padding:3px 14px 3px 0;color:{INK2};font-weight:600;"
-        f"white-space:nowrap\">{k}</td>"
-        f"<td style=\"padding:3px 14px 3px 0;color:{INK};white-space:nowrap\">{v}</td>"
-        f"<td style=\"padding:3px 0;color:{INK3}\">{d}</td></tr>"
-        for k, v, d in rules)
+    """A short plain-English note on what the ranking means. Deliberately not a
+    table of weights: the point values are an implementation detail, and printing
+    them invited you to audit arithmetic instead of reading the roles."""
     return (
-        f"<div style=\"font-family:{FONT};margin:30px 0 0;padding:16px 18px;"
-        f"background:{CARD};border:1px solid {HAIRLINE};border-radius:14px\">"
-        f"<div style=\"font-size:13px;font-weight:600;color:{INK};margin:0 0 10px\">"
-        f"How the score works</div>"
-        f"<table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" "
-        f"style=\"font-size:12px;line-height:18px\">{rows}</table>"
-        f"<div style=\"margin:11px 0 0;font-size:12px;color:{INK3};line-height:18px\">"
-        f"The five resume dimensions are scored 0\u2013100 between them, so a short "
-        f"posting and a long one are comparable. Everything below {BEST_MATCH_MIN} "
-        f"still cleared the title and location gates \u2014 it just fits fewer of "
-        f"them. Nothing is ever hidden for asking too many years.</div>"
-        f"</div>")
+        f"<div style=\"font-family:{FONT};margin:30px 0 0;padding:14px 18px;"
+        f"background:{CARD};border:1px solid {HAIRLINE};border-radius:14px;"
+        f"font-size:12px;line-height:19px;color:{INK3}\">"
+        f"Ranked mainly by how the role's experience bar compares with yours "
+        f"({RESUME.get('years_pm')} years in product, {RESUME.get('years')} overall), "
+        f"then by how much of the job description matches your resume. "
+        f"Location and stage are filters, not scores \u2014 a posting is here "
+        f"because it already passed them."
+        + (f" Roles asking for more than {MAX_YEARS} years are filtered out; "
+           f"ones that state no bar always get through." if MAX_YEARS else "")
+        + "</div>")
 
 
 def _shell(inner):
@@ -2252,8 +2199,9 @@ def build_html(items):
                f"color:{INK2}\">{summary}</div>")
     return _shell(
         header
-        + section("Best matches", f"{BEST_MATCH_MIN}+ on your resume", best)
-        + section("Worth a look", f"under {BEST_MATCH_MIN}", rest, dim=True)
+        + section("Best matches", "you clear the bar and the work lines up", best)
+        + section("Worth a look", "a fit, with something that doesn't line up",
+                  rest, dim=True)
         + scoring_footer())
 
 
@@ -2359,6 +2307,8 @@ def main():
     now_ts = datetime.now(timezone.utc).timestamp()
     age_cutoff = (now_ts - MAX_AGE_DAYS * 86400) if MAX_AGE_DAYS else 0
     picked, ids_this_run, seen_titles = [], set(), set()
+    dropped_late = 0
+    dropped_years = 0
 
     for j in raw:
         if not j.get("title") or not j.get("url"):
@@ -2387,39 +2337,42 @@ def main():
         tier = location_tier(j.get("location", ""), j.get("content", ""))
         if REQUIRE_NYC and not tier:
             continue
+        # Experience-bar filter. Applied before scoring because it is a
+        # preference, not a judgement: a stated bar well above yours means the
+        # role is not for you, however well the keywords line up. An UNSTATED
+        # bar always passes — silence is not a ten-year requirement.
+        facts = screen_facts(j.get("content", ""))
+        want_years = facts.get("years_min")
+        if MAX_YEARS and want_years is not None and want_years > MAX_YEARS:
+            dropped_years += 1
+            continue
+
         bd = score_breakdown(j["title"], j["content"])
         if bd["total"] <= 0:
             continue
-        # Geography and "this company just raised" are ranking signals, not gates —
-        # applied after the total<=0 cut so neither can resurrect an off-resume
-        # posting. Both go in `parts` so the email can show the whole arithmetic.
-        fund = funding_note(j.get("company", ""))
-        loc_pts = LOC_BONUS.get(tier, 0)
-        if loc_pts:
-            bd["parts"].append((LOC_LABEL.get(tier, tier), loc_pts, []))
 
-        # Stage: what the company IS, not what the JD says. A known round
-        # replaces the text-derived guess outright — Courted is a Series A
-        # whether or not the posting mentions it, and the prose tells were only
-        # ever a fallback for companies we have no fact about.
+        # Stage is a FILTER, not a discount. What the company IS beats what the
+        # JD says — a known round is a fact, the prose tells were only ever a
+        # fallback. A clearly late-stage company is dropped outright rather than
+        # ranked down, because "seed to Series B" is a preference, not a
+        # tiebreak: no keyword score should be able to argue you into a public
+        # company.
         stage = stage_note(j.get("company", ""))
-        stage_pts = stage_points(stage.get("round")) if stage else None
-        if stage_pts is not None:
-            bd["parts"] = [p for p in bd["parts"]
-                           if not p[0].startswith(("early stage", "late stage"))]
-            if stage_pts:
-                label = "early stage" if stage_pts > 0 else "late stage"
-                bd["parts"].append((label, stage_pts, [stage["round"]]))
-            bd["total"] = sum(p[1] for p in bd["parts"]) - loc_pts
-        if fund:
-            bd["parts"].append(("just raised", FUNDED_BONUS, []))
+        if EXCLUDE_LATE_STAGE:
+            pts = stage_points(stage.get("round")) if stage else None
+            late_by_round = pts is not None and pts < 0
+            late_by_prose = pts is None and bool(_hits(_late_re(), _norm(j["content"])))
+            if late_by_round or late_by_prose:
+                dropped_late += 1
+                continue
+
         j["loc_tier"] = tier
         j["work_mode"] = work_mode(j.get("location", ""), j.get("content", ""))
-        j["funding"] = fund
+        j["funding"] = funding_note(j.get("company", ""))
         j["stage"] = stage
         j["breakdown"] = bd
-        j["facts"] = screen_facts(j.get("content", ""))
-        j["q"] = bd["total"] + loc_pts + (FUNDED_BONUS if fund else 0)
+        j["facts"] = facts
+        j["q"] = bd["total"]
         j["_id"] = jid
         picked.append(j)
         ids_this_run.add(jid)
@@ -2455,6 +2408,12 @@ def main():
         seen[j["_id"]] = now_ts
     save_seen(seen)
 
+    if dropped_years:
+        print(f"[filter] dropped {dropped_years} posting(s) asking more than "
+              f"{MAX_YEARS} years (JOB_MAX_YEARS=0 to keep them)")
+    if dropped_late:
+        print(f"[filter] dropped {dropped_late} posting(s) at late-stage/public "
+              f"companies (JOB_EXCLUDE_LATE_STAGE=0 to keep them)")
     print(f"[info] {len(picked)} new matching postings this run")
     if picked or SEND_WHEN_EMPTY:
         send_email(build_html(picked))
