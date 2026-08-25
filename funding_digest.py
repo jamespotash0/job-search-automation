@@ -248,7 +248,14 @@ def _apply_profile():
     try:
         with open("profile.compiled.json") as f:
             p = json.load(f)
-    except Exception:
+    except FileNotFoundError:
+        print("[profile] NO profile.compiled.json — using the focus keywords "
+              "baked into funding_digest.py, which are the repo author's. "
+              "Run: python setup_profile.py")
+        return
+    except Exception as e:
+        print(f"[profile] could not read profile.compiled.json ({e}) — using "
+              f"the built-in keywords. Run: python setup_profile.py")
         return
     if p.get("focus_keywords"):
         FOCUS_KEYWORDS = [k.lower() for k in p["focus_keywords"]]

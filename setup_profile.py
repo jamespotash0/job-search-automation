@@ -197,7 +197,15 @@ def main():
           f"  prefer_larger={compiled['prefer_larger']}  max_age_days={compiled['max_age_days']}"
           f"  years_pm={compiled['years_pm']}"
           + (f"  max_years={compiled['max_years']}" if "max_years" in compiled else ""))
-    print("     Both digests will load this automatically. Commit it so GitHub Actions uses it.")
+    # NOT "commit it": profile.compiled.json is gitignored on purpose, because
+    # this repo is public and the file is derived from your resume. Scheduled
+    # runs read it from a secret instead.
+    print("     Both digests load this automatically on your machine.")
+    print("     Next:  python tests/check_profile.py"
+          "        # confirm the compiled filters still catch real postings")
+    print("            gh secret set PROFILE_COMPILED_JSON < profile.compiled.json"
+          "   # for Actions")
+    print("     Do NOT commit it — it is gitignored, and derived from your resume.")
 
 
 if __name__ == "__main__":

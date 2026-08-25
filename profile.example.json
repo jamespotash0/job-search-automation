@@ -1,22 +1,30 @@
 {
   "resume_file": "docs/your_resume.pdf",
-  "locations": ["new york", "nyc", "brooklyn", "manhattan"],
+  "locations": [
+    "new york",
+    "nyc",
+    "brooklyn",
+    "manhattan"
+  ],
   "remote_ok": false,
-  "roles": "One sentence describing the roles you want, e.g. 'early-career product manager, APM, AI PM, plus forward-deployed engineer / deployment strategist / solutions roles — junior/early-career, not senior/director'.",
+  "roles": "One sentence describing the roles you want, e.g. 'early-career product manager, APM, AI PM, plus forward-deployed engineer / deployment strategist / solutions roles \u2014 junior/early-career, not senior/director'.",
   "startup_types": "One sentence describing the companies you want, e.g. 'AI, workflow automation, fintech, proptech, dev tools, B2B SaaS'.",
   "company_size": "small",
   "years_experience": 3,
   "max_age_days": 21,
-
+  "years_pm": 2.5,
+  "max_years": 5,
   "_help": {
-    "resume_file": "Path to your resume (.pdf, .txt, or .md). setup_profile.py reads it to extract your real titles/skills. PDFs are sent to Claude directly — no extra library needed.",
+    "resume_file": "Path to your resume (.pdf, .txt, or .md). setup_profile.py reads it to extract your real titles/skills. PDFs are sent to Claude directly \u2014 no extra library needed.",
     "locations": "A role's location must contain one of these (lowercased) to pass the filter. Use [] for no location filter (any location).",
     "remote_ok": "true also keeps roles whose location says 'remote'.",
     "roles": "Plain English. Claude turns this + your resume into the title/seniority filters.",
     "startup_types": "Plain English. Becomes the domain filter (jobs) and funding focus keywords.",
     "company_size": "'small' = early-stage rank first, 'large' = bigger first, 'any' = neutral.",
-    "years_experience": "Approx years; postings demanding far more get penalized.",
+    "years_experience": "Total relevant professional experience. Compared against a posting that just says 'N years of experience'.",
     "max_age_days": "Companies digest only: drop postings older than this many days (by the board's own posted date) and rank fresher ones higher. Set 0 to disable age filtering.",
-    "_usage": "Fill this file in, then run:  python setup_profile.py  → writes profile.compiled.json, which both digests load automatically. Re-run whenever you edit this file or your resume."
+    "_usage": "Fill this file in, then run:  python setup_profile.py  -> writes profile.compiled.json. Then run:  python tests/check_profile.py  to confirm the compiled filters still classify 34 real postings correctly (the compiled list is written by a model and does drift). Both digests load the compiled file automatically. Re-run whenever you edit this file or your resume.",
+    "years_pm": "Years in roles with your TARGET title (e.g. product). Compared against a posting that says 'N years of PRODUCT MANAGEMENT experience' \u2014 a reader assumes that counts only those roles. Omit to reuse years_experience.",
+    "max_years": "Hard ceiling on the experience bar a posting may ask for; it is filtered out above this. Postings that state NO bar always pass. 0 disables."
   }
 }

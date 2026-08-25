@@ -530,7 +530,19 @@ def _apply_profile():
     try:
         with open("profile.compiled.json") as f:
             p = json.load(f)
-    except Exception:
+    except FileNotFoundError:
+        # Say so LOUDLY. Without a profile the digest runs on the target titles,
+        # skills and locations baked into this file — which are one specific
+        # person's job search. A fork that skips setup_profile.py otherwise gets
+        # a plausible-looking digest for somebody else's career, with nothing
+        # anywhere saying that is what happened.
+        print("[profile] NO profile.compiled.json — falling back to the filters "
+              "baked into companies_digest.py, which are the repo author's, not "
+              "yours. Run: python setup_profile.py")
+        return
+    except Exception as e:
+        print(f"[profile] could not read profile.compiled.json ({e}) — using "
+              f"the built-in filters. Run: python setup_profile.py")
         return
     for k in ("target_titles", "skills", "domains", "years", "years_pm"):
         if p.get(k):

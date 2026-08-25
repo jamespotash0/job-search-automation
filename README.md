@@ -81,14 +81,36 @@ fill in five fields:
 Then compile it once (needs `ANTHROPIC_API_KEY`; your resume is sent only to the
 Anthropic API, never committed):
 
-```bash
-.venv/bin/python setup_profile.py
+Two more worth setting, because they do most of the ranking:
+
+```jsonc
+  "years_experience": 3,    // total relevant experience — vs "N years of experience"
+  "years_pm": 2.5,          // years in your TARGET title — vs "N years of PRODUCT experience"
+  "max_years": 5            // postings asking for more than this are filtered out
 ```
 
-That writes `profile.compiled.json` — the title / skill / domain / location
-filters both digests load automatically at startup. Re-run it whenever your
-resume or `profile.json` changes. Both files are gitignored, since this repo is
-public and they're personal.
+Then compile it once (needs `ANTHROPIC_API_KEY`; your resume is sent only to the
+Anthropic API, never committed):
+
+```bash
+.venv/bin/python setup_profile.py
+.venv/bin/python tests/check_profile.py    # <- do not skip this
+```
+
+`setup_profile.py` writes `profile.compiled.json` — the title / skill / domain /
+location filters both digests load at startup. That list is written by a model
+from your one-sentence `roles`, so **it drifts**: a real compile once produced a
+list with no bare `forward deployed` stem, which silently dropped every "Forward
+Deployed AI Engineer" posting. `check_profile.py` runs your compiled filters over
+34 hand-labelled real postings and tells you if that happened.
+
+Re-run both whenever your resume or `profile.json` changes. Both files are
+gitignored, since this repo is public and they're personal.
+
+**If you skip this step** the digests fall back to the filters baked into the
+scripts, which are the repo author's job search, not yours. They now say so
+loudly on startup rather than quietly producing a plausible digest for someone
+else's career.
 
 ### 4. Run it
 
@@ -286,6 +308,14 @@ deliberately outside `tests/run.py`:
 ```bash
 python evals/eval_enrich.py --limit 3      # cheap smoke test
 python tests/verify_grok_quotes.py         # checks X quotes against source posts
+```
+
+`run.py` sets `JOB_IGNORE_PROFILE=1` so the suite tests the **code**. Without it
+the same command tested your personal profile locally and the repo defaults in
+CI — two subjects, one green tick. To check the profile itself:
+
+```bash
+python tests/check_profile.py              # your compiled filters vs 34 labelled postings
 ```
 
 ### Adding a job source
