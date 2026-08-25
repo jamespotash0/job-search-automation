@@ -514,7 +514,9 @@ MAX_YEARS = 5
 # Optional compiled profile (from setup_profile.py). If profile.compiled.json
 # exists it overrides RESUME + location/size/recency settings above — so anyone
 # can configure everything from profile.json + their resume without editing code.
-# Absent = the defaults above apply (this repo's default is tuned to James).
+# Absent = the defaults above apply. Those defaults are the repo author's own
+# job search, so a fork that skips setup_profile.py gets somebody else's
+# filters — which is why both digests say so loudly at startup.
 # ==========================================================================
 # Tests must exercise the CODE, not whatever profile happens to be on this
 # machine. Without this the suite passes locally against a personal profile and

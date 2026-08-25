@@ -345,17 +345,40 @@ Everything downstream — gates, scoring, dedupe, email — is source-agnostic.
 
 ---
 
-## Costs
+## Costs — you run this on your own accounts
 
-- Digests, email, and all job sources: **free**.
-- `ANTHROPIC_API_KEY`: with `FUNDING_ENRICH_TOP_N` unset, **every** raise gets a
-  web-search call, so cost scales with the day's volume (often 10–40 raises).
-  Set it to an integer to cap spend, or `0` to turn summaries off. `discover.py`
-  adds one sweep per angle per run.
-- `HUNTER_API_KEY`: free tier ~50/mo; the script rations it against
-  `hunter_usage.json` and falls back to pattern-guessed emails (marked
-  UNVERIFIED) after the cap.
-- `GROK_API_KEY`: ~$0.005 per X search, so cents per month.
+**Every fork uses its own API keys and its own billing.** Nothing here talks to
+a shared service, a proxy, or an account belonging to anyone else: the keys you
+put in your `.env` and your repo secrets are the only credentials in play, the
+calls bill to your accounts, and the digests go to your own inbox. Nobody else
+can spend your quota and you cannot spend theirs.
+
+Two paid APIs, both optional, both yours to sign up for:
+
+| Key | Provider | Roughly what it costs |
+|---|---|---|
+| `ANTHROPIC_API_KEY` | console.anthropic.com | The biggest line. With `FUNDING_ENRICH_TOP_N` unset, **every** raise gets a web-search call, so it scales with the day's volume (often 10–40 raises). Set it to an integer to cap spend, or `0` to turn summaries off. `discover.py` adds one sweep per angle per run. |
+| `GROK_API_KEY` | console.x.ai | ~$0.005 per X search — cents per month. |
+
+`HUNTER_API_KEY` (hunter.io) has a free tier of ~50 lookups/month; the script
+rations against `hunter_usage.json` and falls back to pattern-guessed emails
+(marked UNVERIFIED) once the cap is hit, so it will not silently start charging
+you.
+
+Everything else — the job boards, The Muse, Adzuna, Getro, Google News, SMTP —
+is free or keyless. **There is no OpenAI dependency**; the two LLM calls go to
+Anthropic and xAI.
+
+GitHub Actions minutes come out of your own account's allowance, which is free
+for public repositories.
+
+Set `FUNDING_ENRICH_TOP_N=0` and leave `GROK_API_KEY` unset and this costs
+nothing at all — you lose the AI company summaries and the X hiring posts, and
+keep every job board.
+
+This is MIT-licensed and provided as is, with no warranty (see `LICENSE`). It is
+a personal tool published in the hope it is useful, not a service — nobody is
+operating it on your behalf or responsible for what it costs or finds.
 
 ## Honest limits
 
