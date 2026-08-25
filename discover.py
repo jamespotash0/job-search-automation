@@ -11,7 +11,8 @@ NAME who's hiring. We extract company names and probe their Greenhouse / Lever /
 Ashby boards via watchlist.py; hits land in ats_watchlist.json, which the job
 digest already reads.
 
-Run it before the companies digest (e.g. once/day). Requires ANTHROPIC_API_KEY.
+Run it before the companies digest (e.g. once/day). Requires an LLM key --
+ANTHROPIC_API_KEY or OPENAI_API_KEY; see llm.py.
 Detection is cached per company (watchlist "checked" list) so nothing is
 re-probed, and no company is added twice.
 """
@@ -21,6 +22,7 @@ import re
 import json
 import urllib.request
 
+import llm as _llm
 import watchlist as wl
 
 MAX_COMPANIES = int(os.environ.get("DISCOVER_MAX", "30"))
@@ -79,10 +81,14 @@ def discover(roles, locations, exclude=None, angle="hiring", secondary=None):
     surfaces to sweep (see ANGLES). Raises on a hard failure (no key, web
     search error, unparseable response) so the caller can flag the run.
     """
-    api_key = os.environ.get("ANTHROPIC_API_KEY", "")   # read after load_dotenv()
-    model = os.environ.get("DISCOVER_MODEL", os.environ.get("AI_MODEL", "claude-sonnet-5"))
-    if not api_key:
-        raise RuntimeError("ANTHROPIC_API_KEY not set")
+    # Provider-agnostic: whichever of ANTHROPIC_API_KEY / OPENAI_API_KEY is set.
+    if not _llm.provider():
+        raise RuntimeError("no LLM provider configured — set ANTHROPIC_API_KEY "
+                           "or OPENAI_API_KEY")
+    # DISCOVER_MODEL overrides for this call only; unset means the provider
+    # default in llm.py. Deliberately NOT defaulted to a Claude model name here,
+    # which would be sent to OpenAI verbatim on an OpenAI-configured fork.
+    model = os.environ.get("DISCOVER_MODEL") or None
     loc = ", ".join(locations) if locations else "anywhere"
     loc_line = f"Focus on {loc}"
     if secondary:
@@ -107,27 +113,15 @@ def discover(roles, locations, exclude=None, angle="hiring", secondary=None):
         "Do NOT include software-engineering-only shops; focus on companies with "
         "product / forward-deployed / product-operations roles."
     )
-    body = {
-        # max_tokens must be generous: interleaved thinking + web-search results
-        # eat the budget, and a too-small cap stops the turn before the final JSON.
-        "model": model,
-        "max_tokens": 8000,
-        "messages": [{"role": "user", "content": prompt}],
-        # More search slots = more distinct angles covered per run (cost is a few
-        # cents; this is the loop that feeds the whole companies digest).
-        "tools": [{"type": "web_search_20250305", "name": "web_search", "max_uses": 8}],
-    }
+    # max_tokens must be generous: interleaved thinking + web-search results eat
+    # the budget, and a too-small cap stops the turn before the final JSON.
+    # More search slots = more distinct angles covered per run (cost is a few
+    # cents; this is the loop that feeds the whole companies digest).
     try:
-        req = urllib.request.Request(
-            "https://api.anthropic.com/v1/messages",
-            data=json.dumps(body).encode(),
-            headers={"content-type": "application/json", "x-api-key": api_key,
-                     "anthropic-version": "2023-06-01"})
-        with urllib.request.urlopen(req, timeout=300) as r:   # web search is slow
-            data = json.loads(r.read().decode())
+        text = _llm.research(prompt, max_tokens=8000, max_uses=8, timeout=300,
+                             model=model or None)
     except Exception as e:
         raise RuntimeError(f"web search failed: {e}")
-    text = "".join(b.get("text", "") for b in data.get("content", []) if b.get("type") == "text")
     m = re.search(r"\[.*\]", text, re.S)
     if not m:
         raise RuntimeError("no company list returned")

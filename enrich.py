@@ -13,7 +13,8 @@ Persisted state (via GitHub Actions cache):
   - enrich_cache.json   : results per company, so we never re-spend on repeats
   - hunter_usage.json   : monthly Hunter call counter, resets each month
 
-Requires secrets: ANTHROPIC_API_KEY, HUNTER_API_KEY (optional).
+Requires ANTHROPIC_API_KEY *or* OPENAI_API_KEY (see llm.py), plus
+HUNTER_API_KEY (optional).
 """
 
 import os
@@ -21,6 +22,8 @@ import re
 import json
 import urllib.request
 from datetime import datetime
+
+import llm as _llm
 
 
 def load_dotenv(path=".env"):
@@ -43,7 +46,9 @@ load_dotenv()
 ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY", "")
 HUNTER_API_KEY    = os.environ.get("HUNTER_API_KEY", "")
 
-# Model for research. Change if you prefer another. web_search is server-side.
+# Model for research. Set AI_MODEL for Anthropic or OPENAI_MODEL for OpenAI;
+# llm.py picks the provider from whichever API key is present. web_search is
+# server-side on both.
 AI_MODEL = os.environ.get("AI_MODEL", "claude-haiku-4-5-20251001")
 
 # Rationing
@@ -111,7 +116,7 @@ def _bump_hunter():
 # AI research (Anthropic + web search)
 # --------------------------------------------------------------------------
 def ai_lookup(company):
-    if not ANTHROPIC_API_KEY:
+    if not _llm.provider():
         return {}
     prompt = (
         f'Research the startup "{company}" that recently raised venture funding. '
@@ -130,28 +135,10 @@ def ai_lookup(company):
         "run on GPUs is ai/software.\n"
         "Use empty strings/arrays for anything you cannot verify."
     )
-    body = {
-        "model": AI_MODEL,
-        "max_tokens": 700,
-        "messages": [{"role": "user", "content": prompt}],
-        "tools": [{"type": "web_search_20250305", "name": "web_search",
-                   "max_uses": 3}],
-    }
     try:
-        req = urllib.request.Request(
-            "https://api.anthropic.com/v1/messages",
-            data=json.dumps(body).encode(),
-            headers={
-                "content-type": "application/json",
-                "x-api-key": ANTHROPIC_API_KEY,
-                "anthropic-version": "2023-06-01",
-            },
-        )
-        with urllib.request.urlopen(req, timeout=60) as r:
-            data = json.loads(r.read().decode())
-        text = "".join(b.get("text", "") for b in data.get("content", [])
-                       if b.get("type") == "text")
-        return _parse_json(text)
+        # Whichever provider this fork is configured for — see llm.py.
+        return _parse_json(_llm.research(prompt, max_tokens=700, max_uses=3,
+                                         timeout=60))
     except Exception as e:
         print(f"[warn] ai_lookup {company}: {e}")
         return {}

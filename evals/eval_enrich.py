@@ -38,7 +38,7 @@ wrongly kept.
     python evals/eval_enrich.py --companies "Acme,Foo"
     python evals/eval_enrich.py --out results.json
 
-Needs ANTHROPIC_API_KEY. Costs roughly one web-search research call plus one
+Needs ANTHROPIC_API_KEY or OPENAI_API_KEY. Costs roughly one web-search call plus one
 short judge call per company.
 """
 import argparse
@@ -54,6 +54,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import enrich as E                    # noqa: E402
 import funding_digest as F            # noqa: E402
 import watchlist as W                 # noqa: E402
+import llm as _llm                    # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 UA = {"User-Agent": "Mozilla/5.0 (compatible; enrich-eval)"}
@@ -314,28 +315,16 @@ def judge_category(enr, corpus):
         return "MISSING", "no category returned (gate fails open, company kept)"
     if not corpus:
         return "UNVERIFIABLE", "company site did not fetch"
-    key = os.environ.get("ANTHROPIC_API_KEY", "")
-    if not key:
-        return "UNVERIFIABLE", "ANTHROPIC_API_KEY not set"
-    body = {
-        "model": os.environ.get("EVAL_JUDGE_MODEL", "claude-sonnet-5"),
-        "max_tokens": 300,
-        "messages": [{"role": "user", "content": JUDGE_PROMPT.format(
-            category=cat, categories=", ".join(E.CATEGORIES),
-            text=corpus[:12000])}],
-    }
+    if not _llm.provider():
+        return "UNVERIFIABLE", "no LLM provider configured"
     try:
-        req = urllib.request.Request(
-            "https://api.anthropic.com/v1/messages",
-            data=json.dumps(body).encode(),
-            headers={"content-type": "application/json", "x-api-key": key,
-                     "anthropic-version": "2023-06-01"})
-        with urllib.request.urlopen(req, timeout=90) as r:
-            data = json.loads(r.read().decode())
+        text = _llm.research(
+            JUDGE_PROMPT.format(category=cat, categories=", ".join(E.CATEGORIES),
+                                text=corpus[:12000]),
+            max_tokens=300, web_search=False, timeout=90,
+            model=os.environ.get("EVAL_JUDGE_MODEL") or None)
     except Exception as e:
         return "UNVERIFIABLE", f"judge call failed: {e}"
-    text = "".join(b.get("text", "") for b in data.get("content", [])
-                   if b.get("type") == "text")
     v = E._parse_json(text)
     verdict = (v.get("verdict") or "").lower()
     if verdict == "agree":
@@ -405,14 +394,14 @@ def main():
     ap.add_argument("--limit", type=int, default=0)
     args = ap.parse_args()
 
-    if not os.environ.get("ANTHROPIC_API_KEY"):
+    if not _llm.provider():
         # funding_digest has no .env loader of its own; companies_digest does.
         import companies_digest as _cd
         _cd.load_dotenv()
-    if not os.environ.get("ANTHROPIC_API_KEY"):
-        print("ANTHROPIC_API_KEY not set - this eval needs it.")
+    if not _llm.provider():
+        print("No LLM provider - set ANTHROPIC_API_KEY or OPENAI_API_KEY.")
         return 2
-    E.ANTHROPIC_API_KEY = os.environ["ANTHROPIC_API_KEY"]
+    E.ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY", "")
 
     if args.companies:
         cases = [{"name": n.strip(), "expect": ""} for n in args.companies.split(",")]

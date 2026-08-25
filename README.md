@@ -54,7 +54,7 @@ cp .env.example .env      # then edit it
 | `EMAIL_USER` | yes | Gmail address that sends the digests |
 | `EMAIL_PASS` | yes | Gmail **app password** (Google Account → Security → 2-Step Verification → App passwords), not your login password |
 | `EMAIL_TO` | yes | Where digests go; can equal `EMAIL_USER`, or a comma-separated list |
-| `ANTHROPIC_API_KEY` | optional | AI company summaries + `discover.py`. From console.anthropic.com |
+| `ANTHROPIC_API_KEY` **or** `OPENAI_API_KEY` | optional | AI company summaries + `discover.py`. Either provider works — both have server-side web search, and `llm.py` picks whichever key is set. Set `LLM_PROVIDER` only if you have both. |
 | `HUNTER_API_KEY` | optional | Verified founder emails. From hunter.io (free tier ~50/mo) |
 | `ADZUNA_APP_ID` / `ADZUNA_APP_KEY` | optional | Extra job aggregator. Free from developer.adzuna.com |
 | `GROK_API_KEY` (or `XAI_API_KEY`) | optional | Founder "we're hiring" posts on X. From console.x.ai |
@@ -357,7 +357,7 @@ Two paid APIs, both optional, both yours to sign up for:
 
 | Key | Provider | Roughly what it costs |
 |---|---|---|
-| `ANTHROPIC_API_KEY` | console.anthropic.com | The biggest line. With `FUNDING_ENRICH_TOP_N` unset, **every** raise gets a web-search call, so it scales with the day's volume (often 10–40 raises). Set it to an integer to cap spend, or `0` to turn summaries off. `discover.py` adds one sweep per angle per run. |
+| `ANTHROPIC_API_KEY` **or** `OPENAI_API_KEY` | console.anthropic.com / platform.openai.com | The biggest line. With `FUNDING_ENRICH_TOP_N` unset, **every** raise gets a web-search call, so it scales with the day's volume (often 10–40 raises). Set it to an integer to cap spend, or `0` to turn summaries off. `discover.py` adds one sweep per angle per run. |
 | `GROK_API_KEY` | console.x.ai | ~$0.005 per X search — cents per month. |
 
 `HUNTER_API_KEY` (hunter.io) has a free tier of ~50 lookups/month; the script
@@ -366,8 +366,11 @@ rations against `hunter_usage.json` and falls back to pattern-guessed emails
 you.
 
 Everything else — the job boards, The Muse, Adzuna, Getro, Google News, SMTP —
-is free or keyless. **There is no OpenAI dependency**; the two LLM calls go to
-Anthropic and xAI.
+is free or keyless.
+
+`setup_profile.py` is the one Anthropic-only step, because it sends your resume
+PDF and Claude reads PDFs natively. A `.txt` or `.md` resume compiles on either
+provider.
 
 GitHub Actions minutes come out of your own account's allowance, which is free
 for public repositories.
