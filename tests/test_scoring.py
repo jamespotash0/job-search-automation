@@ -573,5 +573,42 @@ def test_the_local_edge_cannot_lift_a_bad_fit():
         check(total < 20, f"a badly-fitting {tier} role scored {total}")
 
 
+@case
+def test_years_in_someone_elses_field_is_not_a_match():
+    """"3 years of experience in banking operations" is not a seniority question
+    -- it asks for years of a career you have not had, and the number is beside
+    the point."""
+    kw = " Roadmap, PRDs, discovery, Figma, SQL. AI workflow B2B SaaS."
+    def score(jd):
+        return C.score_breakdown("Product Manager", jd + kw, "nyc", "onsite")["total"]
+    product = score("3+ years of product management experience.")
+    for other in ("3+ years of experience in banking operations.",
+                  "3+ years of operations experience.",
+                  "3+ years of sales experience.",
+                  "3+ years of marketing experience."):
+        got = score(other)
+        check(got < product * 0.35,
+              f"{other!r} scored {got} against {product} for the same bar in product")
+
+
+@case
+def test_the_first_field_named_wins():
+    """"product experience in a banking environment" is a product bar; "banking
+    operations experience" is not. Reading the whole window would call both a
+    mismatch and drop real product roles at financial companies."""
+    ok = C.screen_facts("3+ years of product experience in a banking environment")
+    bad = C.screen_facts("3+ years of banking operations experience")
+    check(not ok.get("field_mismatch"), f"false mismatch: {ok.get('field_mismatch')}")
+    equal(bad.get("field_mismatch"), "banking")
+
+
+@case
+def test_an_unqualified_bar_is_never_a_field_mismatch():
+    """Most postings just say "3+ years of experience". Silence is not evidence
+    of a different field."""
+    for jd in ("3+ years of experience.", "We want 5+ years.", "2-4 years required."):
+        check(not C.screen_facts(jd).get("field_mismatch"), jd)
+
+
 if __name__ == "__main__":
     main("scoring")

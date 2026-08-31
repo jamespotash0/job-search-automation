@@ -244,6 +244,12 @@ USE_ADZUNA = env_flag("JOB_USE_ADZUNA", True) and bool(
 # unset. Cost is ~$0.005 per search (xAI X-search tool), so ~cents/month.
 USE_GROK_X = env_flag("JOB_USE_GROK_X", True) and bool(os.environ.get("XAI_API_KEY"))
 
+# X/Grok leads get their own email — see the send block in main(). A person
+# saying "we're hiring" is a different kind of lead from a board posting:
+# often no application link, and acting on it means replying to a human
+# rather than filling in a form. Mixed in, they read as low-confidence noise.
+GROK_SEPARATE_EMAIL = env_flag("JOB_GROK_SEPARATE_EMAIL", True)
+
 # How much of each job description we keep. 1500 was too small to be honest:
 # the requirements block ("5+ years of...") and the pay band live near the BOTTOM
 # of a JD, so a 1500-char window scored every posting on its marketing preamble
@@ -503,6 +509,13 @@ SEND_WHEN_EMPTY = os.environ.get("SEND_WHEN_EMPTY", "").lower() in ("1", "true",
 # age. Set to 0 to disable age filtering entirely. Overridable via profile.json.
 MAX_AGE_DAYS = 21
 
+# Only show postings actually posted in the last N days. Separate from
+# MAX_AGE_DAYS, which is about ranking; this is about the digest being a feed of
+# what is NEW. Running daily, anything older than about a week either already
+# appeared in an earlier email or arrived with a board that was just added to
+# the watchlist. 0 disables.
+FRESH_ONLY_DAYS = 10
+
 # Hard ceiling on the experience bar you are willing to see. A role asking eight
 # years is not one you get with two or three, and ranking it low still left it in
 # the list. 0 disables the filter. A posting that states NO bar always passes —
@@ -580,6 +593,7 @@ REQUIRE_NYC = env_flag("JOB_REQUIRE_LOCATION", bool(NYC_KEYWORDS))
 REMOTE_OK = env_flag("JOB_REMOTE_OK", REMOTE_OK)
 PREFER_LARGER = env_flag("JOB_PREFER_LARGER", PREFER_LARGER)
 MAX_AGE_DAYS = env_int("JOB_MAX_AGE_DAYS", MAX_AGE_DAYS)
+FRESH_ONLY_DAYS = env_int("JOB_FRESH_ONLY_DAYS", FRESH_ONLY_DAYS)
 MAX_YEARS = env_int("JOB_MAX_YEARS", MAX_YEARS)
 
 # Secrets
@@ -1276,6 +1290,10 @@ def screen_facts(content):
                 f["years"] = f"{n}+ yrs"
                 f["years_min"] = n
                 at = m.end()
+    if at is not None:
+        kind, term = experience_field(content, at)
+        if kind == "other":
+            f["field_mismatch"] = term
 
 
     # Comp: two salary-shaped numbers = a posted band. Anything outside a
@@ -1570,6 +1588,59 @@ def requirements_block(content):
 
 
 # --- seniority --------------------------------------------------------------
+# WHAT KIND of experience a posting is asking for. "3 years of experience" is a
+# question about you; "3 years of experience in banking operations" is a question
+# about a career you have not had, and the number is beside the point. Read from
+# the words right after the bar.
+#
+# This is NOT the old two-numbers idea. There is still one `years`. The question
+# here is whether the experience being demanded is the kind you have at all.
+YOUR_FIELD = [
+    "product", "product management", "product manager", "product owner",
+    "product operations", "product ops", "pm", "apm", "product delivery",
+    "delivery", "product development", "technical product", "ai product",
+    "software", "saas", "startup", "startups", "technology", "tech",
+]
+# Fields where the years asked for are somebody else's career. Deliberately a
+# short list of the ones that actually show up on postings that otherwise pass
+# the title gate — a "Product Manager, Banking" wanting 3 years IN BANKING is a
+# different job from a product role at a bank.
+OTHER_FIELDS = [
+    "banking", "investment banking", "capital markets", "trading", "accounting",
+    "audit", "tax", "actuarial", "underwriting", "insurance claims",
+    "operations", "supply chain", "logistics", "manufacturing", "warehouse",
+    "sales", "quota", "account management", "business development",
+    "marketing", "brand", "advertising", "public relations", "seo",
+    "recruiting", "talent acquisition", "human resources", "payroll",
+    "consulting", "management consulting", "investment", "private equity",
+    "venture capital", "legal", "law", "compliance", "clinical", "nursing",
+    "teaching", "hardware", "mechanical", "civil engineering", "construction management",
+]
+FIELD_MISMATCH_FACTOR = float(os.environ.get("JOB_FIELD_MISMATCH_FACTOR", "0.2"))
+
+
+def experience_field(content, at=None):
+    """('mine'|'other'|'unspecified', matched_term) for the experience demanded.
+
+    Only the words immediately after the number count, and whichever kind is
+    named FIRST wins — "3 years of product experience in a banking environment"
+    is a product bar, "3 years of banking operations experience" is not.
+    """
+    c = _norm(content or "")
+    window = c[at:at + 70] if at is not None else c[:200]
+    mine = min(((window.find(f), f) for f in YOUR_FIELD if f in window),
+               default=None)
+    other = min(((window.find(f), f) for f in OTHER_FIELDS if f in window),
+                default=None)
+    if mine and other:
+        return ("mine", mine[1]) if mine[0] < other[0] else ("other", other[1])
+    if other:
+        return "other", other[1]
+    if mine:
+        return "mine", mine[1]
+    return "unspecified", ""
+
+
 # How much a stated bar ABOVE your experience should cost. Deliberately a
 # gradient and never a gate: a stated bar is soft in practice, especially at the
 # seed-to-Series-B startups this is pointed at, and gating on it hid half the
@@ -1591,6 +1662,11 @@ def seniority_fraction(facts, content=""):
     req = facts.get("years_min")
     if req is None:
         return None, "no years-of-experience stated"
+    # A bar in somebody else's field is not a seniority question at all: the
+    # years asked for are years of a career you have not had.
+    if facts.get("field_mismatch"):
+        return FIELD_MISMATCH_FACTOR, (f"wants {facts.get('years')} in "
+                                       f"{facts['field_mismatch']}, not product")
     mine = RESUME.get("years", 0)
     gap = req - mine
     if gap <= 0:
@@ -2148,9 +2224,15 @@ def card(item, dim=False):
         req = facts.get("years_min")
         mine = RESUME.get("years", 0)
         gap = (req - mine) if req is not None else 0
-        chips.append(_chip(f"{esc(facts['years'])} \u00b7 you have {mine:g}",
-                           "good" if gap <= 0 else "warn" if gap <= 2 else "bad",
-                           bold=gap > 2))
+        if facts.get("field_mismatch"):
+            # The number is beside the point: they want years of a different
+            # career. Say which one, so the card explains itself.
+            chips.append(_chip(f"{esc(facts['years'])} in "
+                               f"{esc(facts['field_mismatch'])}", "bad", bold=True))
+        else:
+            chips.append(_chip(f"{esc(facts['years'])} \u00b7 you have {mine:g}",
+                               "good" if gap <= 0 else "warn" if gap <= 2 else "bad",
+                               bold=gap > 2))
 
     # --- how you'd work it. One chip: the parsed work model when the JD states
     # one, else what the location implies. These used to be two separate chips
@@ -2260,13 +2342,13 @@ def _shell(inner):
         f"</td></tr></table></div>")
 
 
-def build_html(items):
+def build_html(items, title="Companies digest"):
     now = datetime.now().strftime("%A, %B %-d")
     clock = datetime.now().strftime("%-I:%M %p").lower()
     header = (
         f"<div style=\"font-family:{FONT}\">"
         f"<div style=\"font-size:26px;font-weight:600;color:{INK};letter-spacing:-.02em\">"
-        f"Companies digest</div>"
+        f"{html.escape(title)}</div>"
         f"<div style=\"margin:5px 0 0;font-size:13px;color:{INK3}\">{now} \u00b7 {clock}</div>"
         f"</div>")
     if not items:
@@ -2291,22 +2373,35 @@ def build_html(items):
 
 
 def from_header():
-    """'Job Bot (@Name) <sending@addr>' so the digest doesn't show up as yourself.
-    Handle comes from DIGEST_HANDLE, else the first name in the sending address."""
-    handle = os.environ.get("DIGEST_HANDLE", "").strip()
-    if not handle:
-        m = re.match(r"[A-Za-z]+", (EMAIL_USER or "").split("@")[0])
-        handle = m.group(0).capitalize() if m else "you"
-    return formataddr((f"Job Bot (@{handle})", EMAIL_USER))
+    """The display name on the digest, so it doesn't look like mail from you.
+
+    DIGEST_FROM_NAME sets it outright ("Job Radar", "Roles Bot", anything).
+    Falling back to "Job Bot (@<handle>)" for compatibility with DIGEST_HANDLE.
+
+    The ADDRESS cannot be changed here — SMTP will only send as the account you
+    authenticated with, and Gmail rewrites a From: it has not verified. To send
+    from a different address you have to add it in Gmail as "Send mail as" and
+    verify it, then point EMAIL_USER at that account. The display name is the
+    part you can freely choose, and it is what actually shows in an inbox list.
+    """
+    name = os.environ.get("DIGEST_FROM_NAME", "").strip()
+    if not name:
+        handle = os.environ.get("DIGEST_HANDLE", "").strip()
+        if not handle:
+            m = re.match(r"[A-Za-z]+", (EMAIL_USER or "").split("@")[0])
+            handle = m.group(0).capitalize() if m else "you"
+        name = f"Job Bot (@{handle})"
+    return formataddr((name, EMAIL_USER))
 
 
-def send_email(html_body):
+def send_email(html_body, subject=None):
     if not (EMAIL_USER and EMAIL_PASS and EMAIL_TO):
         print("[info] email creds not set — printing digest:\n")
         print(re.sub(r"<[^>]+>", "", html_body))
         return
     msg = MIMEMultipart("alternative")
-    msg["Subject"] = f"Companies digest — {datetime.now().strftime('%b %d %-I%p')}"
+    msg["Subject"] = (f"{subject or 'Companies digest'} — "
+                      f"{datetime.now().strftime('%b %d %-I%p')}")
     msg["From"] = from_header()
     msg["To"] = EMAIL_TO
     msg.attach(MIMEText(html_body, "html"))
@@ -2407,6 +2502,7 @@ def main():
     picked, ids_this_run, seen_titles = [], set(), set()
     dropped_late = 0
     dropped_years = 0
+    dropped_stale = 0
 
     for j in raw:
         if not j.get("title") or not j.get("url"):
@@ -2421,6 +2517,13 @@ def main():
         # gives a date. Unknown-date sources fall through (kept, no age shown).
         posted = j.get("posted_ts")
         if age_cutoff and posted and posted < age_cutoff:
+            continue
+        # A board only just added to the watchlist arrives with its entire back
+        # catalogue, all of it unseen and therefore "new". Without this, adding
+        # one company floods a digest with roles posted weeks ago — which is
+        # what makes the email look repetitive and stale.
+        if FRESH_ONLY_DAYS and posted and posted < now_ts - FRESH_ONLY_DAYS * 86400:
+            dropped_stale += 1
             continue
         jid = job_id(j)
         if jid in seen or jid in ids_this_run:
@@ -2507,15 +2610,33 @@ def main():
         seen[j["_id"]] = now_ts
     save_seen(seen)
 
+    if dropped_stale:
+        print(f"[filter] dropped {dropped_stale} posting(s) older than "
+              f"{FRESH_ONLY_DAYS} days (JOB_FRESH_ONLY_DAYS=0 to keep them)")
     if dropped_years:
         print(f"[filter] dropped {dropped_years} posting(s) asking more than "
               f"{MAX_YEARS} years (JOB_MAX_YEARS=0 to keep them)")
     if dropped_late:
         print(f"[filter] dropped {dropped_late} posting(s) at late-stage/public "
               f"companies (JOB_EXCLUDE_LATE_STAGE=0 to keep them)")
-    print(f"[info] {len(picked)} new matching postings this run")
+    # X/Grok leads are a different kind of thing from a board posting — a person
+    # said they are hiring, often with no application link, and acting on one
+    # means replying to a human. Mixed in they read as low-confidence noise.
+    grok = [j for j in picked if j.get("source") == "X/Grok"]
+    if GROK_SEPARATE_EMAIL and grok:
+        picked = [j for j in picked if j.get("source") != "X/Grok"]
+    else:
+        grok = []
+
+    print(f"[info] {len(picked)} new matching postings this run"
+          + (f" (+{len(grok)} X/Grok leads in their own email)" if grok else ""))
+    if grok:
+        send_email(build_html(grok, title="Hiring posts from X"),
+                   subject="Hiring posts from X")
     if picked or SEND_WHEN_EMPTY:
         send_email(build_html(picked))
+    elif grok:
+        print("[info] only X/Grok leads this run — nothing for the main digest")
     else:
         print("[info] nothing new this run — skipping email (set SEND_WHEN_EMPTY=1 to override)")
 

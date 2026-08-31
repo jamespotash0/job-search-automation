@@ -1,4 +1,4 @@
-name: Companies digest (3x daily)
+name: Companies digest (daily)
 
 on:
   schedule:
@@ -12,8 +12,11 @@ on:
     # GitHub Actions, which routinely delays :00 runs 15-60+ min. This only moves
     # the *scheduled* time: Actions gives scheduled runs no SLA and has still been
     # starting these 60-90 min late, which no cron change on our side can fix.
-    - cron: "57 12,16,19 * * *"   # EDT (Mar-Nov) -> 8:57 / 12:57 / 15:57 ET
-    - cron: "57 13,17,20 * * *"   # EST (Nov-Mar) -> 8:57 / 12:57 / 15:57 ET
+    # Once a day. Three runs a day mostly re-sent the same boards: a posting
+    # only appears once (seen_jobs dedupes), so the extra runs were catching a
+    # handful of new postings each and reading as repetition.
+    - cron: "57 12 * * *"        # EDT (Mar-Nov) -> 8:57 ET
+    - cron: "57 13 * * *"        # EST (Nov-Mar) -> 8:57 ET
   workflow_dispatch:
 
 permissions:
