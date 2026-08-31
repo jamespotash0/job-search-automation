@@ -17,7 +17,7 @@ funding_digest.py ──detects ATS + raise ──┘     │     against your r
 | Piece | What it does |
 |---|---|
 | **Funding digest** (`funding_digest.py`) | Daily email of startups that just raised, filtered to your sector/geography, with AI company summaries and founder contacts on the top matches. |
-| **Companies digest** (`companies_digest.py`) | 3x/day email of the newest postings for your target roles, gated on title/seniority/location and ranked by resume fit. Runs that find nothing new stay silent (`SEND_WHEN_EMPTY=1` to always send). |
+| **Companies digest** (`companies_digest.py`) | Daily email of the newest postings for your target roles, gated on title/seniority/location and ranked by resume fit. Runs that find nothing new stay silent (`SEND_WHEN_EMPTY=1` to always send). |
 | **The loop** (`watchlist.py`) | Shared `ats_watchlist.json`. Companies from the funding digest flow into the job digest, and their postings get a 🚀 badge plus a score bonus. |
 | **Bulk feed** (`getro.py`) | Sweeps the public Getro API — the portfolio job boards of hundreds of VC funds — and reads real ATS tokens out of apply URLs. Keyless. This is what makes the watchlist big. |
 | **Long tail** (`discover.py`) | Web-searches "we're hiring" posts and hiring roundups, probes each company's ATS, adds the hits. Needs `ANTHROPIC_API_KEY`. |
@@ -97,19 +97,16 @@ Anthropic API, never committed):
 ```
 
 `setup_profile.py` writes `profile.compiled.json` — the title / skill / domain /
-location filters both digests load at startup. That list is written by a model
-from your one-sentence `roles`, so **it drifts**: a real compile once produced a
-list with no bare `forward deployed` stem, which silently dropped every "Forward
-Deployed AI Engineer" posting. `check_profile.py` runs your compiled filters over
-34 hand-labelled real postings and tells you if that happened.
+location filters both digests load at startup. A model writes that list from your
+one-sentence `roles`, so it can miss a stem you needed. `check_profile.py` runs
+the compiled filters over 34 hand-labelled real postings and names anything they
+now misclassify; widen `roles` and re-compile if it flags something.
 
 Re-run both whenever your resume or `profile.json` changes. Both files are
-gitignored, since this repo is public and they're personal.
+gitignored — this repo is public and they're personal.
 
-**If you skip this step** the digests fall back to the filters baked into the
-scripts, which are the repo author's job search, not yours. They now say so
-loudly on startup rather than quietly producing a plausible digest for someone
-else's career.
+Skip this step and the digests use the filters baked into the scripts, which are
+the repo author's job search rather than yours. They say so on startup.
 
 ### 4. Check it before you run it
 
@@ -118,11 +115,11 @@ else's career.
 .venv/bin/python doctor.py --local   # skip the GitHub half
 ```
 
-Every problem it looks for is **silent in production**: a missing
-`PROFILE_COMPILED_JSON` secret doesn't error, it emails you someone else's job
-search; an empty watchlist doesn't error, it emails you three postings instead
-of thirty; a compiled profile older than your resume doesn't error, it quietly
-uses last month's filters. `✗` means wrong results, `!` means a source is off.
+Every problem it looks for is **silent** — nothing errors, you just get wrong
+results: a missing `PROFILE_COMPILED_JSON` secret means the scheduled runs use
+someone else's filters, an empty watchlist means three postings instead of
+thirty, a compiled profile older than your resume means last month's filters.
+`✗` means wrong results, `!` means an optional source is off.
 
 ### 5. Run it
 
@@ -139,7 +136,7 @@ Push your fork and enable Actions. Three workflows ship with it:
 | Workflow | Schedule | Runs |
 |---|---|---|
 | `daily-digest.yml` | 8am ET | `getro.py` → `discover.py` → `funding_digest.py` |
-| `companies-digest.yml` | ~9am / 1pm / 4pm ET | `companies_digest.py` |
+| `companies-digest.yml` | ~9am ET | `companies_digest.py` (+ a second "X Hiring Posts" email when that source is on) |
 | `tests.yml` | every push | `tests/run.py` |
 
 In your fork: **Settings → Secrets and variables → Actions → Secrets**, add the
@@ -187,58 +184,76 @@ A few worth knowing about:
 | Senior roles, not junior | `JOB_SENIORITY_EXCLUDE=intern,junior` and swap `JOB_JUNIOR_SIGNALS` / `JOB_SENIOR_SIGNALS` |
 | Engineering roles | `JOB_SWE_EXCLUDE=` (empty clears the gate) + `JOB_TARGET_TITLES=...` |
 | Later-stage companies | `JOB_EARLY_ROUNDS=series b,series c,series d` |
-| A fuller / quieter inbox | `JOB_BEST_MATCH_MIN` (score cutoff), `JOB_MAX_ITEMS`, `JOB_MAX_AGE_DAYS` |
+| A fuller / quieter inbox | `JOB_BEST_MATCH_MIN` (score cutoff), `JOB_MAX_ITEMS`, `JOB_FRESH_ONLY_DAYS` |
+| Cap how senior a role may ask for | `JOB_MAX_YEARS=3` (0 disables; unstated bars always pass) |
+| Only genuinely new postings | `JOB_FRESH_ONLY_DAYS=10` — stops a newly-added board dumping its back catalogue |
+| Keep late-stage companies | `JOB_EXCLUDE_LATE_STAGE=0` |
+| Rename the sender / subjects | `DIGEST_FROM_NAME`, `DIGEST_SUBJECT_JOBS`, `DIGEST_SUBJECT_X` |
 | Lower API spend | `FUNDING_ENRICH_TOP_N=8`, or `=0` to turn AI summaries off |
 | Fewer sources | `JOB_USE_MUSE=0`, `JOB_USE_ADZUNA=0`, … (one flag per source) |
 
 Lists are comma-separated, and an explicitly empty value means an empty list —
 `JOB_SECONDARY_LOCATIONS=` turns that tier off rather than restoring the default.
-Booleans take `1/true/yes/on` or `0/false/no/off`. Penalties (`JOB_TOO_SENIOR_PENALTY`,
-`JOB_LATE_STAGE_PENALTY`) are given as positive numbers and always subtract.
+Booleans take `1/true/yes/on` or `0/false/no/off`.
 
 ### How a posting is scored
 
-Every email row prints its own arithmetic, so you can see which knob to turn:
+The score answers one question: **does this role's experience bar fit yours.**
+Keyword overlap is the tiebreak between roles that fit it about equally.
 
-| Signal | Default | Env |
+| Dimension | Weight | Env |
 |---|---|---|
-| Target-title hit | +12 each, cap 40 | `JOB_TITLE_POINTS` / `JOB_TITLE_MAX` |
-| JD asks for your years | +20 | `JOB_SENIORITY_FIT_POINTS` |
-| JD asks for far more | −25 | `JOB_TOO_SENIOR_PENALTY` |
-| Resume skill hit | +3 each, cap 24 | `JOB_SKILL_POINTS` / `JOB_SKILL_MAX` |
-| Domain hit | +2 each, cap 12 | `JOB_DOMAIN_POINTS` / `JOB_DOMAIN_MAX` |
-| Seed–Series B | +6 (+3 if only inferred from startup language) | `JOB_EARLY_STAGE_POINTS`, `JOB_EARLY_STAGE_SOFT_POINTS` |
-| Series D+ / public | −6 | `JOB_LATE_STAGE_PENALTY` |
-| Location tier | NYC +10, US-remote +5, SF/Bay +4, US on-site +1 | `JOB_LOC_BONUS_*` |
-| Company just raised | +8 | `JOB_FUNDED_BONUS` |
+| Experience bar vs your years | 65 | `JOB_W_SENIORITY` |
+| Resume skills, matched in the JD's requirements block | 25 | `JOB_W_SKILLS`, `JOB_SKILL_SATURATION` |
+| Domain overlap | 10 | `JOB_W_DOMAINS`, `JOB_DOMAIN_SATURATION` |
 
-Title, skill and domain terms come from `profile.compiled.json` (or
-`JOB_TARGET_TITLES` / `JOB_SKILLS` / `JOB_DOMAINS`). Title gates run *before*
-scoring: a posting that fails `title_is_target` or the location gate is never
-scored at all.
+Two things multiply that total rather than adding to it:
 
-Every row in the email carries a **Why N** line showing both halves of that
-arithmetic — what hit, and what didn't:
+| Multiplier | Value | Env |
+|---|---|---|
+| Your metro / doable from home / would need a move | 1.0 / 0.95 / 0.55 | `JOB_ELSEWHERE_FACTOR`, `JOB_RELOCATION_FACTOR` |
+| Bar is in another field — "3 years in banking operations" | ×0.2 | `JOB_FIELD_MISMATCH_FACTOR` |
 
-```
-Why 72  |  +12 partial title match · associate product engineer
-        |  +20 seniority fit · 1-2 years
-        |  +24 strong skills match · claude code, spec, figma, qa +7
-        |  +6 good domain match · automation, agent, workflow
-   0  stage: no funding stage stated
-```
+**Title, location and stage are filters. They decide whether you see a posting;
+they never add points.** Anything that adds points to every posting that passed
+a gate raises the floor under all of them, including the bad ones. Geography
+multiplies for the same reason — it separates two good roles without lifting a
+weak local one, and it asks whether you could do the job from where you live,
+not which metro it is in. An SF company hiring remote ranks with the local ones.
 
-Capped signals (title, skills, domains) are labelled *partial* / *good* /
-*strong* against their ceiling, because `+9 skills` means nothing until you know
-the cap is 24. The dimmed `0` line lists signals that scored **nothing** — an
-unstated funding stage, no domain overlap, a title that matched none of your
-targets. Those are worth zero by construction and stay out of the sum, so the
-printed parts always add up to the total. If a posting scores lower than you
-expect, that line is where the answer is.
+At three years of experience, on otherwise identical postings:
 
-The funding digest scores headlines on the same principle, with its own weights
-(`FUNDING_FOCUS_POINTS`, `FUNDING_LOC_POINTS`, `FUNDING_LOC2_POINTS`,
-`FUNDING_ROUND_POINTS`) and its own section cutoff (`FUNDING_BEST_SCORE`).
+| JD asks for | Score |
+|---|---|
+| 3+ years | 92 |
+| 4+ years | 77 |
+| 5+ years | 55 |
+| 6+ years | 29 |
+| 8+ years | 1 |
+| 3+ years in banking operations | 18 |
+
+A stated bar ranks, it never gates. `JOB_MAX_YEARS` is the hard cut — postings
+asking for more are dropped, and postings stating **no** bar always pass, since
+roughly half state nothing.
+
+**Expect a great match to read 75–90, and 100 essentially never.** If everything
+looks like a 90, the keyword dimensions are saturating too easily; raise
+`JOB_SKILL_SATURATION`. If the "Best matches" section is thin, lower
+`JOB_BEST_MATCH_MIN`.
+
+Cards show a verdict — Strong fit / Good fit / Worth a look / A stretch — the
+facts you would screen on, and one line on the work. Chips are coloured by
+verdict: green suits you, grey is neutral, amber is partly against, red is
+against.
+
+**X/Twitter hiring posts are not scored.** They arrive as their own email,
+newest first, with no verdict: a founder saying "we're hiring" often never says
+for what and states no bar, so a number would be measuring the format rather
+than the lead.
+
+The funding digest scores headlines on its own weights (`FUNDING_FOCUS_POINTS`,
+`FUNDING_LOC_POINTS`, `FUNDING_LOC2_POINTS`, `FUNDING_ROUND_POINTS`) with its own
+cutoff (`FUNDING_BEST_SCORE`).
 
 ### The ATS watchlist
 
@@ -272,7 +287,10 @@ Add tokens to `GREENHOUSE_COMPANIES` / `LEVER_COMPANIES` / `ASHBY_COMPANIES` in
 | `getro.py` | Getro network sweep; also harvests company-size buckets |
 | `discover.py` | AI web-search company discovery |
 | `setup_profile.py` | Resume + `profile.json` → `profile.compiled.json` |
-| `tests/` | Stdlib-only unit suite, no network |
+| `llm.py` | One seam so a fork runs on **Anthropic or OpenAI** — both do server-side web search, shaped differently |
+| `doctor.py` | Pre-flight: every setup failure in this repo is silent, so it checks them and prints the fix |
+| `tests/` | Unit suite, no network. `run.py` pins `JOB_IGNORE_PROFILE=1` so it tests the code, not your profile |
+| `tests/check_profile.py` | The other half: your **compiled** profile vs 34 labelled real postings |
 | `evals/` | Accuracy checks for the model-decided parts (costs API calls) |
 
 State files, all JSON on disk and on the `state` branch in CI:
@@ -322,9 +340,9 @@ python evals/eval_enrich.py --limit 3      # cheap smoke test
 python tests/verify_grok_quotes.py         # checks X quotes against source posts
 ```
 
-`run.py` sets `JOB_IGNORE_PROFILE=1` so the suite tests the **code**. Without it
-the same command tested your personal profile locally and the repo defaults in
-CI — two subjects, one green tick. To check the profile itself:
+`run.py` sets `JOB_IGNORE_PROFILE=1` so the suite tests the **code**, not
+whatever profile is on your machine — otherwise it would test one thing locally
+and another in CI. To check the profile itself:
 
 ```bash
 python tests/check_profile.py              # your compiled filters vs 34 labelled postings
