@@ -189,11 +189,12 @@ def test_a_leads_email_is_not_split_into_match_tiers():
 def test_subject_templates():
     """Subjects are templates so they can be reworded without code changes.
     Only {date} is substituted."""
-    equal(C.subject_for("X Latest Hiring"), "X Latest Hiring",
+    equal(C.subject_for("No Placeholder Here"), "No Placeholder Here",
           "a template with no placeholder should pass through unchanged")
-    dated = C.subject_for("{date} Tech Job Postings")
-    check(dated.endswith("Tech Job Postings") and dated != "{date} Tech Job Postings",
-          f"date was not substituted: {dated}")
+    for tmpl in (C.SUBJECT_JOBS, C.SUBJECT_X):
+        got = C.subject_for(tmpl)
+        check("{date}" not in got, f"date was not substituted: {got}")
+        check(got != tmpl, f"template unchanged: {tmpl}")
     # A stray brace in a user-set subject must not break the send.
     equal(C.subject_for("Jobs {oops}"), "Jobs {oops}")
 
@@ -204,6 +205,10 @@ def test_the_two_digests_get_different_subjects():
     together in Gmail."""
     check(C.subject_for(C.SUBJECT_JOBS) != C.subject_for(C.SUBJECT_X),
           "the job digest and the X digest share a subject line")
+    # Both are dated: Gmail threads on subject, and a static one buries each new
+    # digest inside a single growing conversation.
+    for tmpl in (C.SUBJECT_JOBS, C.SUBJECT_X):
+        check("{date}" in tmpl, f"{tmpl!r} has no date, so these will thread")
 
 
 if __name__ == "__main__":

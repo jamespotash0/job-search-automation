@@ -253,11 +253,11 @@ GROK_SEPARATE_EMAIL = env_flag("JOB_GROK_SEPARATE_EMAIL", True)
 # Email subjects. Templates, so you can reword them without touching code;
 # "{date}" is substituted, anything else is used verbatim.
 #
-# The job digest carries the date because it arrives daily and Gmail threads on
-# subject — without it every day's digest collapses into one conversation and
-# the newest one hides under a "show trimmed content" fold.
-SUBJECT_JOBS = os.environ.get("DIGEST_SUBJECT_JOBS", "{date} Tech Job Postings")
-SUBJECT_X = os.environ.get("DIGEST_SUBJECT_X", "X Latest Hiring")
+# Both carry the date on purpose: these arrive daily and Gmail threads on
+# subject, so a static subject collapses every day's email into one conversation
+# with the newest hidden under the "show trimmed content" fold.
+SUBJECT_JOBS = os.environ.get("DIGEST_SUBJECT_JOBS", "Job Posting digest - {date}")
+SUBJECT_X = os.environ.get("DIGEST_SUBJECT_X", "X Hiring Posts - {date}")
 
 # How much of each job description we keep. 1500 was too small to be honest:
 # the requirements block ("5+ years of...") and the pay band live near the BOTTOM
