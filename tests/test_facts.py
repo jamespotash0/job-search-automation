@@ -149,5 +149,41 @@ def test_a_remote_role_is_not_labelled_remote_twice():
     equal(text.count("remote"), 1, f"remote appears more than once: {text}")
 
 
+@case
+def test_a_hiring_lead_carries_no_fit_verdict():
+    """An X post often never says what the role is, never states a years bar,
+    and carries ~200 characters instead of an 8,000-character JD. The fit score
+    has almost nothing to work with, so every lead landed in the same narrow
+    band -- a confident-looking label on a guess. Leads show none."""
+    lead = {"title": "Forward Deployed Engineer", "company": "Copperhead",
+            "url": "http://x", "location": "United States", "source": "X/Grok",
+            "posted_ts": None, "loc_tier": "us-remote", "work_mode": "remote",
+            "funding": {}, "facts": {}, "lead": True,
+            "breakdown": {"parts": [], "misses": [], "total": 34}, "q": 34}
+    text = re.sub(r"<[^>]+>", " ", C.card(lead))
+    for verdict in ("A stretch", "Worth a look", "Good fit", "Strong fit"):
+        check(verdict not in text, f"lead card shows a fit verdict: {verdict}")
+    # ...but a real posting still gets one.
+    posting = dict(lead, source="Ashby", lead=False)
+    check(any(v in re.sub(r"<[^>]+>", " ", C.card(posting))
+              for v in ("A stretch", "Worth a look", "Good fit", "Strong fit")),
+          "a board posting lost its fit verdict")
+
+
+@case
+def test_a_leads_email_is_not_split_into_match_tiers():
+    """Nothing is being ranked, so "Best matches" / "Worth a look" would be
+    describing an order that does not exist."""
+    leads = [{"title": "PM", "company": "acme", "url": "http://x",
+              "location": "Remote", "source": "X/Grok", "posted_ts": None,
+              "loc_tier": "us-remote", "work_mode": "remote", "funding": {},
+              "facts": {}, "lead": True, "q": 30,
+              "breakdown": {"parts": [], "misses": [], "total": 30}}]
+    html_out = C.build_html(leads, title="Hiring posts from X")
+    check("Hiring posts from X" in html_out, "custom title missing")
+    check("Best matches" not in html_out, "leads were split into match tiers")
+    check("hiring post" in html_out, "no lead-style summary line")
+
+
 if __name__ == "__main__":
     main("facts")

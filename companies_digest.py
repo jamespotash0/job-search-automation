@@ -2283,9 +2283,12 @@ def card(item, dim=False):
 
     comp = esc(pretty_company(item.get("company"))) or "\u2014"
     # A word, not a number. The number is a ranking device for the code; what you
-    # need to know is whether you clear this role's bar.
-    score_text = fit_word(item["q"])
-    strong = item["q"] >= BEST_MATCH_MIN
+    # need to know is whether you clear this role's bar. Leads get no verdict at
+    # all — see the note in main(): there is not enough in a hiring post to
+    # justify one, and a confident-looking label on a guess is worse than none.
+    lead = item.get("lead")
+    score_text = "" if lead else fit_word(item["q"])
+    strong = (not lead) and item["q"] >= BEST_MATCH_MIN
     score_color = GOOD if strong else INK3
     score_bg = "#eaf6ee" if strong else CANVAS
     return (
@@ -2296,17 +2299,19 @@ def card(item, dim=False):
         f"<table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\"><tr>"
         f"<td valign=\"top\" style=\"font-family:{FONT}\">"
         f"<a href=\"{esc(item['url'])}\" style=\"color:{INK};text-decoration:none;"
-        f"font-size:{title_size};font-weight:600;line-height:22px\">{esc(item['title'])}</a>"
+        f"font-size:{title_size};font-weight:600;line-height:22px\">"
+        f"{esc(item['title'] or 'Hiring')}</a>"
         f"<div style=\"margin:3px 0 9px;font-size:13px;color:{INK2}\">"
         f"{comp}</div>"
         f"<div style=\"margin:0 0 -6px\">{''.join(chips)}</div>"
         f"{facts_row}"
         f"</td>"
-        f"<td valign=\"top\" width=\"86\" align=\"right\" style=\"font-family:{FONT}\">"
-        f"<span style=\"display:inline-block;padding:4px 10px;"
-        f"border-radius:9px;background:{score_bg};color:{score_color};"
-        f"font-size:12px;font-weight:600;white-space:nowrap\">{score_text}</span>"
-        f"</td></tr></table>"
+        + (f"<td valign=\"top\" width=\"86\" align=\"right\" style=\"font-family:{FONT}\">"
+           f"<span style=\"display:inline-block;padding:4px 10px;"
+           f"border-radius:9px;background:{score_bg};color:{score_color};"
+           f"font-size:12px;font-weight:600;white-space:nowrap\">{score_text}</span>"
+           f"</td>" if score_text else "")
+        + f"</tr></table>"
         f"{fit_row}"
         f"{context_block(item)}"
         f"{match_line(item)}"
@@ -2356,6 +2361,16 @@ def build_html(items, title="Companies digest"):
             f"<div style=\"font-family:{FONT};margin:22px 0 0;padding:20px 18px;"
             f"background:{CARD};border:1px solid {HAIRLINE};border-radius:14px;"
             f"font-size:14px;color:{INK2}\">Nothing new this run.</div>"))
+
+    # Leads are not ranked, so they are not split into match tiers either.
+    if items and all(i.get("lead") for i in items):
+        summary = (f"{len(items)} hiring post{'' if len(items) == 1 else 's'}, "
+                   f"newest first")
+        header += (f"<div style=\"font-family:{FONT};margin:9px 0 0;font-size:13px;"
+                   f"color:{INK2}\">{summary}</div>")
+        return _shell(header
+                      + "<div style=\"height:14px\"></div>"
+                      + "".join(card(i) for i in items))
 
     best = [i for i in items if i["q"] >= BEST_MATCH_MIN]
     rest = [i for i in items if i["q"] < BEST_MATCH_MIN]
@@ -2622,7 +2637,16 @@ def main():
     # X/Grok leads are a different kind of thing from a board posting — a person
     # said they are hiring, often with no application link, and acting on one
     # means replying to a human. Mixed in they read as low-confidence noise.
+    # X/Grok items are LEADS, not postings. A founder saying "we're hiring" often
+    # never says for what, never states a years bar, and carries 200 characters
+    # of summary rather than an 8,000-character JD — so the fit score has almost
+    # nothing to work with and lands every one of them in the same narrow band.
+    # Scoring them anyway invented precision that was not there. They are sorted
+    # by recency and shown without a fit verdict; the summary does the work.
     grok = [j for j in picked if j.get("source") == "X/Grok"]
+    for j in grok:
+        j["lead"] = True
+    grok.sort(key=lambda x: x.get("posted_ts") or 0, reverse=True)
     if GROK_SEPARATE_EMAIL and grok:
         picked = [j for j in picked if j.get("source") != "X/Grok"]
     else:
