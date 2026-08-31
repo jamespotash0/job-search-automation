@@ -250,6 +250,15 @@ USE_GROK_X = env_flag("JOB_USE_GROK_X", True) and bool(os.environ.get("XAI_API_K
 # rather than filling in a form. Mixed in, they read as low-confidence noise.
 GROK_SEPARATE_EMAIL = env_flag("JOB_GROK_SEPARATE_EMAIL", True)
 
+# Email subjects. Templates, so you can reword them without touching code;
+# "{date}" is substituted, anything else is used verbatim.
+#
+# The job digest carries the date because it arrives daily and Gmail threads on
+# subject — without it every day's digest collapses into one conversation and
+# the newest one hides under a "show trimmed content" fold.
+SUBJECT_JOBS = os.environ.get("DIGEST_SUBJECT_JOBS", "{date} Tech Job Postings")
+SUBJECT_X = os.environ.get("DIGEST_SUBJECT_X", "X Latest Hiring")
+
 # How much of each job description we keep. 1500 was too small to be honest:
 # the requirements block ("5+ years of...") and the pay band live near the BOTTOM
 # of a JD, so a 1500-char window scored every posting on its marketing preamble
@@ -2409,14 +2418,22 @@ def from_header():
     return formataddr((name, EMAIL_USER))
 
 
+def subject_for(template):
+    """Fill a subject template. Only {date} is substituted; a template with no
+    placeholder is used as-is, which is how "X Latest Hiring" stays static."""
+    try:
+        return template.format(date=datetime.now().strftime("%b %-d"))
+    except (KeyError, IndexError):
+        return template          # a stray brace shouldn't break the send
+
+
 def send_email(html_body, subject=None):
     if not (EMAIL_USER and EMAIL_PASS and EMAIL_TO):
         print("[info] email creds not set — printing digest:\n")
         print(re.sub(r"<[^>]+>", "", html_body))
         return
     msg = MIMEMultipart("alternative")
-    msg["Subject"] = (f"{subject or 'Companies digest'} — "
-                      f"{datetime.now().strftime('%b %d %-I%p')}")
+    msg["Subject"] = subject or subject_for(SUBJECT_JOBS)
     msg["From"] = from_header()
     msg["To"] = EMAIL_TO
     msg.attach(MIMEText(html_body, "html"))
@@ -2656,7 +2673,7 @@ def main():
           + (f" (+{len(grok)} X/Grok leads in their own email)" if grok else ""))
     if grok:
         send_email(build_html(grok, title="Hiring posts from X"),
-                   subject="Hiring posts from X")
+                   subject=subject_for(SUBJECT_X))
     if picked or SEND_WHEN_EMPTY:
         send_email(build_html(picked))
     elif grok:

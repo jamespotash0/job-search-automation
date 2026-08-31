@@ -185,5 +185,26 @@ def test_a_leads_email_is_not_split_into_match_tiers():
     check("hiring post" in html_out, "no lead-style summary line")
 
 
+@case
+def test_subject_templates():
+    """Subjects are templates so they can be reworded without code changes.
+    Only {date} is substituted."""
+    equal(C.subject_for("X Latest Hiring"), "X Latest Hiring",
+          "a template with no placeholder should pass through unchanged")
+    dated = C.subject_for("{date} Tech Job Postings")
+    check(dated.endswith("Tech Job Postings") and dated != "{date} Tech Job Postings",
+          f"date was not substituted: {dated}")
+    # A stray brace in a user-set subject must not break the send.
+    equal(C.subject_for("Jobs {oops}"), "Jobs {oops}")
+
+
+@case
+def test_the_two_digests_get_different_subjects():
+    """They arrive in the same run; identical subjects would thread them
+    together in Gmail."""
+    check(C.subject_for(C.SUBJECT_JOBS) != C.subject_for(C.SUBJECT_X),
+          "the job digest and the X digest share a subject line")
+
+
 if __name__ == "__main__":
     main("facts")
