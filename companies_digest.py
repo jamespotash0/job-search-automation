@@ -35,7 +35,7 @@ from concurrent.futures import ThreadPoolExecutor
 from urllib.parse import quote_plus
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from email.utils import formataddr
+from email.utils import formataddr, make_msgid
 from datetime import datetime, timezone
 
 
@@ -2427,7 +2427,25 @@ def subject_for(template):
         return template          # a stray brace shouldn't break the send
 
 
-def send_email(html_body, subject=None):
+# Threading. Each digest is a reply to an imaginary first message that never
+# existed but has a stable, made-up Message-ID — so every "Job Posting digest"
+# references the same root and the mail client files them as one conversation,
+# while the subject line keeps its date. Threading on References is what the
+# standard actually specifies; the alternative is making every subject
+# identical, which threads by accident and costs you the date.
+#
+# The root is derived from the recipient so two people running their own fork
+# never collide, and is stable across runs because it is a hash, not a UUID.
+THREAD_EMAILS = env_flag("JOB_THREAD_EMAILS", True)
+
+
+def thread_root(kind):
+    """A stable Message-ID for the conversation a digest belongs to."""
+    seed = f"{kind}|{EMAIL_TO or EMAIL_USER or 'local'}"
+    return f"<{hashlib.sha1(seed.encode()).hexdigest()[:24]}.digest@job-search-automation>"
+
+
+def send_email(html_body, subject=None, thread="jobs"):
     if not (EMAIL_USER and EMAIL_PASS and EMAIL_TO):
         print("[info] email creds not set — printing digest:\n")
         print(re.sub(r"<[^>]+>", "", html_body))
@@ -2436,6 +2454,11 @@ def send_email(html_body, subject=None):
     msg["Subject"] = subject or subject_for(SUBJECT_JOBS)
     msg["From"] = from_header()
     msg["To"] = EMAIL_TO
+    if THREAD_EMAILS:
+        root = thread_root(thread)
+        msg["Message-ID"] = make_msgid(domain="job-search-automation")
+        msg["In-Reply-To"] = root
+        msg["References"] = root
     msg.attach(MIMEText(html_body, "html"))
     with smtplib.SMTP(SMTP_HOST, SMTP_PORT) as srv:
         srv.starttls()
@@ -2673,7 +2696,7 @@ def main():
           + (f" (+{len(grok)} X/Grok leads in their own email)" if grok else ""))
     if grok:
         send_email(build_html(grok, title="Hiring posts from X"),
-                   subject=subject_for(SUBJECT_X))
+                   subject=subject_for(SUBJECT_X), thread="x")
     if picked or SEND_WHEN_EMPTY:
         send_email(build_html(picked))
     elif grok:

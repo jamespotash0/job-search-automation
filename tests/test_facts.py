@@ -211,5 +211,22 @@ def test_the_two_digests_get_different_subjects():
         check("{date}" in tmpl, f"{tmpl!r} has no date, so these will thread")
 
 
+@case
+def test_digests_thread_by_reference_not_by_identical_subjects():
+    """Each digest is a reply to an imaginary root message with a stable, made-up
+    Message-ID, so the client files them as one conversation while the subject
+    keeps its date. The alternative -- identical subjects -- threads by accident
+    and costs you the date."""
+    C.EMAIL_TO = "me@example.com"
+    jobs, x = C.thread_root("jobs"), C.thread_root("x")
+    equal(jobs, C.thread_root("jobs"), "the root must be stable across runs")
+    check(jobs != x, "both digests would land in the same conversation")
+    check(jobs.startswith("<") and jobs.endswith(">"), f"not a Message-ID: {jobs}")
+    # Derived from the recipient, so two forks never collide.
+    C.EMAIL_TO = "someone-else@example.com"
+    check(C.thread_root("jobs") != jobs, "the root ignores who it is sent to")
+    C.EMAIL_TO = "me@example.com"
+
+
 if __name__ == "__main__":
     main("facts")
