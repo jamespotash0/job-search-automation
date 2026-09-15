@@ -1178,7 +1178,34 @@
     "knak",
     "enginy",
     "mixtiles",
-    "oasishealthpartners"
+    "oasishealthpartners",
+    "faeththerapeutics",
+    "sage49",
+    "akuity",
+    "newglobesandbox",
+    "siliconranch",
+    "ridgeline",
+    "flexe",
+    "fortastracorporation",
+    "array",
+    "layerhealth",
+    "levelworks",
+    "2u",
+    "cariboubiosciencesinc",
+    "brainstation",
+    "smartasset",
+    "tpreducationllc",
+    "digitalocean98",
+    "kickstarter",
+    "consensuscloudservices",
+    "jobsforthefuture",
+    "mendaerainc",
+    "strike",
+    "ascendtogether",
+    "aspectbiosystems",
+    "electrasteel",
+    "tenableinc",
+    "blumira"
   ],
   "lever": [
     "rise",
@@ -1510,7 +1537,17 @@
     "baselane",
     "safe",
     "omnisend",
-    "synthego"
+    "synthego",
+    "rigetti",
+    "loadsmart",
+    "betr",
+    "egenesisbio",
+    "luumlash",
+    "myollie",
+    "economicmodeling",
+    "syntronic",
+    "seven-starling",
+    "gridline"
   ],
   "ashby": [
     "taktile",
@@ -2545,7 +2582,39 @@
     "cradlebio",
     "finny",
     "innatera",
-    "temporal"
+    "temporal",
+    "finout",
+    "chattermill",
+    "melotech",
+    "brimstone",
+    "seqholdings",
+    "lancedb",
+    "atomic-invest",
+    "kiddom",
+    "ambrosia-energy",
+    "hiya",
+    "august-health",
+    "axelera",
+    "eli",
+    "getscope",
+    "inspiren",
+    "nexxen",
+    "skydio",
+    "jerry.ai",
+    "optimum",
+    "nosisbio",
+    "i3d",
+    "people-data-labs",
+    "charthop",
+    "eventual",
+    "reflexrobotics",
+    "laurel",
+    "passes",
+    "helius",
+    "fin",
+    "tandem-health",
+    "radical-ventures",
+    "scaffold"
   ],
   "checked": [
     "alloy",
@@ -3353,7 +3422,25 @@
     "charikaty",
     "buildots",
     "temporal",
-    "z.ai"
+    "z.ai",
+    "ai interactive content startup flam",
+    "ai startup flam",
+    "global ai startup flam",
+    "ai content startup flam",
+    "stablecoin infrastructure startup fin.com",
+    "san francisco based ai interactive content firm flam",
+    "finnish startup",
+    "ai speech therapy startup golden brain care",
+    "tandem health",
+    "flam",
+    "workmarket founder\u2019s new firm",
+    "aeo startup profound hits unicorn valuation",
+    "fin.com",
+    "evvy",
+    "arcustin games",
+    "radical ventures",
+    "a vinyl bar in shibuya",
+    "scaffold"
   ],
   "workable": [
     "oxford-quantum-circuits-8",
@@ -3688,7 +3775,9 @@
     "compass-mining",
     "cardamom",
     "onescreenai",
-    "hearth-careers"
+    "hearth-careers",
+    "the-mind-company",
+    "treehouse-job-board"
   ],
   "sizes": {
     "jumpcloud": 600,
@@ -3765,7 +3854,7 @@
     "teleskope": 25,
     "leandata": 120,
     "ionq": 600,
-    "alloy": 600,
+    "alloy": 120,
     "fora": 3000,
     "neon": 120,
     "orchard robotics": 25,
@@ -3782,7 +3871,7 @@
     "piccollage": 120,
     "intercom": 3000,
     "upside": 600,
-    "cleargov": 120,
+    "cleargov": 600,
     "shoptalk": 600,
     "lawn love": 120,
     "liquor.com": 120,
@@ -3825,7 +3914,7 @@
     "flock.io": 25,
     "blockchain.com": 3000,
     "coinbase": 15000,
-    "kraken": 600,
+    "kraken": 3000,
     "bitgo": 600,
     "coin metrics": 120,
     "suade": 120,
@@ -3846,7 +3935,7 @@
     "ual\u00e1": 3000,
     "flatfile": 120,
     "socure": 600,
-    "x.ai": 15000,
+    "x.ai": 600,
     "odeko": 120,
     "remote": 15000,
     "namely": 120,
@@ -3987,7 +4076,7 @@
     "mindbridge ai": 600,
     "stay22": 120,
     "algolux": 25,
-    "clutch canada": 600,
+    "clutch canada": 120,
     "insight engines": 5,
     "mejuri": 600,
     "quotemachine": 25,
@@ -4158,7 +4247,7 @@
     "lottie": 120,
     "scarlet": 120,
     "flagstone": 600,
-    "robco": 25,
+    "robco": 120,
     "pqshield": 120,
     "anomali": 600,
     "traba": 600,
@@ -4520,7 +4609,7 @@
     "invinity energy systems plc": 120,
     "leap tools": 600,
     "kavodax": 5,
-    "rippling": 15000,
+    "rippling": 3000,
     "university of toronto": 15000,
     "chargelab": 120,
     "linkedin": 15000,
@@ -5045,7 +5134,7 @@
     "personetics": 600,
     "nala": 25,
     "here technologies": 120,
-    "ascend": 120,
+    "ascend": 3000,
     "trueml": 120,
     "clearscore": 600,
     "epam systems": 15000,
@@ -5324,7 +5413,7 @@
     "partly": 120,
     "marloo": 5,
     "castelion": 120,
-    "radiant": 600,
+    "radiant": 120,
     "solopulse corp": 5,
     "gitlab": 3000,
     "shelf engine": 25,
@@ -5870,7 +5959,7 @@
     "mote marine laboratory & aquarium": 600,
     "provincetown center for coastal studies": 120,
     "seattle aquarium": 600,
-    "logicgate": 600,
+    "logicgate": 120,
     "recast": 120,
     "tava health": 120,
     "form health": 120,
@@ -6740,7 +6829,7 @@
     "kombo": 25,
     "nomi health": 600,
     "beeline": 600,
-    "checkmate savings, inc": 25,
+    "checkmate savings, inc": 120,
     "arctype": 5,
     "unspun": 120,
     "comparative": 25,
@@ -6862,7 +6951,7 @@
     "bennie": 120,
     "subject": 120,
     "third wave automation": 120,
-    "parspec": 120,
+    "parspec": 25,
     "linkedfield": 5,
     "hinkle contracting company, llc": 120,
     "beta technologies": 600,
@@ -8213,7 +8302,7 @@
     "onfly": 600,
     "kings league": 600,
     "modernfi": 25,
-    "snoots": 25,
+    "snoots": 5,
     "spr therapeutics, inc.": 600,
     "checkpoint surgical": 120,
     "carbonite": 600,
@@ -8754,7 +8843,7 @@
     "ontario genomics": 25,
     "kalshi": 600,
     "nuvia": 120,
-    "finch": 25,
+    "finch": 120,
     "camber": 120,
     "clearly ai": 5,
     "vama": 25,
@@ -10270,348 +10359,398 @@
     "signal sciences": 25,
     "rhizocore technologies": 25,
     "redo": 120,
-    "conviva": 600
+    "conviva": 600,
+    "helius": 25,
+    "gammanics": 120,
+    "kickstarter": 600,
+    "mindsnacks": 5,
+    "egenesis": 120,
+    "mendaera, inc.": 120,
+    "rigetti computing": 120,
+    "blossom health": 120,
+    "landed": 25,
+    "volara": 25,
+    "the nature conservancy": 15000,
+    "connecticut river conservancy": 25,
+    "wild oyster project": 5,
+    "elevate": 120,
+    "ollie": 120,
+    "open door legal": 120,
+    "scope": 5,
+    "cambium": 25,
+    "conquest planning": 120,
+    "flexe": 120,
+    "congregation rodeph shalom": 25,
+    "jewish federation of greater new haven": 25,
+    "eli": 25,
+    "transit": 600,
+    "consensus cloud solutions": 600,
+    "olsson": 600,
+    "tutor.com": 3000,
+    "bok financial": 15000,
+    "loadsmart": 600,
+    "laurel": 120,
+    "fortastra": 5,
+    "eventual": 5,
+    "structure": 5,
+    "morse micro": 120,
+    "layer health": 25,
+    "chattermill": 120,
+    "borderless": 25,
+    "cognichip inc.": 25,
+    "finout": 120,
+    "kabal": 120,
+    "treehouse": 120,
+    "reflex robotics": 25,
+    "clearloop": 5,
+    "strike": 25,
+    "ctera networks": 120,
+    "brimstone": 120,
+    "electra": 120,
+    "smartasset": 600,
+    "people data labs": 120,
+    "trellis research": 120,
+    "forsight robotics": 120,
+    "passes": 120,
+    "newglobe": 120,
+    "houghton mifflin harcourt": 3000,
+    "lightcast": 600,
+    "kiddom": 120,
+    "jobs for the future": 600,
+    "2u inc.": 3000,
+    "zelt": 25,
+    "brainstation": 600,
+    "nosis bio": 25,
+    "affect therapeutics": 120,
+    "mealpal": 25,
+    "array": 600,
+    "songscription": 5,
+    "digitalocean": 3000,
+    "hiya": 120,
+    "ophelia": 600,
+    "blumira": 120,
+    "betr": 120,
+    "sage": 120,
+    "aspect biosystems": 120,
+    "sensei biotherapeutics": 25,
+    "jerry": 600,
+    "openmeter": 5,
+    "lancedb": 25,
+    "reddit, inc.": 120,
+    "explorer, a ghx company": 5,
+    "syntronic": 3000,
+    "bmt": 3000,
+    "basf": 15000,
+    "level.works": 120,
+    "i3d.net": 120,
+    "sbm offshore": 15000,
+    "applied medical": 3000,
+    "axelera ai": 600,
+    "revel8": 25,
+    "peopleforbikes": 25,
+    "luum": 25,
+    "bliq": 25,
+    "planqc": 120,
+    "caribou biosciences": 120,
+    "seven starling": 120,
+    "sequence holdings": 5,
+    "mott macdonald": 15000,
+    "atomic": 25,
+    "uturn": 25,
+    "akuity": 25,
+    "the assembly": 25,
+    "inspiren": 25,
+    "kia": 15000,
+    "st. francis-emory healthcare": 3000,
+    "west georgia eye care center": 120,
+    "august health": 120,
+    "optimum": 25,
+    "tremor international": 25,
+    "tenable": 3000,
+    "gridline": 120,
+    "matroid": 25,
+    "scientific research corporation": 3000,
+    "skillreal - digital twins for industrial manufacturing": 25,
+    "claro energy": 120,
+    "legionelladossier": 25,
+    "cirsium biosciences": 25,
+    "ridgeline": 600,
+    "foundever": 15000,
+    "carhartt": 3000
   },
   "pending": {
-    "reelshort": {
-      "name": "ReelShort",
-      "domain": "reelshort.com",
-      "first_seen": "2026-08-31",
-      "tries": 12,
-      "last_try": "2026-09-14"
-    },
-    "ramp": {
-      "name": "Ramp",
-      "domain": "ramp.com",
-      "first_seen": "2026-08-31",
-      "tries": 12,
-      "last_try": "2026-09-14"
-    },
-    "soria": {
-      "name": "Soria",
-      "domain": "soria.ai",
-      "first_seen": "2026-08-31",
-      "tries": 12,
-      "last_try": "2026-09-14"
-    },
-    "ralo": {
-      "name": "Ralo",
-      "domain": "",
-      "first_seen": "2026-08-31",
-      "tries": 12,
-      "last_try": "2026-09-14"
-    },
-    "revion": {
-      "name": "Revion",
-      "domain": "",
-      "first_seen": "2026-08-31",
-      "tries": 12,
-      "last_try": "2026-09-14"
-    },
-    "utsav": {
-      "name": "Utsav",
-      "domain": "",
-      "first_seen": "2026-08-31",
-      "tries": 12,
-      "last_try": "2026-09-14"
-    },
     "perplexity": {
       "name": "Perplexity",
       "domain": "perplexity.ai",
       "first_seen": "2026-09-01",
-      "tries": 11,
-      "last_try": "2026-09-14"
+      "tries": 12,
+      "last_try": "2026-09-15"
     },
     "logistics startup oorjaa": {
       "name": "Logistics startup OORJAA",
       "domain": "oorjaa.com",
       "first_seen": "2026-09-01",
-      "tries": 11,
-      "last_try": "2026-09-14"
-    },
-    "ai startup visko": {
-      "name": "AI startup Visko",
-      "domain": "visko.ai",
-      "first_seen": "2026-09-01",
       "tries": 12,
-      "last_try": "2026-09-14"
-    },
-    "battery-manufacturing startup beff": {
-      "name": "Battery-manufacturing startup Beff",
-      "domain": "b-eff.com",
-      "first_seen": "2026-09-01",
-      "tries": 12,
-      "last_try": "2026-09-14"
+      "last_try": "2026-09-15"
     },
     "visko": {
       "name": "Visko",
       "domain": "visko.ai",
       "first_seen": "2026-09-01",
-      "tries": 11,
-      "last_try": "2026-09-14"
-    },
-    "antiscam ai chatbot startup": {
-      "name": "Antiscam AI Chatbot Startup",
-      "domain": "",
-      "first_seen": "2026-09-01",
       "tries": 12,
-      "last_try": "2026-09-14"
-    },
-    "ai startup clipto": {
-      "name": "AI startup Clipto",
-      "domain": "",
-      "first_seen": "2026-09-01",
-      "tries": 12,
-      "last_try": "2026-09-14"
+      "last_try": "2026-09-15"
     },
     "kepler aerospace": {
       "name": "Kepler Aerospace",
       "domain": "",
       "first_seen": "2026-09-01",
-      "tries": 11,
-      "last_try": "2026-09-14"
+      "tries": 12,
+      "last_try": "2026-09-15"
     },
     "stack health": {
       "name": "Stack Health",
       "domain": "",
       "first_seen": "2026-09-01",
-      "tries": 11,
-      "last_try": "2026-09-14"
+      "tries": 12,
+      "last_try": "2026-09-15"
     },
     "spacelab": {
       "name": "Spacelab",
       "domain": "",
       "first_seen": "2026-09-01",
-      "tries": 11,
-      "last_try": "2026-09-14"
+      "tries": 12,
+      "last_try": "2026-09-15"
     },
     "trustedrouter": {
       "name": "TrustedRouter",
       "domain": "",
       "first_seen": "2026-09-01",
-      "tries": 11,
-      "last_try": "2026-09-14"
-    },
-    "be clinical": {
-      "name": "Be Clinical",
-      "domain": "",
-      "first_seen": "2026-09-01",
       "tries": 12,
-      "last_try": "2026-09-14"
+      "last_try": "2026-09-15"
     },
     "harvard law dropout": {
       "name": "Harvard Law dropout",
       "domain": "",
       "first_seen": "2026-09-01",
-      "tries": 11,
-      "last_try": "2026-09-14"
+      "tries": 12,
+      "last_try": "2026-09-15"
     },
     "greenlight": {
       "name": "Greenlight",
       "domain": "greenlightcard.com",
       "first_seen": "2026-09-02",
-      "tries": 10,
-      "last_try": "2026-09-14"
+      "tries": 11,
+      "last_try": "2026-09-15"
     },
     "chainalysis": {
       "name": "Chainalysis",
       "domain": "chainalysis.com",
       "first_seen": "2026-09-02",
-      "tries": 11,
-      "last_try": "2026-09-14"
+      "tries": 12,
+      "last_try": "2026-09-15"
     },
     "weights & biases": {
       "name": "Weights & Biases",
       "domain": "wandb.ai",
       "first_seen": "2026-09-02",
-      "tries": 1
+      "tries": 2,
+      "last_try": "2026-09-15"
     },
     "notion": {
       "name": "Notion",
       "domain": "notion.so",
       "first_seen": "2026-09-02",
-      "tries": 3,
-      "last_try": "2026-09-14"
+      "tries": 4,
+      "last_try": "2026-09-15"
     },
     "reflection": {
       "name": "Reflection",
       "domain": "reflection.app",
       "first_seen": "2026-09-02",
-      "tries": 3,
-      "last_try": "2026-09-14"
+      "tries": 4,
+      "last_try": "2026-09-15"
     },
     "upnext": {
       "name": "UpNext",
       "domain": "",
       "first_seen": "2026-09-02",
-      "tries": 2,
-      "last_try": "2026-09-14"
+      "tries": 3,
+      "last_try": "2026-09-15"
     },
     "glean": {
       "name": "Glean",
       "domain": "glean.com",
       "first_seen": "2026-09-02",
-      "tries": 10,
-      "last_try": "2026-09-14"
+      "tries": 11,
+      "last_try": "2026-09-15"
     },
     "sierra": {
       "name": "Sierra",
       "domain": "",
       "first_seen": "2026-09-02",
-      "tries": 2,
-      "last_try": "2026-09-14"
+      "tries": 3,
+      "last_try": "2026-09-15"
     },
     "decagon": {
       "name": "Decagon",
       "domain": "",
       "first_seen": "2026-09-02",
-      "tries": 11,
-      "last_try": "2026-09-14"
+      "tries": 12,
+      "last_try": "2026-09-15"
     },
     "fireblocks": {
       "name": "Fireblocks",
       "domain": "fireblocks.com",
       "first_seen": "2026-09-02",
-      "tries": 10,
-      "last_try": "2026-09-14"
+      "tries": 11,
+      "last_try": "2026-09-15"
     },
     "metronome": {
       "name": "Metronome",
       "domain": "metronome.com",
       "first_seen": "2026-09-02",
-      "tries": 10,
-      "last_try": "2026-09-14"
+      "tries": 11,
+      "last_try": "2026-09-15"
     },
     "finix": {
       "name": "Finix",
       "domain": "finix.com",
       "first_seen": "2026-09-02",
-      "tries": 10,
-      "last_try": "2026-09-14"
+      "tries": 11,
+      "last_try": "2026-09-15"
     },
     "wiz": {
       "name": "Wiz",
       "domain": "wiz.io",
       "first_seen": "2026-09-02",
-      "tries": 1
+      "tries": 2,
+      "last_try": "2026-09-15"
     },
     "shopify": {
       "name": "Shopify",
       "domain": "shopify.com",
       "first_seen": "2026-09-02",
-      "tries": 2,
-      "last_try": "2026-09-14"
+      "tries": 3,
+      "last_try": "2026-09-15"
     },
     "stripe": {
       "name": "Stripe",
       "domain": "stripe.com",
       "first_seen": "2026-09-02",
-      "tries": 2,
-      "last_try": "2026-09-14"
+      "tries": 3,
+      "last_try": "2026-09-15"
     },
     "synthetic consumer ai startup intellicia": {
       "name": "Synthetic Consumer AI Startup Intellicia",
       "domain": "intellicia.co",
       "first_seen": "2026-09-02",
-      "tries": 2,
-      "last_try": "2026-09-14"
+      "tries": 3,
+      "last_try": "2026-09-15"
     },
     "ai startup cognition set to raise around $1 billion at a $47": {
       "name": "AI Startup Cognition Set to Raise Around $1 Billion at a $47",
       "domain": "cognition.ai",
       "first_seen": "2026-09-02",
-      "tries": 11,
-      "last_try": "2026-09-14"
+      "tries": 12,
+      "last_try": "2026-09-15"
     },
     "oppex ai": {
       "name": "Oppex AI",
       "domain": "oppex.ai",
       "first_seen": "2026-09-02",
-      "tries": 3,
-      "last_try": "2026-09-14"
+      "tries": 4,
+      "last_try": "2026-09-15"
     },
     "ai agent security startup air": {
       "name": "AI Agent Security Startup AIR",
       "domain": "",
       "first_seen": "2026-09-02",
-      "tries": 11,
-      "last_try": "2026-09-14"
+      "tries": 12,
+      "last_try": "2026-09-15"
     },
     "ai sales startup clay": {
       "name": "AI sales startup Clay",
       "domain": "",
       "first_seen": "2026-09-02",
-      "tries": 11,
-      "last_try": "2026-09-14"
+      "tries": 12,
+      "last_try": "2026-09-15"
     },
     "newlight": {
       "name": "Newlight",
       "domain": "",
       "first_seen": "2026-09-02",
-      "tries": 8,
-      "last_try": "2026-09-14"
+      "tries": 9,
+      "last_try": "2026-09-15"
     },
     "guickly": {
       "name": "Guickly",
       "domain": "",
       "first_seen": "2026-09-02",
-      "tries": 10,
-      "last_try": "2026-09-14"
+      "tries": 11,
+      "last_try": "2026-09-15"
     },
     "usman gul\u2019s metal": {
       "name": "Usman Gul\u2019s Metal",
       "domain": "",
       "first_seen": "2026-09-02",
-      "tries": 1
+      "tries": 2,
+      "last_try": "2026-09-15"
     },
     "anthropic's claude fable 5.1 and mythos 5.1 arrive with a 75": {
       "name": "Anthropic's Claude Fable 5.1 and Mythos 5.1 arrive with a 75",
       "domain": "",
       "first_seen": "2026-09-02",
-      "tries": 11,
-      "last_try": "2026-09-14"
+      "tries": 12,
+      "last_try": "2026-09-15"
     },
     "catch": {
       "name": "Catch",
       "domain": "",
       "first_seen": "2026-09-03",
-      "tries": 1
+      "tries": 2,
+      "last_try": "2026-09-15"
     },
     "askpolly": {
       "name": "askpolly",
       "domain": "askpolly.ai",
       "first_seen": "2026-09-03",
-      "tries": 1
+      "tries": 2,
+      "last_try": "2026-09-15"
     },
     "austin ai security startup": {
       "name": "Austin AI security startup",
       "domain": "",
       "first_seen": "2026-09-03",
-      "tries": 1
+      "tries": 2,
+      "last_try": "2026-09-15"
     },
     "ajaia": {
       "name": "Ajaia",
       "domain": "ajaia.com",
       "first_seen": "2026-09-04",
-      "tries": 1
+      "tries": 2,
+      "last_try": "2026-09-15"
     },
     "claritycare ai": {
       "name": "ClarityCare AI",
       "domain": "claritycareai.com",
       "first_seen": "2026-09-04",
-      "tries": 1
+      "tries": 2,
+      "last_try": "2026-09-15"
     },
     "cogram": {
       "name": "Cogram",
       "domain": "cogram.com",
       "first_seen": "2026-09-04",
-      "tries": 1
+      "tries": 2,
+      "last_try": "2026-09-15"
     },
     "adentris": {
       "name": "Adentris",
       "domain": "",
       "first_seen": "2026-09-04",
-      "tries": 1
+      "tries": 2,
+      "last_try": "2026-09-15"
     },
     "openreserve": {
       "name": "OpenReserve",
@@ -10677,7 +10816,8 @@
       "name": "Asia Startup Funding: $430.8M",
       "domain": "",
       "first_seen": "2026-09-04",
-      "tries": 1
+      "tries": 2,
+      "last_try": "2026-09-15"
     },
     "stablecoin payments infrastructure startup diameter pay": {
       "name": "Stablecoin payments infrastructure startup Diameter Pay",
@@ -11181,6 +11321,90 @@
       "name": "Z.AI",
       "domain": "z.ai",
       "first_seen": "2026-09-14",
+      "tries": 1
+    },
+    "ai interactive content startup flam": {
+      "name": "AI Interactive Content Startup Flam",
+      "domain": "flamapp.com",
+      "first_seen": "2026-09-15",
+      "tries": 1
+    },
+    "ai startup flam": {
+      "name": "AI startup Flam",
+      "domain": "flam.ai",
+      "first_seen": "2026-09-15",
+      "tries": 1
+    },
+    "global ai startup flam": {
+      "name": "Global AI startup Flam",
+      "domain": "flamapp.ai",
+      "first_seen": "2026-09-15",
+      "tries": 1
+    },
+    "ai content startup flam": {
+      "name": "AI Content Startup Flam",
+      "domain": "flam.ai",
+      "first_seen": "2026-09-15",
+      "tries": 1
+    },
+    "san francisco based ai interactive content firm flam": {
+      "name": "San Francisco Based AI Interactive Content Firm Flam",
+      "domain": "flamapp.ai",
+      "first_seen": "2026-09-15",
+      "tries": 1
+    },
+    "finnish startup": {
+      "name": "Finnish startup",
+      "domain": "",
+      "first_seen": "2026-09-15",
+      "tries": 1
+    },
+    "ai speech therapy startup golden brain care": {
+      "name": "AI Speech Therapy Startup Golden Brain Care",
+      "domain": "",
+      "first_seen": "2026-09-15",
+      "tries": 1
+    },
+    "flam": {
+      "name": "Flam",
+      "domain": "",
+      "first_seen": "2026-09-15",
+      "tries": 1
+    },
+    "workmarket founder\u2019s new firm": {
+      "name": "WorkMarket founder\u2019s new firm",
+      "domain": "",
+      "first_seen": "2026-09-15",
+      "tries": 1
+    },
+    "aeo startup profound hits unicorn valuation": {
+      "name": "AEO startup Profound hits unicorn valuation",
+      "domain": "",
+      "first_seen": "2026-09-15",
+      "tries": 1
+    },
+    "fin.com": {
+      "name": "Fin.com",
+      "domain": "",
+      "first_seen": "2026-09-15",
+      "tries": 1
+    },
+    "evvy": {
+      "name": "Evvy",
+      "domain": "",
+      "first_seen": "2026-09-15",
+      "tries": 1
+    },
+    "arcustin games": {
+      "name": "Arcustin Games",
+      "domain": "",
+      "first_seen": "2026-09-15",
+      "tries": 1
+    },
+    "a vinyl bar in shibuya": {
+      "name": "A Vinyl Bar in Shibuya",
+      "domain": "",
+      "first_seen": "2026-09-15",
       "tries": 1
     }
   },
@@ -12439,6 +12663,154 @@
       "date": "2026-09-14",
       "url": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxNSkxtS0E3cENRNm9YWFFqWnNyVjhsSC1OdFJJcHppYXF4NGJEeURNVGhuVU96NW1lQ3psUElUeW50cFYycWVfeUl3dnU1RkFiSWNESDlocjAxODd3WmhjVUFiRlZYLW9HdXp3bFpSUTN5bHpnbVJJYVliN2VmX2d3VnZIWmRhV01u?oc=5",
       "tokens": []
+    },
+    "ai interactive content startup flam": {
+      "name": "AI Interactive Content Startup Flam",
+      "round": "Series B",
+      "amount": "$40M",
+      "date": "2026-09-15",
+      "url": "https://news.google.com/rss/articles/CBMipwFBVV95cUxOZ1JOY0RydS1DN3FqdENkYl9xWkNoYW9PS0R1MnRxSEFZQ2UyemIyaDhJOXozWHVCTEszWjZmNTMteGpnXzVHamFVRDVnMDFtUmYzT0pUa25ROTFvNzdfbXVnVGJ1VnE2OFV5aFRPUy0wRVI2Mkllbl96Smh2UHJZeUYxdmx2MHR1RmVrdXJfNldoMVdRSHNQRHZhY2U1dWduejQ1MW5Iaw?oc=5",
+      "tokens": []
+    },
+    "ai startup flam": {
+      "name": "AI startup Flam",
+      "round": "Series B",
+      "amount": "$40M",
+      "date": "2026-09-15",
+      "url": "https://news.google.com/rss/articles/CBMif0FVX3lxTFBVMklxWVMxMzRxRVJYRFNSRDZBZzJ2UHh5UXVrOGtDZ2xUV19sWU9FTk9jMW11M2Q0djVydFkwMDRaZWVYaFA5N0ZOWmtld3BjenVNWk5DY1dqa1pIUDJpemtNaHE0U3JTWTlYaU9ZdGtOaDFULWxvUlNsVk12bjA?oc=5",
+      "tokens": []
+    },
+    "global ai startup flam": {
+      "name": "Global AI startup Flam",
+      "round": "Series B",
+      "amount": "$40M",
+      "date": "2026-09-15",
+      "url": "https://news.google.com/rss/articles/CBMifEFVX3lxTE1fYzQxVFRNV3BOQzNpWEFXY09KOUJGQ3ZPQlk5N0pCUE9oekNSN0FzS21uYTVEX0ZPWmt4d3pkbFozWDR1N0VPUWdMYjFVMlo2ZXJXd0pEX3JDbHl4SGlCeXpGR1pYSm1aSTc4VU5mQUlBaEFJYllkTHNUVUM?oc=5",
+      "tokens": []
+    },
+    "ai content startup flam": {
+      "name": "AI Content Startup Flam",
+      "round": "Series B",
+      "amount": "$40M",
+      "date": "2026-09-15",
+      "url": "https://news.google.com/rss/articles/CBMilwFBVV95cUxOb1JJaDZ5bm5TdTJUVjVsMmFzQmZ1RS1idlN3d25LYTNtZWx2bVc1b1FUUWg2WUwtbDAyeUV1QXFQMHRGaGp6cjhyd000R1FxZGlRUlJxeWZfQmFtTDI5OGlaMTVzMEsxN2hhU1ZhOFVfUHI0OWxfSTV4dC00Uk15YW80VE5ZQjFxSTR3ekJXVWZDN1Zibjhj?oc=5",
+      "tokens": []
+    },
+    "stablecoin infrastructure startup fin.com": {
+      "name": "Stablecoin infrastructure startup Fin.com",
+      "round": "Seed",
+      "amount": "$20M",
+      "date": "2026-09-15",
+      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTFBzMEE3eXlwMGVuRlYwWVVvTVU4VUg5Q283MHZZVDRSZWxKR2E5Uld6YkdJTnhYdE1XZ0YyQWxUNElENXZzdFdXNXQ1LWVUUGg2MS1fTEt1YTliRkRFT2UxVnJiZTgyNzFHeTBvSQ?oc=5",
+      "tokens": [
+        "fin"
+      ]
+    },
+    "san francisco based ai interactive content firm flam": {
+      "name": "San Francisco Based AI Interactive Content Firm Flam",
+      "round": "Series B",
+      "amount": "$40M",
+      "date": "2026-09-15",
+      "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxQVUJaN2RnTmdGWURLZ1dWekFjNm9qWS1HX0pnbFVhVUJaeVhMdUpQblNSRlhoTkFDR1JOZ3VyTTEwUEozQkhJSU91akJtRFpzaG1HVDRXTk55WG1KQk0xNnREQjB6MXJPYmdzc3cyTVlQUG83OEQ3NTNBWGlrR1V6c3p3NzBXaFp1NG5MSDNFd3dETzJhS2NVbGdxMkRNVk1qWEd2SjJzTU9RaFBBLUFPNGQ3ZENjUQ?oc=5",
+      "tokens": []
+    },
+    "finnish startup": {
+      "name": "Finnish startup",
+      "round": "Seed",
+      "amount": "$10.3M",
+      "date": "2026-09-15",
+      "url": "https://news.google.com/rss/articles/CBMitwFBVV95cUxPQkxncUlCMDBmYTEydTZTWVFBSVNTVndTb3NwZ2RnUlVmYi1OZm5EMWpjZXdyX2pRM0FsM0lsN3VVNmFIUWJJU0VFRFdrc0N2OEV6TTh6WTdUaTBfY1MxMWRpd0xTWG81TjVVb0Iwa2pXSjFndmc0Zmpsa3FFOWQ2VDJQSEZoS0JwTWNBQmZnaHA0NEhwRDVSdTB3YXQ0TEtMWmpZYUM5d1k1U2ZZRmFXMVFEZVFxRzg?oc=5",
+      "tokens": []
+    },
+    "ai speech therapy startup golden brain care": {
+      "name": "AI Speech Therapy Startup Golden Brain Care",
+      "round": "Seed",
+      "date": "2026-09-15",
+      "url": "https://news.google.com/rss/articles/CBMiU0FVX3lxTE9xYy15ZVlzeGxaVlRRUk9BWjdFSXp5TDhZcnR4RUZ2UzBjN0ZuSksyN0lZZVZEQXh0U2FuZFRuTkFkY3c5d29NNmRlcE5ER2hRT1dj?oc=5",
+      "tokens": []
+    },
+    "tandem health": {
+      "name": "Tandem Health",
+      "round": "Series B",
+      "amount": "$100M",
+      "date": "2026-09-14",
+      "url": "https://news.google.com/rss/articles/CBMilwFBVV95cUxNMjE5V21DRkM1TnVFUlVVQTk2VTV0RGotNmppWkNyMjhYZUFYMll4b3ZVeWo0dzNmOHVfSG5CLXMxTWRZZXNpUmZOdThfOWtmQlRBdVdBVllxaFo0Y2otcEFVTElxSjR1M09nS3gtcFNGZHNaRDhVcW82VXdYaEdvT3VUUTRCUWVLSE02RUVZcG13Z0E0elo4?oc=5",
+      "tokens": [
+        "tandem-health"
+      ]
+    },
+    "flam": {
+      "name": "Flam",
+      "round": "Series B",
+      "amount": "$40M",
+      "date": "2026-09-14",
+      "url": "https://news.google.com/rss/articles/CBMiwAFBVV95cUxPUmZPLTE4dXF4dTFwbXFMMldiS1lheHNVblg5S1ZTb191TVJZOURQQzRTdGZZZjFETHJ0c0JyUHEwMDVnZGtPMjdwaDdyenFqSDZTZTFjM2xxV21vY3NmQ1NCSm5pZklRZmtkOW1SRGNLbGVsdTZFSG1odTgydE13bldPTjVTOWVmT3JaYVltNkF5dExtTnJpaUVpU05KQzN1OUZkQ2lta1BpeS12a2h2NzZINGVoZjQzQ1Bpc3U3dUw?oc=5",
+      "tokens": []
+    },
+    "workmarket founder\u2019s new firm": {
+      "name": "WorkMarket founder\u2019s new firm",
+      "round": "Seed",
+      "amount": "$12.7M",
+      "date": "2026-09-15",
+      "url": "https://news.google.com/rss/articles/CBMiugFBVV95cUxPU2FTamw3UWk5dW5SYjFyTkNhR2U2bnMyVVBIMVhieC14QmNXYk9QWkdfNmthSnF5VUg0Q3MwRjNVbWl6d2dSeDdVQVhtVHRFQ3BWeWJFSWpNOUMyVVBlY3V4aHhRSnNyQXdFaDRKUF9VT05aVE1PQjBRZ2I4SmJrQUlMeFhPQ053V1h0QktPVHJUX3FncnNNd2xkN2tWNF9SM0lESlg2N2U4VFlMSXQ5UlJFMC05UjBXTFE?oc=5",
+      "tokens": []
+    },
+    "aeo startup profound hits unicorn valuation": {
+      "name": "AEO startup Profound hits unicorn valuation",
+      "round": "Series D",
+      "amount": "$180M",
+      "date": "2026-09-15",
+      "url": "https://news.google.com/rss/articles/CBMiwwFBVV95cUxNUHR5WFhXd0NtM0ZrR0FwQkJzTXdST2xXWE5YY2VPcTJPb2gtMnE2VVlBWlN3eVlYWWZWWXhEaDR6TmtlR19KYXFHXzJqV0p5SXFJVk9YdDdoRFJ0RnVXSEkxMTZBNEpCYy1nSmNMMENUSGRseEx0TG0wVm9neElIS083VEFuTUtzNzloNGFlQ0tZWklhWS02d0Q1U05NYVAzV1hoYkFCOEk2cVFVZ3FSUzVPLTFWdGFyZkNBTFdxanVJWFk?oc=5",
+      "tokens": []
+    },
+    "fin.com": {
+      "name": "Fin.com",
+      "round": "Seed",
+      "amount": "$20M",
+      "date": "2026-09-15",
+      "url": "https://news.google.com/rss/articles/CBMidEFVX3lxTFA5cTZzVC0zZTNJNGpFYk4zM2ZxUU1DWjhoZFRuWVE3STV5Q0g1b0VpbEFlZEx3YldOdHFQbHRORU80Y1hUc3hTeHp6TWlyT0Q3MktJbTFaNXpCRkxEUzA3MndUV290NERZQW9mZ2R6Nk5zUjhv?oc=5",
+      "tokens": []
+    },
+    "evvy": {
+      "name": "Evvy",
+      "round": "Series B",
+      "amount": "$40M",
+      "date": "2026-09-15",
+      "url": "https://techcrunch.com/2026/09/15/evvy-raises-40m-as-it-seeks-to-further-womens-health-research-with-vaginal-microbiome-data/",
+      "tokens": []
+    },
+    "arcustin games": {
+      "name": "Arcustin Games",
+      "round": "Pre-seed",
+      "amount": "$500,000",
+      "date": "2026-09-15",
+      "url": "https://news.google.com/rss/articles/CBMigwFBVV95cUxQWEZxYVhVa2NiTnBlVHF3LVVSeThTSHRkMzY2dE5JM2hkZjBoTHFsTWVxbHFKdDZmYXhIUzBaY0pSdlJVNTNSTWNxRDlheVg5Um05eE1rNXJCNmF1SDg5MGxVVC1RcERTSzVheFRBd2toaTVvU3pDY09kZVNsTHJxMGt3RQ?oc=5",
+      "tokens": []
+    },
+    "radical ventures": {
+      "name": "Radical Ventures",
+      "amount": "$1B",
+      "date": "2026-09-15",
+      "url": "https://news.google.com/rss/articles/CBMidkFVX3lxTFB5dGt2aG1Gbnk3dHltZlRUQW50YUhId3FoNmlNODlIZm9GOTd3bjdPRk95cWR4U2lLb29Id0x4ZGp1cnNBdFpVUi0tMDZTMzQyci1UblJSYnRQREszSXV2VE93YkJ0LUJEVFlYZmZmUmlfV3JJbkE?oc=5",
+      "tokens": [
+        "radical-ventures"
+      ]
+    },
+    "a vinyl bar in shibuya": {
+      "name": "A Vinyl Bar in Shibuya",
+      "amount": "$5.5M",
+      "date": "2026-09-14",
+      "url": "https://news.google.com/rss/articles/CBMixwFBVV95cUxOREhOWWhKNTN1YlQwZU9Xa3pjX2pCQlk4RjQ0RC1NV20tcW10ZDVmR29pNXRybDF6dVpnaGpnYWQyWi1kWHhSWURQUXBHTWE1cFZKc0pSRnptcW84RjdveUdxTGVNRExxOW04OFUxclVyNFdzdjRfbDBIWWlIMkRpTmRxYWoyR2k2QTcwdDRiblIzY0dMc0NaQ0YzYl90cTZ4SDZuZDBUMTBJTTBHcFJkbGdmeU9qWFZWQXVoUDJ4TVZHcFQzcTV3?oc=5",
+      "tokens": []
+    },
+    "scaffold": {
+      "name": "Scaffold",
+      "amount": "$14.85M",
+      "date": "2026-09-15",
+      "url": "https://news.google.com/rss/articles/CBMickFVX3lxTE5sMnVycU9abmxWdkdpZEw3ZVJkSG5oNFhFNWpjTlcwend1MkNqYmFrcWNGSUxSV042dWNUSmlkMjRqV2ZsdXkyekh3Y0ZkVFQ4VWk0MHR0WnZtTnFMVjg1Z0hQb3R4Wm1XY1ZMSU11VTR2UQ?oc=5",
+      "tokens": [
+        "scaffold"
+      ]
     }
   },
   "stage": {
@@ -13191,6 +13563,115 @@
       "tokens": [
         "temporal"
       ]
+    },
+    "ai interactive content startup flam": {
+      "name": "AI Interactive Content Startup Flam",
+      "round": "Series B",
+      "date": "2026-09-15",
+      "source": "funding digest",
+      "tokens": []
+    },
+    "ai startup flam": {
+      "name": "AI startup Flam",
+      "round": "Series B",
+      "date": "2026-09-15",
+      "source": "funding digest",
+      "tokens": []
+    },
+    "global ai startup flam": {
+      "name": "Global AI startup Flam",
+      "round": "Series B",
+      "date": "2026-09-15",
+      "source": "funding digest",
+      "tokens": []
+    },
+    "ai content startup flam": {
+      "name": "AI Content Startup Flam",
+      "round": "Series B",
+      "date": "2026-09-15",
+      "source": "funding digest",
+      "tokens": []
+    },
+    "stablecoin infrastructure startup fin.com": {
+      "name": "Stablecoin infrastructure startup Fin.com",
+      "round": "Seed",
+      "date": "2026-09-15",
+      "source": "funding digest",
+      "tokens": [
+        "fin"
+      ]
+    },
+    "san francisco based ai interactive content firm flam": {
+      "name": "San Francisco Based AI Interactive Content Firm Flam",
+      "round": "Series B",
+      "date": "2026-09-15",
+      "source": "funding digest",
+      "tokens": []
+    },
+    "finnish startup": {
+      "name": "Finnish startup",
+      "round": "Seed",
+      "date": "2026-09-15",
+      "source": "funding digest",
+      "tokens": []
+    },
+    "ai speech therapy startup golden brain care": {
+      "name": "AI Speech Therapy Startup Golden Brain Care",
+      "round": "Seed",
+      "date": "2026-09-15",
+      "source": "funding digest",
+      "tokens": []
+    },
+    "tandem health": {
+      "name": "Tandem Health",
+      "round": "Series B",
+      "date": "2026-09-14",
+      "source": "funding digest",
+      "tokens": [
+        "tandem-health"
+      ]
+    },
+    "flam": {
+      "name": "Flam",
+      "round": "Series B",
+      "date": "2026-09-14",
+      "source": "funding digest",
+      "tokens": []
+    },
+    "workmarket founder\u2019s new firm": {
+      "name": "WorkMarket founder\u2019s new firm",
+      "round": "Seed",
+      "date": "2026-09-15",
+      "source": "funding digest",
+      "tokens": []
+    },
+    "aeo startup profound hits unicorn valuation": {
+      "name": "AEO startup Profound hits unicorn valuation",
+      "round": "Series D",
+      "date": "2026-09-15",
+      "source": "funding digest",
+      "tokens": []
+    },
+    "fin.com": {
+      "name": "Fin.com",
+      "round": "Seed",
+      "date": "2026-09-15",
+      "source": "funding digest",
+      "tokens": []
+    },
+    "evvy": {
+      "name": "Evvy",
+      "round": "Series B",
+      "date": "2026-09-15",
+      "source": "funding digest",
+      "tokens": []
+    },
+    "arcustin games": {
+      "name": "Arcustin Games",
+      "round": "Pre-seed",
+      "date": "2026-09-15",
+      "source": "funding digest",
+      "tokens": []
     }
   }
 }
