@@ -1363,7 +1363,8 @@
     "datacor",
     "boloai",
     "ltse",
-    "chompscareers"
+    "chompscareers",
+    "ethic"
   ],
   "lever": [
     "rise",
@@ -3012,7 +3013,11 @@
     "vend-park",
     "paxoslabs",
     "extend",
-    "parafin"
+    "parafin",
+    "classdojo",
+    "leland",
+    "edgerunner-ai",
+    "sable"
   ],
   "checked": [
     "alloy",
@@ -3987,7 +3992,10 @@
     "rio health",
     "midcentury",
     "cyera",
-    "masters union student\u2019s space tech startup"
+    "masters union student\u2019s space tech startup",
+    "ethic",
+    "biobase",
+    "channel3"
   ],
   "workable": [
     "oxford-quantum-circuits-8",
@@ -4153,7 +4161,9 @@
     "burq",
     "ndustrialio",
     "canceriq",
-    "zearn"
+    "zearn",
+    "grassrootscarbon",
+    "belong-6"
   ],
   "smartrecruiters": [
     "Canva",
@@ -4395,7 +4405,8 @@
     "ecotrak-careers",
     "atmoszero-careers",
     "rts-careers",
-    "class-3-technologies-inc"
+    "class-3-technologies-inc",
+    "wovenx-health-inc"
   ],
   "sizes": {
     "jumpcloud": 600,
@@ -4555,7 +4566,7 @@
     "socure": 600,
     "x.ai": 600,
     "odeko": 120,
-    "remote": 15000,
+    "remote": 3000,
     "namely": 120,
     "fundera": 120,
     "heartbeat health": 120,
@@ -4594,7 +4605,7 @@
     "flagler health": 120,
     "signoz": 25,
     "grammarly": 3000,
-    "solace": 600,
+    "solace": 25,
     "terac": 5,
     "clubhouse": 5,
     "auxilius": 25,
@@ -4657,7 +4668,7 @@
     "temporal technologies": 600,
     "read ai": 120,
     "stackblitz": 25,
-    "surf air": 120,
+    "surf air": 600,
     "beyond (formerly beyond pricing)": 120,
     "carta": 3000,
     "forge": 600,
@@ -5266,7 +5277,7 @@
     "earnin": 600,
     "docker": 600,
     "turo": 600,
-    "workstream": 600,
+    "workstream": 25,
     "ethos life": 600,
     "withclutch": 600,
     "amplify education": 3000,
@@ -5867,7 +5878,7 @@
     "theoris services": 120,
     "healthsnap": 120,
     "threshold 360": 25,
-    "flex": 600,
+    "flex": 120,
     "quanthub": 25,
     "front finance": 120,
     "presence (application software)": 25,
@@ -6218,7 +6229,7 @@
     "seatgeek": 600,
     "parry labs": 600,
     "gridware": 120,
-    "avidbots": 600,
+    "avidbots": 120,
     "prellis biologics": 25,
     "april (getapril.com)": 120,
     "sardine": 600,
@@ -7408,7 +7419,7 @@
     "2ulaundry": 120,
     "salesloft": 3000,
     "wayflyer": 600,
-    "workit health": 600,
+    "workit health": 120,
     "storee": 25,
     "pockyt": 25,
     "hemster": 25,
@@ -7572,7 +7583,7 @@
     "parspec": 25,
     "linkedfield": 5,
     "hinkle contracting company, llc": 120,
-    "beta technologies": 600,
+    "beta technologies": 3000,
     "redwood materials": 600,
     "rivian": 15000,
     "amogy": 120,
@@ -8367,7 +8378,7 @@
     "level20": 120,
     "excelero storage": 5,
     "cylite": 120,
-    "hatch": 600,
+    "hatch": 25,
     "saic": 15000,
     "leidos": 15000,
     "athos": 120,
@@ -12019,7 +12030,7 @@
     "blockstream": 120,
     "liberty in north korea": 120,
     "blockit": 120,
-    "route": 120,
+    "route": 3000,
     "wirewheel.io": 5,
     "getquin": 25,
     "qumulo": 600,
@@ -12304,288 +12315,334 @@
     "naturemetrics": 120,
     "altafiber": 3000,
     "the sheakley group": 600,
-    "the armor group, inc.": 600
+    "the armor group, inc.": 600,
+    "poppy": 25,
+    "tatchai": 5,
+    "pikkit": 5,
+    "trcp": 120,
+    "nwifc": 120,
+    "classdojo": 600,
+    "girltrek": 25,
+    "ghost lifestyle": 600,
+    "mercaz academy": 25,
+    "the combined jewish philanthropies": 120,
+    "gratz college": 120,
+    "temple akiba of culver city": 25,
+    "salt lake community college": 5,
+    "family & children's services": 3000,
+    "netris": 25,
+    "lula": 120,
+    "predicta biosciences": 5,
+    "exacare": 25,
+    "slice | global equity": 25,
+    "polymer": 5,
+    "packsize international": 600,
+    "wash u carwash": 25,
+    "aquamobile": 25,
+    "nicoya lifesciences": 120,
+    "able innovations": 25,
+    "study edge": 120,
+    "gradle inc.": 120,
+    "super": 600,
+    "pasturemap": 5,
+    "easy metrics": 120,
+    "belong": 120,
+    "signal 1": 25,
+    "nuritas": 120,
+    "t-minds": 5,
+    "skepp": 25,
+    "pwc": 3000,
+    "gendx": 120,
+    "healthlink europe": 120,
+    "highlands oncology group": 600,
+    "acosta": 15000,
+    "kraken technology group": 120,
+    "sugarfina": 120,
+    "wovenx health": 25,
+    "marble health": 25,
+    "center for intimacy justice": 5,
+    "conservation science partners": 25
   },
   "pending": {
     "openai deployco": {
       "name": "OpenAI DeployCo",
       "domain": "",
       "first_seen": "2026-09-06",
-      "tries": 9,
-      "last_try": "2026-09-26"
+      "tries": 11,
+      "last_try": "2026-09-27"
     },
     "silkline": {
       "name": "Silkline",
       "domain": "silkline.ai",
       "first_seen": "2026-09-06",
-      "tries": 9,
-      "last_try": "2026-09-26"
+      "tries": 11,
+      "last_try": "2026-09-27"
     },
     "suno": {
       "name": "Suno",
       "domain": "suno.com",
       "first_seen": "2026-09-07",
-      "tries": 8,
-      "last_try": "2026-09-26"
+      "tries": 10,
+      "last_try": "2026-09-27"
     },
     "side": {
       "name": "Side",
       "domain": "side.com",
       "first_seen": "2026-09-07",
-      "tries": 8,
-      "last_try": "2026-09-26"
+      "tries": 10,
+      "last_try": "2026-09-27"
     },
     "studio": {
       "name": "Studio",
       "domain": "studio.so",
       "first_seen": "2026-09-07",
-      "tries": 8,
-      "last_try": "2026-09-26"
+      "tries": 10,
+      "last_try": "2026-09-27"
     },
     "ai startup founded by two bangladeshi brothers": {
       "name": "AI startup founded by two Bangladeshi brothers",
       "domain": "",
       "first_seen": "2026-09-07",
-      "tries": 9,
-      "last_try": "2026-09-26"
+      "tries": 11,
+      "last_try": "2026-09-27"
     },
     "kuwaiti edtech dawraty": {
       "name": "Kuwaiti Edtech Dawraty",
       "domain": "",
       "first_seen": "2026-09-07",
-      "tries": 8,
-      "last_try": "2026-09-26"
+      "tries": 10,
+      "last_try": "2026-09-27"
     },
     "draftwise": {
       "name": "Draftwise",
       "domain": "draftwise.ai",
       "first_seen": "2026-09-08",
-      "tries": 8,
-      "last_try": "2026-09-26"
+      "tries": 10,
+      "last_try": "2026-09-27"
     },
     "luminai": {
       "name": "Luminai",
       "domain": "",
       "first_seen": "2026-09-08",
-      "tries": 7,
-      "last_try": "2026-09-26"
+      "tries": 9,
+      "last_try": "2026-09-27"
     },
     "iterative health": {
       "name": "Iterative Health",
       "domain": "",
       "first_seen": "2026-09-08",
-      "tries": 7,
-      "last_try": "2026-09-26"
+      "tries": 9,
+      "last_try": "2026-09-27"
     },
     "spreeai": {
       "name": "SPREEAI",
       "domain": "",
       "first_seen": "2026-09-08",
-      "tries": 7,
-      "last_try": "2026-09-26"
+      "tries": 9,
+      "last_try": "2026-09-27"
     },
     "fractional ai": {
       "name": "Fractional AI",
       "domain": "fractional.ai",
       "first_seen": "2026-09-08",
-      "tries": 7,
-      "last_try": "2026-09-26"
+      "tries": 9,
+      "last_try": "2026-09-27"
     },
     "edge markets": {
       "name": "EDGE Markets",
       "domain": "",
       "first_seen": "2026-09-08",
-      "tries": 7,
-      "last_try": "2026-09-26"
+      "tries": 9,
+      "last_try": "2026-09-27"
     },
     "outline": {
       "name": "Outline",
       "domain": "heyoutline.com",
       "first_seen": "2026-09-08",
-      "tries": 7,
-      "last_try": "2026-09-26"
+      "tries": 9,
+      "last_try": "2026-09-27"
     },
     "kuwaiti startup dawraty": {
       "name": "Kuwaiti Startup Dawraty",
       "domain": "",
       "first_seen": "2026-09-08",
-      "tries": 7,
-      "last_try": "2026-09-26"
+      "tries": 9,
+      "last_try": "2026-09-27"
     },
     "finnish creoir": {
       "name": "Finnish Creoir",
       "domain": "creoir.com",
       "first_seen": "2026-09-08",
-      "tries": 7,
-      "last_try": "2026-09-26"
+      "tries": 9,
+      "last_try": "2026-09-27"
     },
     "tellia": {
       "name": "Tellia",
       "domain": "",
       "first_seen": "2026-09-08",
-      "tries": 7,
-      "last_try": "2026-09-26"
+      "tries": 9,
+      "last_try": "2026-09-27"
     },
     "ollie": {
       "name": "Ollie",
       "domain": "",
       "first_seen": "2026-09-08",
-      "tries": 7,
-      "last_try": "2026-09-26"
+      "tries": 9,
+      "last_try": "2026-09-27"
     },
     "mistral": {
       "name": "Mistral",
       "domain": "",
       "first_seen": "2026-09-08",
-      "tries": 7,
-      "last_try": "2026-09-26"
+      "tries": 9,
+      "last_try": "2026-09-27"
     },
     "chilean legal ai startup magnar": {
       "name": "Chilean legal AI startup Magnar",
       "domain": "magnar.ai",
       "first_seen": "2026-09-09",
-      "tries": 6,
-      "last_try": "2026-09-26"
+      "tries": 8,
+      "last_try": "2026-09-27"
     },
     "concorda": {
       "name": "Concorda",
       "domain": "concord.ai",
       "first_seen": "2026-09-09",
-      "tries": 6,
-      "last_try": "2026-09-26"
+      "tries": 8,
+      "last_try": "2026-09-27"
     },
     "botsi": {
       "name": "Botsi",
       "domain": "botsi.com",
       "first_seen": "2026-09-09",
-      "tries": 6,
-      "last_try": "2026-09-26"
+      "tries": 8,
+      "last_try": "2026-09-27"
     },
     "soho-based startup": {
       "name": "SoHo-based startup",
       "domain": "",
       "first_seen": "2026-09-09",
-      "tries": 5,
-      "last_try": "2026-09-26"
+      "tries": 7,
+      "last_try": "2026-09-27"
     },
     "haifa startup hydrosight": {
       "name": "Haifa startup HydroSight",
       "domain": "hydrosight-ai.com",
       "first_seen": "2026-09-09",
-      "tries": 6,
-      "last_try": "2026-09-26"
+      "tries": 8,
+      "last_try": "2026-09-27"
     },
     "genhealth.ai": {
       "name": "GenHealth.ai",
       "domain": "genhealth.ai",
       "first_seen": "2026-09-09",
-      "tries": 6,
-      "last_try": "2026-09-26"
+      "tries": 8,
+      "last_try": "2026-09-27"
     },
     "moneyball.ai": {
       "name": "Moneyball.ai",
       "domain": "",
       "first_seen": "2026-09-09",
-      "tries": 5,
-      "last_try": "2026-09-26"
+      "tries": 7,
+      "last_try": "2026-09-27"
     },
     "pediatric growth care startup withdoctors": {
       "name": "Pediatric Growth Care Startup WithDoctors",
       "domain": "",
       "first_seen": "2026-09-09",
-      "tries": 5,
-      "last_try": "2026-09-26"
+      "tries": 7,
+      "last_try": "2026-09-27"
     },
     "cognition": {
       "name": "Cognition",
       "domain": "",
       "first_seen": "2026-09-09",
-      "tries": 6,
-      "last_try": "2026-09-26"
+      "tries": 8,
+      "last_try": "2026-09-27"
     },
     "uk startup veridue": {
       "name": "UK Startup Veridue",
       "domain": "",
       "first_seen": "2026-09-09",
-      "tries": 5,
-      "last_try": "2026-09-26"
+      "tries": 7,
+      "last_try": "2026-09-27"
     },
     "nuclear startup bluecore energy": {
       "name": "Nuclear startup Bluecore Energy",
       "domain": "",
       "first_seen": "2026-09-09",
-      "tries": 5,
-      "last_try": "2026-09-26"
+      "tries": 7,
+      "last_try": "2026-09-27"
     },
     "peter thiel-backed ai startup cognition": {
       "name": "Peter Thiel-Backed AI Startup Cognition",
       "domain": "",
       "first_seen": "2026-09-09",
-      "tries": 5,
-      "last_try": "2026-09-26"
+      "tries": 7,
+      "last_try": "2026-09-27"
     },
     "this startup": {
       "name": "This Startup",
       "domain": "",
       "first_seen": "2026-09-09",
-      "tries": 5,
-      "last_try": "2026-09-26"
+      "tries": 7,
+      "last_try": "2026-09-27"
     },
     "ai coding startup cognition": {
       "name": "AI coding startup Cognition",
       "domain": "",
       "first_seen": "2026-09-09",
-      "tries": 6,
-      "last_try": "2026-09-26"
+      "tries": 8,
+      "last_try": "2026-09-27"
     },
     "ai startup cognition": {
       "name": "AI Startup Cognition",
       "domain": "",
       "first_seen": "2026-09-09",
-      "tries": 6,
-      "last_try": "2026-09-26"
+      "tries": 8,
+      "last_try": "2026-09-27"
     },
     "bulwark dynamics": {
       "name": "Bulwark Dynamics",
       "domain": "",
       "first_seen": "2026-09-09",
-      "tries": 6,
-      "last_try": "2026-09-26"
+      "tries": 8,
+      "last_try": "2026-09-27"
     },
     "carrum mobility": {
       "name": "Carrum Mobility",
       "domain": "",
       "first_seen": "2026-09-09",
-      "tries": 6,
-      "last_try": "2026-09-26"
+      "tries": 8,
+      "last_try": "2026-09-27"
     },
     "arc": {
       "name": "Arc",
       "domain": "",
       "first_seen": "2026-09-09",
-      "tries": 6,
-      "last_try": "2026-09-26"
+      "tries": 8,
+      "last_try": "2026-09-27"
     },
     "dela": {
       "name": "Dela",
       "domain": "",
       "first_seen": "2026-09-09",
-      "tries": 6,
-      "last_try": "2026-09-26"
+      "tries": 8,
+      "last_try": "2026-09-27"
     },
     "feisty": {
       "name": "Feisty",
       "domain": "",
       "first_seen": "2026-09-09",
-      "tries": 6,
-      "last_try": "2026-09-26"
+      "tries": 8,
+      "last_try": "2026-09-27"
     },
     "ai-native crm startup lightfield": {
       "name": "AI-native CRM startup Lightfield",
       "domain": "lightfield.app",
       "first_seen": "2026-09-10",
-      "tries": 3,
-      "last_try": "2026-09-26"
+      "tries": 5,
+      "last_try": "2026-09-27"
     },
     "construction tech startup wyre ai": {
       "name": "Construction Tech Startup Wyre AI",
@@ -13575,6 +13632,18 @@
       "name": "Masters Union Student\u2019s Space Tech Startup",
       "domain": "",
       "first_seen": "2026-09-26",
+      "tries": 1
+    },
+    "biobase": {
+      "name": "Biobase",
+      "domain": "biobase.ai",
+      "first_seen": "2026-09-27",
+      "tries": 1
+    },
+    "channel3": {
+      "name": "Channel3",
+      "domain": "channel3.ai",
+      "first_seen": "2026-09-27",
       "tries": 1
     }
   },
@@ -15685,7 +15754,7 @@
       "name": "Midcentury",
       "round": "Seed",
       "amount": "$15M",
-      "date": "2026-09-26",
+      "date": "2026-09-27",
       "url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxNbC1nX2hWX09PWFJWQmJRNDE0a3hreUtxT1czcFdFQ0htU3FvNFo3WjNwd2JYbHFXalM4WjZEdU00eC1PSkZHQW9QRjNqbFVIYlcwWUx4SlVNZEtJQjFydkdKSWhjSzRYcFZMTDRsYVdTQmxBMUw1ck8yUnAyUmpFSm1hZ0ZrZzJvY0RBTTRGRS01UFQ1?oc=5",
       "tokens": []
     },
@@ -16895,7 +16964,7 @@
     "midcentury": {
       "name": "Midcentury",
       "round": "Seed",
-      "date": "2026-09-26",
+      "date": "2026-09-27",
       "source": "funding digest",
       "tokens": []
     }
