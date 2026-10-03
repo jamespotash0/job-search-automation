@@ -1401,7 +1401,18 @@
     "seekout",
     "northspyre",
     "dimagi",
-    "mightynetworks"
+    "mightynetworks",
+    "realtimeboardglobal",
+    "forteracorporation",
+    "descope",
+    "ladder33",
+    "profluent",
+    "horizenlabs",
+    "yugabyte",
+    "praxis",
+    "grover",
+    "oklo",
+    "current"
   ],
   "lever": [
     "rise",
@@ -1823,7 +1834,8 @@
     "glow.co",
     "truv",
     "valdera",
-    "findem"
+    "findem",
+    "milocredit"
   ],
   "ashby": [
     "taktile",
@@ -3162,7 +3174,16 @@
     "asymmetric.re",
     "gigs",
     "workhero",
-    "windfall"
+    "windfall",
+    "hive.co",
+    "groundnews",
+    "tandempv",
+    "pharmacy1sthealth",
+    "tango",
+    "casa",
+    "a-place-for-mom",
+    "auctor",
+    "outersignal"
   ],
   "checked": [
     "alloy",
@@ -4285,7 +4306,38 @@
     "good tape",
     "palebluedot ai",
     "kevin mandia's new 'agent swarm' security startup armadin",
-    "nine-person halluminate"
+    "nine-person halluminate",
+    "flexpoint",
+    "landa",
+    "smartasset",
+    "trashlab",
+    "oklo",
+    "homelight",
+    "babel intelligence",
+    "vitalize care",
+    "writer",
+    "fredrin",
+    "the openai deployment company",
+    "tessera labs",
+    "metropolis",
+    "anysphere",
+    "middesk",
+    "stainless",
+    "floracene",
+    "ellis ai",
+    "auctor",
+    "trayd",
+    "clearest health",
+    "volaren",
+    "pennant",
+    "multiplier",
+    "current",
+    "outersignal",
+    "hestus",
+    "amr operations automation startup s innovations",
+    "health tech startup allodirect",
+    "robotics startup fieldai is set to raise $700 million at a $",
+    "robotics ai developer fieldai reportedly raising $700m in fu"
   ],
   "workable": [
     "oxford-quantum-circuits-8",
@@ -5316,7 +5368,7 @@
     "regie": 120,
     "transcend": 120,
     "airtable": 600,
-    "muon space": 120,
+    "muon space": 600,
     "titan": 600,
     "forethought": 120,
     "mill": 600,
@@ -7188,7 +7240,7 @@
     "cato networks": 3000,
     "melio": 600,
     "bigeye": 25,
-    "norm ai": 120,
+    "norm ai": 25,
     "rapyd": 600,
     "bytedance": 15000,
     "upgrade": 3000,
@@ -7734,7 +7786,7 @@
     "2ulaundry": 120,
     "salesloft": 3000,
     "wayflyer": 600,
-    "workit health": 600,
+    "workit health": 120,
     "storee": 25,
     "pockyt": 25,
     "hemster": 25,
@@ -13226,246 +13278,290 @@
     "mighty networks": 120,
     "activecampaign": 600,
     "hummingbirds": 25,
-    "continuum": 25
+    "continuum": 25,
+    "tango technology": 120,
+    "ground": 25,
+    "cooklist": 5,
+    "hive power": 25,
+    "utopia global wellness": 25,
+    "point blue conservation science": 120,
+    "ladder": 120,
+    "horizen labs": 25,
+    "praxis": 120,
+    "schechter school of long island": 25,
+    "ym&ywha of washington heights & inwood": 120,
+    "peninsula temple beth el": 25,
+    "verda": 5,
+    "califia farms": 600,
+    "nordam group": 3000,
+    "milo": 25,
+    "yugabyte": 600,
+    "tractian": 600,
+    "evicore healthcare": 3000,
+    "meditech": 3000,
+    "concerto biosciences": 25,
+    "fleetworthy solutions": 120,
+    "kiteworks": 600,
+    "pentera": 600,
+    "profluent": 25,
+    "fortera": 120,
+    "ultra": 25,
+    "jiobit": 25,
+    "tandem pv": 25,
+    "jule": 120,
+    "toronto region board of trade": 120,
+    "legrand north america": 15000,
+    "syracuse university": 15000,
+    "healthdirect pharmacy services": 600,
+    "grover": 600,
+    "sparrow quantum": 25,
+    "frontier medicines": 120,
+    "hive.co": 120,
+    "blooma": 25,
+    "skylark wireless": 25,
+    "miro": 3000,
+    "bigcommerce": 3000,
+    "descope": 120,
+    "insempra": 25
   },
   "pending": {
     "construction tech startup wyre ai": {
       "name": "Construction Tech Startup Wyre AI",
       "domain": "wyreai.io",
       "first_seen": "2026-09-10",
-      "tries": 9,
-      "last_try": "2026-10-02"
+      "tries": 11,
+      "last_try": "2026-10-03"
     },
     "embodied ai startup phymi": {
       "name": "Embodied AI startup PHYMI",
       "domain": "",
       "first_seen": "2026-09-10",
-      "tries": 9,
-      "last_try": "2026-10-02"
+      "tries": 11,
+      "last_try": "2026-10-03"
     },
     "positron ai": {
       "name": "Positron AI",
       "domain": "",
       "first_seen": "2026-09-10",
-      "tries": 8,
-      "last_try": "2026-10-02"
+      "tries": 10,
+      "last_try": "2026-10-03"
     },
     "keep converting": {
       "name": "Keep Converting",
       "domain": "",
       "first_seen": "2026-09-10",
-      "tries": 8,
-      "last_try": "2026-10-02"
+      "tries": 10,
+      "last_try": "2026-10-03"
     },
     "eubrics": {
       "name": "Eubrics",
       "domain": "",
       "first_seen": "2026-09-10",
-      "tries": 9,
-      "last_try": "2026-10-02"
+      "tries": 11,
+      "last_try": "2026-10-03"
     },
     "no filter": {
       "name": "No Filter",
       "domain": "",
       "first_seen": "2026-09-10",
-      "tries": 8,
-      "last_try": "2026-10-02"
+      "tries": 10,
+      "last_try": "2026-10-03"
     },
     "metacognition": {
       "name": "MetaCognition",
       "domain": "",
       "first_seen": "2026-09-10",
-      "tries": 8,
-      "last_try": "2026-10-02"
+      "tries": 10,
+      "last_try": "2026-10-03"
     },
     "alchemy": {
       "name": "Alchemy",
       "domain": "",
       "first_seen": "2026-09-11",
-      "tries": 7,
-      "last_try": "2026-10-02"
+      "tries": 9,
+      "last_try": "2026-10-03"
     },
     "daytona": {
       "name": "Daytona",
       "domain": "",
       "first_seen": "2026-09-11",
-      "tries": 7,
-      "last_try": "2026-10-02"
+      "tries": 9,
+      "last_try": "2026-10-03"
     },
     "close": {
       "name": "Close",
       "domain": "close.com",
       "first_seen": "2026-09-11",
-      "tries": 7,
-      "last_try": "2026-10-02"
+      "tries": 9,
+      "last_try": "2026-10-03"
     },
     "airbyte": {
       "name": "Airbyte",
       "domain": "airbyte.com",
       "first_seen": "2026-09-11",
-      "tries": 8,
-      "last_try": "2026-10-02"
+      "tries": 10,
+      "last_try": "2026-10-03"
     },
     "elevate": {
       "name": "Elevate",
       "domain": "",
       "first_seen": "2026-09-11",
-      "tries": 7,
-      "last_try": "2026-10-02"
+      "tries": 9,
+      "last_try": "2026-10-03"
     },
     "cohere health": {
       "name": "Cohere Health",
       "domain": "coherehealth.com",
       "first_seen": "2026-09-11",
-      "tries": 7,
-      "last_try": "2026-10-02"
+      "tries": 9,
+      "last_try": "2026-10-03"
     },
     "komodo health": {
       "name": "Komodo Health",
       "domain": "komodohealth.ai",
       "first_seen": "2026-09-11",
-      "tries": 7,
-      "last_try": "2026-10-02"
+      "tries": 9,
+      "last_try": "2026-10-03"
     },
     "cityblock health": {
       "name": "Cityblock Health",
       "domain": "cityblockhealth.com",
       "first_seen": "2026-09-11",
-      "tries": 7,
-      "last_try": "2026-10-02"
+      "tries": 9,
+      "last_try": "2026-10-03"
     },
     "j.b. hunt-backed startup overroute": {
       "name": "J.B. Hunt-Backed Startup Overroute",
       "domain": "overroute.com",
       "first_seen": "2026-09-11",
-      "tries": 7,
-      "last_try": "2026-10-02"
+      "tries": 9,
+      "last_try": "2026-10-03"
     },
     "nunchux ai": {
       "name": "Nunchux AI",
       "domain": "nunchux.ai",
       "first_seen": "2026-09-11",
-      "tries": 7,
-      "last_try": "2026-10-02"
+      "tries": 9,
+      "last_try": "2026-10-03"
     },
     "graph ai": {
       "name": "Graph AI",
       "domain": "graphsafety.ai",
       "first_seen": "2026-09-11",
-      "tries": 7,
-      "last_try": "2026-10-02"
+      "tries": 9,
+      "last_try": "2026-10-03"
     },
     "aqua": {
       "name": "Aqua",
       "domain": "",
       "first_seen": "2026-09-11",
-      "tries": 7,
-      "last_try": "2026-10-02"
+      "tries": 9,
+      "last_try": "2026-10-03"
     },
     "shaped": {
       "name": "Shaped",
       "domain": "shaped.ai",
       "first_seen": "2026-09-12",
-      "tries": 6,
-      "last_try": "2026-10-02"
+      "tries": 8,
+      "last_try": "2026-10-03"
     },
     "dime": {
       "name": "Dime",
       "domain": "",
       "first_seen": "2026-09-12",
-      "tries": 6,
-      "last_try": "2026-10-02"
+      "tries": 8,
+      "last_try": "2026-10-03"
     },
     "standard template labs": {
       "name": "Standard Template Labs",
       "domain": "",
       "first_seen": "2026-09-12",
-      "tries": 6,
-      "last_try": "2026-10-02"
+      "tries": 8,
+      "last_try": "2026-10-03"
     },
     "hilbert": {
       "name": "Hilbert",
       "domain": "",
       "first_seen": "2026-09-12",
-      "tries": 6,
-      "last_try": "2026-10-02"
+      "tries": 8,
+      "last_try": "2026-10-03"
     },
     "normal computing corporation": {
       "name": "Normal Computing Corporation",
       "domain": "",
       "first_seen": "2026-09-12",
-      "tries": 6,
-      "last_try": "2026-10-02"
+      "tries": 8,
+      "last_try": "2026-10-03"
     },
     "surface": {
       "name": "SurfAce",
       "domain": "withsurface.com",
       "first_seen": "2026-09-12",
-      "tries": 6,
-      "last_try": "2026-10-02"
+      "tries": 8,
+      "last_try": "2026-10-03"
     },
     "traba": {
       "name": "Traba",
       "domain": "traba.ai",
       "first_seen": "2026-09-14",
-      "tries": 6,
-      "last_try": "2026-10-02"
+      "tries": 8,
+      "last_try": "2026-10-03"
     },
     "the opportunity legion": {
       "name": "The Opportunity Legion",
       "domain": "",
       "first_seen": "2026-09-14",
-      "tries": 6,
-      "last_try": "2026-10-02"
+      "tries": 8,
+      "last_try": "2026-10-03"
     },
     "sphere": {
       "name": "Sphere",
       "domain": "getsphere.com",
       "first_seen": "2026-09-14",
-      "tries": 6,
-      "last_try": "2026-10-02"
+      "tries": 8,
+      "last_try": "2026-10-03"
     },
     "furl": {
       "name": "Furl",
       "domain": "furl.ai",
       "first_seen": "2026-09-14",
-      "tries": 6,
-      "last_try": "2026-10-02"
+      "tries": 8,
+      "last_try": "2026-10-03"
     },
     "charikaty": {
       "name": "Charikaty",
       "domain": "charikaty.com",
       "first_seen": "2026-09-14",
-      "tries": 6,
-      "last_try": "2026-10-02"
+      "tries": 8,
+      "last_try": "2026-10-03"
     },
     "buildots": {
       "name": "Buildots",
       "domain": "buildots.com",
       "first_seen": "2026-09-14",
-      "tries": 6,
-      "last_try": "2026-10-02"
+      "tries": 8,
+      "last_try": "2026-10-03"
     },
     "z.ai": {
       "name": "Z.AI",
       "domain": "z.ai",
       "first_seen": "2026-09-14",
-      "tries": 6,
-      "last_try": "2026-10-02"
+      "tries": 8,
+      "last_try": "2026-10-03"
     },
     "ai interactive content startup flam": {
       "name": "AI Interactive Content Startup Flam",
       "domain": "flamapp.com",
       "first_seen": "2026-09-15",
-      "tries": 5,
-      "last_try": "2026-10-02"
+      "tries": 7,
+      "last_try": "2026-10-03"
     },
     "ai startup flam": {
       "name": "AI startup Flam",
       "domain": "flam.ai",
       "first_seen": "2026-09-15",
-      "tries": 5,
-      "last_try": "2026-10-02"
+      "tries": 7,
+      "last_try": "2026-10-03"
     },
     "global ai startup flam": {
       "name": "Global AI startup Flam",
@@ -13477,8 +13573,8 @@
       "name": "AI Content Startup Flam",
       "domain": "flam.ai",
       "first_seen": "2026-09-15",
-      "tries": 5,
-      "last_try": "2026-10-02"
+      "tries": 7,
+      "last_try": "2026-10-03"
     },
     "san francisco based ai interactive content firm flam": {
       "name": "San Francisco Based AI Interactive Content Firm Flam",
@@ -13496,8 +13592,8 @@
       "name": "AI Speech Therapy Startup Golden Brain Care",
       "domain": "",
       "first_seen": "2026-09-15",
-      "tries": 5,
-      "last_try": "2026-10-02"
+      "tries": 7,
+      "last_try": "2026-10-03"
     },
     "flam": {
       "name": "Flam",
@@ -13515,8 +13611,8 @@
       "name": "AEO startup Profound hits unicorn valuation",
       "domain": "",
       "first_seen": "2026-09-15",
-      "tries": 5,
-      "last_try": "2026-10-02"
+      "tries": 7,
+      "last_try": "2026-10-03"
     },
     "fin.com": {
       "name": "Fin.com",
@@ -13528,22 +13624,22 @@
       "name": "Evvy",
       "domain": "",
       "first_seen": "2026-09-15",
-      "tries": 3,
-      "last_try": "2026-10-02"
+      "tries": 5,
+      "last_try": "2026-10-03"
     },
     "arcustin games": {
       "name": "Arcustin Games",
       "domain": "",
       "first_seen": "2026-09-15",
-      "tries": 5,
-      "last_try": "2026-10-02"
+      "tries": 7,
+      "last_try": "2026-10-03"
     },
     "a vinyl bar in shibuya": {
       "name": "A Vinyl Bar in Shibuya",
       "domain": "",
       "first_seen": "2026-09-15",
-      "tries": 5,
-      "last_try": "2026-10-02"
+      "tries": 7,
+      "last_try": "2026-10-03"
     },
     "nrb entrepreneur's fintech startup": {
       "name": "NRB entrepreneur's fintech startup",
@@ -14965,6 +15061,168 @@
       "name": "Nine-person Halluminate",
       "domain": "",
       "first_seen": "2026-10-02",
+      "tries": 1
+    },
+    "flexpoint": {
+      "name": "FlexPoint",
+      "domain": "",
+      "first_seen": "2026-10-03",
+      "tries": 1
+    },
+    "landa": {
+      "name": "Landa",
+      "domain": "landa.app",
+      "first_seen": "2026-10-03",
+      "tries": 1
+    },
+    "smartasset": {
+      "name": "SmartAsset",
+      "domain": "smartasset.com",
+      "first_seen": "2026-10-03",
+      "tries": 1
+    },
+    "trashlab": {
+      "name": "TrashLab",
+      "domain": "",
+      "first_seen": "2026-10-03",
+      "tries": 1
+    },
+    "homelight": {
+      "name": "HomeLight",
+      "domain": "homelight.com",
+      "first_seen": "2026-10-03",
+      "tries": 1
+    },
+    "babel intelligence": {
+      "name": "Babel Intelligence",
+      "domain": "",
+      "first_seen": "2026-10-03",
+      "tries": 1
+    },
+    "vitalize care": {
+      "name": "Vitalize Care",
+      "domain": "",
+      "first_seen": "2026-10-03",
+      "tries": 1
+    },
+    "writer": {
+      "name": "Writer",
+      "domain": "writer.com",
+      "first_seen": "2026-10-03",
+      "tries": 1
+    },
+    "fredrin": {
+      "name": "Fredrin",
+      "domain": "fredrin.com",
+      "first_seen": "2026-10-03",
+      "tries": 1
+    },
+    "the openai deployment company": {
+      "name": "The OpenAI Deployment Company",
+      "domain": "",
+      "first_seen": "2026-10-03",
+      "tries": 1
+    },
+    "tessera labs": {
+      "name": "Tessera Labs",
+      "domain": "tessera.io",
+      "first_seen": "2026-10-03",
+      "tries": 1
+    },
+    "metropolis": {
+      "name": "Metropolis",
+      "domain": "metropolis.io",
+      "first_seen": "2026-10-03",
+      "tries": 1
+    },
+    "anysphere": {
+      "name": "Anysphere",
+      "domain": "anysphere.com",
+      "first_seen": "2026-10-03",
+      "tries": 1
+    },
+    "middesk": {
+      "name": "Middesk",
+      "domain": "middesk.com",
+      "first_seen": "2026-10-03",
+      "tries": 1
+    },
+    "stainless": {
+      "name": "Stainless",
+      "domain": "stainlessapi.com",
+      "first_seen": "2026-10-03",
+      "tries": 1
+    },
+    "floracene": {
+      "name": "Floracene",
+      "domain": "floracene.ai",
+      "first_seen": "2026-10-03",
+      "tries": 1
+    },
+    "ellis ai": {
+      "name": "Ellis AI",
+      "domain": "ellis.ai",
+      "first_seen": "2026-10-03",
+      "tries": 1
+    },
+    "trayd": {
+      "name": "Trayd",
+      "domain": "trayd.com",
+      "first_seen": "2026-10-03",
+      "tries": 1
+    },
+    "clearest health": {
+      "name": "Clearest Health",
+      "domain": "clearestco.com",
+      "first_seen": "2026-10-03",
+      "tries": 1
+    },
+    "volaren": {
+      "name": "Volaren",
+      "domain": "volaren.com",
+      "first_seen": "2026-10-03",
+      "tries": 1
+    },
+    "pennant": {
+      "name": "Pennant",
+      "domain": "pennant.ai",
+      "first_seen": "2026-10-03",
+      "tries": 1
+    },
+    "multiplier": {
+      "name": "Multiplier",
+      "domain": "multiplier.ai",
+      "first_seen": "2026-10-03",
+      "tries": 1
+    },
+    "hestus": {
+      "name": "Hestus",
+      "domain": "hestus.co",
+      "first_seen": "2026-10-03",
+      "tries": 1
+    },
+    "amr operations automation startup s innovations": {
+      "name": "AMR Operations Automation Startup S innovations",
+      "domain": "s-innovations.co",
+      "first_seen": "2026-10-03",
+      "tries": 1
+    },
+    "health tech startup allodirect": {
+      "name": "Health tech startup AlloDirect",
+      "domain": "allo.direct",
+      "first_seen": "2026-10-03",
+      "tries": 1
+    },
+    "robotics startup fieldai is set to raise $700 million at a $": {
+      "name": "Robotics startup FieldAI is set to raise $700 million at a $",
+      "domain": "fieldai.com",
+      "first_seen": "2026-10-03",
+      "tries": 1
+    },
+    "robotics ai developer fieldai reportedly raising $700m in fu": {
+      "name": "Robotics AI developer FieldAI reportedly raising $700M in fu",
+      "domain": "fieldai.com",
+      "first_seen": "2026-10-03",
       "tries": 1
     }
   },
@@ -17588,6 +17846,51 @@
       "date": "2026-10-01",
       "url": "https://news.google.com/rss/articles/CBMihgFBVV95cUxQeWNxS0luM2lwc0k5OVlQSFd4Sy1XN01sdnZGV2FZV3BxbHBZWV9PNzg3U1JKTHZSNDd0UkJBRERob1Vkb3NJZDNhVEdpQ3N2LWROdS1DajUwQkNzSEpyUDhNLXRuY043emZjSldEb1MwcDM1YmJsTWNrelBvSFJJSnptaC1EZw?oc=5",
       "tokens": []
+    },
+    "outersignal": {
+      "name": "OuterSignal",
+      "amount": "$22M",
+      "date": "2026-10-02",
+      "url": "https://news.google.com/rss/articles/CBMihgFBVV95cUxONXhtQThaMEJFeWtfQ3dIakNUZ3RnM1RPZWFEYWJEYlFaNzdCeERJNUxzRGpRc2oyLW11eWs4UVlNRzFOdnJFNXdkOUwtT3labkFLYjd4bXNMbEZmTlpQYV9JQjM5M3NTYjczdDdzZ3RpR3NKU2JhcTdXZHdObFQyeU1ObjlTUQ?oc=5",
+      "tokens": [
+        "outersignal"
+      ]
+    },
+    "hestus": {
+      "name": "Hestus",
+      "round": "Seed",
+      "amount": "$7.4M",
+      "date": "2026-10-02",
+      "url": "https://news.google.com/rss/articles/CBMilwFBVV95cUxQbVZuUEhRUGFHb3VZQzF1ZFZNNmRMVUJFTU1aYldxcThIVnFjRzVnQ3QtS0tNSGZLdGV3Y1NTMUM5OHdmMUtLWms0U3FBU1NQRGFOSEd3a05uSlU4SFE5b0dnbnZJaXhrbnRzMWNMaWhNQU9KQlRpNUZKOGZzelEwcWEtTEpyVWFINXdaM0J6QWIwbmlxVk1v?oc=5",
+      "tokens": []
+    },
+    "amr operations automation startup s innovations": {
+      "name": "AMR Operations Automation Startup S innovations",
+      "round": "Series A",
+      "date": "2026-10-02",
+      "url": "https://news.google.com/rss/articles/CBMiU0FVX3lxTE1CaC00VnJNMElWVFg0UU1tcXlwbXltbmN2VUdqUkFYdENYWHhJcWpfTGkxWEFHSm5IU3hueHpYdFBNcmN0b05rY2dnbkVvVnppOXVF?oc=5",
+      "tokens": []
+    },
+    "health tech startup allodirect": {
+      "name": "Health tech startup AlloDirect",
+      "round": "Pre-seed",
+      "date": "2026-10-02",
+      "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxQdGViSWptRjhKTnc0eU9ZcnpRYldCZmZja2MtUnlTME1FZ0lOdUNCemFQM01RNTROekEtZEE1WUtrMElqNF9lZEo2dzMzRjVMQjNnVVVDdHJJbjhSOS01VGUtVno3STh2YXlOeUZMU3hoTG8xbG43czlCanFLa0xCSXZsMk91bVg4WXhIdGZMSzRwTzlKTzlVaUw5RXZXYXFPUUFrQmlyWjFLVXpQNmZ0a2lWMXpCNFBI?oc=5",
+      "tokens": []
+    },
+    "robotics startup fieldai is set to raise $700 million at a $": {
+      "name": "Robotics startup FieldAI is set to raise $700 million at a $",
+      "amount": "$700M",
+      "date": "2026-10-02",
+      "url": "https://news.google.com/rss/articles/CBMiowFBVV95cUxPdlB3WE40MnpRb2RsaUFaV0tjekEyM2dMNFFWZTc0LWJEa3ZpUEFVVFZWTUtwR3lyY1JRRjFmTlVldHRWbHdZTks4TnR6aFJ3NXVwYXdRdFNKaFR0R241UUNQQVEtZ2hQb0F2WWZyUjNvWmpfNnBjUC1oUzhVdktrdXhFd2t3a2dRRzAtQS1TREZvM011MUlvVGVWaFBLYjlRdFpz?oc=5",
+      "tokens": []
+    },
+    "robotics ai developer fieldai reportedly raising $700m in fu": {
+      "name": "Robotics AI developer FieldAI reportedly raising $700M in fu",
+      "amount": "$700M",
+      "date": "2026-10-03",
+      "url": "https://news.google.com/rss/articles/CBMiowFBVV95cUxNR2FNdU1RN2pQSV83Yzdwbmt2OGt4azBOTHlBclJ4ZkRsaWhFaE9WOHpwMEo2SXI2YThZM0dKdUtKcEtkYmp2dTFiY1cxYTAtbVFfZ1ZTdjA1Sml3UXBDZU5fbVNqdWp6eDRJVGtWOWVnempoSGVrT0JpbG9UeWRmNlU1MGZJZ0IzZUFMcllLZ1pESGdVSVhTcUpqTW41dGdGdDBR?oc=5",
+      "tokens": []
     }
   },
   "stage": {
@@ -19038,6 +19341,27 @@
       "name": "PaleBlueDot AI",
       "round": "Series C",
       "date": "2026-10-01",
+      "source": "funding digest",
+      "tokens": []
+    },
+    "hestus": {
+      "name": "Hestus",
+      "round": "Seed",
+      "date": "2026-10-02",
+      "source": "funding digest",
+      "tokens": []
+    },
+    "amr operations automation startup s innovations": {
+      "name": "AMR Operations Automation Startup S innovations",
+      "round": "Series A",
+      "date": "2026-10-02",
+      "source": "funding digest",
+      "tokens": []
+    },
+    "health tech startup allodirect": {
+      "name": "Health tech startup AlloDirect",
+      "round": "Pre-seed",
+      "date": "2026-10-02",
       "source": "funding digest",
       "tokens": []
     }
