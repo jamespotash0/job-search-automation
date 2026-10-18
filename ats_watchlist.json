@@ -3445,7 +3445,8 @@
     "kamiwaza",
     "helmguard",
     "fsh",
-    "elicit"
+    "elicit",
+    "upguard"
   ],
   "checked": [
     "alloy",
@@ -4933,7 +4934,9 @@
     "vitonnix",
     "suki",
     "exclusive / openrouter challenger",
-    "rapidcanvas"
+    "rapidcanvas",
+    "cardiovascular imaging ai startup corologic",
+    "ai startup aisa"
   ],
   "workable": [
     "oxford-quantum-circuits-8",
@@ -5566,11 +5569,11 @@
     "netradyne": 600,
     "shield ai": 600,
     "ual\u00e1": 3000,
-    "flatfile": 25,
+    "flatfile": 120,
     "socure": 600,
     "x.ai": 600,
     "odeko": 120,
-    "remote": 3000,
+    "remote": 15000,
     "namely": 120,
     "fundera": 120,
     "heartbeat health": 120,
@@ -5672,7 +5675,7 @@
     "temporal technologies": 600,
     "read ai": 120,
     "stackblitz": 25,
-    "surf air": 600,
+    "surf air": 120,
     "beyond (formerly beyond pricing)": 120,
     "carta": 3000,
     "forge": 600,
@@ -8515,7 +8518,7 @@
     "compstak": 120,
     "keyway": 120,
     "arcadia": 600,
-    "bilt rewards": 120,
+    "bilt rewards": 600,
     "mediar therapeutics": 25,
     "nomic": 120,
     "evommune": 25,
@@ -10158,7 +10161,7 @@
     "inversion": 120,
     "mecka": 25,
     "fearless": 600,
-    "conduit": 25,
+    "conduit": 120,
     "zora": 25,
     "op labs": 120,
     "algorand foundation": 120,
@@ -10872,7 +10875,7 @@
     "the duckbill group": 5,
     "affinia therapeutics": 25,
     "sunday": 120,
-    "footprint": 600,
+    "footprint": 25,
     "ohb se": 3000,
     "stratolaunch": 600,
     "cesium": 25,
@@ -11438,7 +11441,7 @@
     "onward rides": 25,
     "minnesota department of human services": 3000,
     "vendelux": 120,
-    "casper": 600,
+    "casper": 120,
     "narvar": 600,
     "oceanx": 120,
     "ifremer": 3000,
@@ -14774,280 +14777,268 @@
     "osa technology partners": 5,
     "moka.care": 120,
     "rapidata": 25,
-    "pedernales electric cooperative": 600
+    "pedernales electric cooperative": 600,
+    "ecomtent": 25,
+    "p-1 ai": 5,
+    "owl insights": 120,
+    "jewish family & career services of atlanta": 600,
+    "kentucky river community care": 120,
+    "city of tulsa": 3000,
+    "asplundh tree expert co": 15000,
+    "hammerspace": 120,
+    "scipher medicine": 120,
+    "lily ai": 120,
+    "zesty": 120,
+    "future fields": 25,
+    "qantev": 120,
+    "upguard": 600,
+    "unlatch": 25,
+    "american food & vending": 600,
+    "satim": 25,
+    "autocorp technologies": 25,
+    "coolit systems": 600,
+    "exygy": 25,
+    "latitude media": 25,
+    "navidence": 5
   },
   "pending": {
-    "startup ravel": {
-      "name": "Startup Ravel",
-      "domain": "",
-      "first_seen": "2026-09-18",
-      "tries": 12,
-      "last_try": "2026-10-17"
-    },
-    "a startup that builds other startups": {
-      "name": "A startup that builds other startups",
-      "domain": "",
-      "first_seen": "2026-09-19",
-      "tries": 12,
-      "last_try": "2026-10-17"
-    },
-    "vantora": {
-      "name": "Vantora",
-      "domain": "vantora.us",
-      "first_seen": "2026-09-19",
-      "tries": 12,
-      "last_try": "2026-10-17"
-    },
-    "agave api": {
-      "name": "Agave API",
-      "domain": "agaveapi.com",
-      "first_seen": "2026-09-20",
-      "tries": 12,
-      "last_try": "2026-10-17"
-    },
     "clay labs": {
       "name": "Clay Labs",
       "domain": "clayhq.com",
       "first_seen": "2026-09-20",
-      "tries": 11,
-      "last_try": "2026-10-17"
+      "tries": 12,
+      "last_try": "2026-10-18"
     },
     "fin": {
       "name": "Fin",
       "domain": "",
       "first_seen": "2026-09-20",
-      "tries": 11,
-      "last_try": "2026-10-17"
-    },
-    "campfire": {
-      "name": "Campfire",
-      "domain": "",
-      "first_seen": "2026-09-20",
       "tries": 12,
-      "last_try": "2026-10-17"
+      "last_try": "2026-10-18"
     },
     "hadrius": {
       "name": "Hadrius",
       "domain": "",
       "first_seen": "2026-09-20",
-      "tries": 11,
-      "last_try": "2026-10-17"
+      "tries": 12,
+      "last_try": "2026-10-18"
     },
     "wispr flow": {
       "name": "Wispr Flow",
       "domain": "",
       "first_seen": "2026-09-20",
-      "tries": 11,
-      "last_try": "2026-10-17"
+      "tries": 12,
+      "last_try": "2026-10-18"
     },
     "mem0": {
       "name": "Mem0",
       "domain": "",
       "first_seen": "2026-09-20",
-      "tries": 11,
-      "last_try": "2026-10-17"
+      "tries": 12,
+      "last_try": "2026-10-18"
     },
     "corridor": {
       "name": "Corridor",
       "domain": "",
       "first_seen": "2026-09-21",
-      "tries": 11,
-      "last_try": "2026-10-17"
+      "tries": 12,
+      "last_try": "2026-10-18"
     },
     "egyptian startup anees health": {
       "name": "Egyptian startup Anees Health",
       "domain": "",
       "first_seen": "2026-09-21",
-      "tries": 11,
-      "last_try": "2026-10-17"
+      "tries": 12,
+      "last_try": "2026-10-18"
     },
     "spinoto": {
       "name": "Spinoto",
       "domain": "spinoto.com",
       "first_seen": "2026-09-21",
-      "tries": 11,
-      "last_try": "2026-10-17"
+      "tries": 12,
+      "last_try": "2026-10-18"
     },
     "voice ai simulation startup treble": {
       "name": "Voice AI Simulation Startup Treble",
       "domain": "",
       "first_seen": "2026-09-21",
-      "tries": 11,
-      "last_try": "2026-10-17"
+      "tries": 12,
+      "last_try": "2026-10-18"
     },
     "figma": {
       "name": "Figma",
       "domain": "figma.com",
       "first_seen": "2026-09-22",
-      "tries": 10,
-      "last_try": "2026-10-17"
+      "tries": 11,
+      "last_try": "2026-10-18"
     },
     "anthropic": {
       "name": "Anthropic",
       "domain": "anthropic.com",
       "first_seen": "2026-09-22",
-      "tries": 10,
-      "last_try": "2026-10-17"
+      "tries": 11,
+      "last_try": "2026-10-18"
     },
     "coinbase": {
       "name": "Coinbase",
       "domain": "coinbase.com",
       "first_seen": "2026-09-22",
-      "tries": 10,
-      "last_try": "2026-10-17"
+      "tries": 11,
+      "last_try": "2026-10-18"
     },
     "affirm": {
       "name": "Affirm",
       "domain": "affirm.com",
       "first_seen": "2026-09-22",
-      "tries": 11,
-      "last_try": "2026-10-17"
+      "tries": 12,
+      "last_try": "2026-10-18"
     },
     "replit": {
       "name": "Replit",
       "domain": "replit.com",
       "first_seen": "2026-09-22",
-      "tries": 9,
-      "last_try": "2026-10-17"
+      "tries": 10,
+      "last_try": "2026-10-18"
     },
     "vanta": {
       "name": "Vanta",
       "domain": "vanta.com",
       "first_seen": "2026-09-22",
-      "tries": 7,
-      "last_try": "2026-10-17"
+      "tries": 8,
+      "last_try": "2026-10-18"
     },
     "gitlab": {
       "name": "GitLab",
       "domain": "gitlab.com",
       "first_seen": "2026-09-22",
-      "tries": 9,
-      "last_try": "2026-10-17"
+      "tries": 10,
+      "last_try": "2026-10-18"
     },
     "robinhood": {
       "name": "Robinhood",
       "domain": "robinhood.com",
       "first_seen": "2026-09-22",
-      "tries": 9,
-      "last_try": "2026-10-17"
+      "tries": 10,
+      "last_try": "2026-10-18"
     },
     "bestow": {
       "name": "Bestow",
       "domain": "bestow.com",
       "first_seen": "2026-09-22",
-      "tries": 10,
-      "last_try": "2026-10-17"
+      "tries": 11,
+      "last_try": "2026-10-18"
     },
     "unit21": {
       "name": "Unit21",
       "domain": "unit21.ai",
       "first_seen": "2026-09-22",
-      "tries": 9,
-      "last_try": "2026-10-17"
+      "tries": 10,
+      "last_try": "2026-10-18"
     },
     "descript": {
       "name": "Descript",
       "domain": "descript.com",
       "first_seen": "2026-09-22",
-      "tries": 10,
-      "last_try": "2026-10-17"
+      "tries": 11,
+      "last_try": "2026-10-18"
     },
     "duolingo": {
       "name": "Duolingo",
       "domain": "duolingo.com",
       "first_seen": "2026-09-22",
-      "tries": 10,
-      "last_try": "2026-10-17"
+      "tries": 11,
+      "last_try": "2026-10-18"
     },
     "payment startup infini": {
       "name": "Payment startup Infini",
       "domain": "infini.com",
       "first_seen": "2026-09-22",
-      "tries": 9,
-      "last_try": "2026-10-17"
+      "tries": 10,
+      "last_try": "2026-10-18"
     },
     "ai benchmarking startup vals": {
       "name": "AI Benchmarking Startup Vals",
       "domain": "vals.ai",
       "first_seen": "2026-09-22",
-      "tries": 11,
-      "last_try": "2026-10-17"
+      "tries": 12,
+      "last_try": "2026-10-18"
     },
     "recruitment startup spott": {
       "name": "Recruitment startup Spott",
       "domain": "spott.io",
       "first_seen": "2026-09-22",
-      "tries": 9,
-      "last_try": "2026-10-17"
+      "tries": 10,
+      "last_try": "2026-10-18"
     },
     "gharbar": {
       "name": "Gharbar",
       "domain": "ghar.bar",
       "first_seen": "2026-09-22",
-      "tries": 10,
-      "last_try": "2026-10-17"
+      "tries": 11,
+      "last_try": "2026-10-18"
     },
     "ai startup demoverse": {
       "name": "AI startup Demoverse",
       "domain": "",
       "first_seen": "2026-09-22",
-      "tries": 10,
-      "last_try": "2026-10-17"
+      "tries": 11,
+      "last_try": "2026-10-18"
     },
     "ai cloud startup verda": {
       "name": "AI Cloud Startup Verda",
       "domain": "verda.com",
       "first_seen": "2026-09-22",
-      "tries": 10,
-      "last_try": "2026-10-17"
+      "tries": 11,
+      "last_try": "2026-10-18"
     },
     "chesterbrook ai startup cornelis networks": {
       "name": "Chesterbrook AI Startup Cornelis Networks",
       "domain": "",
       "first_seen": "2026-09-22",
-      "tries": 10,
-      "last_try": "2026-10-17"
+      "tries": 11,
+      "last_try": "2026-10-18"
     },
     "snorkel ai": {
       "name": "Snorkel AI",
       "domain": "",
       "first_seen": "2026-09-22",
-      "tries": 9,
-      "last_try": "2026-10-17"
+      "tries": 10,
+      "last_try": "2026-10-18"
     },
     "collectibles platform catchback": {
       "name": "Collectibles platform CatchBack",
       "domain": "",
       "first_seen": "2026-09-22",
-      "tries": 10,
-      "last_try": "2026-10-17"
+      "tries": 11,
+      "last_try": "2026-10-18"
     },
     "can you trust that ai agent? baselayer": {
       "name": "Can You Trust That AI Agent? Baselayer",
       "domain": "",
       "first_seen": "2026-09-22",
-      "tries": 10,
-      "last_try": "2026-10-17"
+      "tries": 11,
+      "last_try": "2026-10-18"
     },
     "seattle cybersecurity startup mind": {
       "name": "Seattle cybersecurity startup Mind",
       "domain": "",
       "first_seen": "2026-09-22",
-      "tries": 9,
-      "last_try": "2026-10-17"
+      "tries": 10,
+      "last_try": "2026-10-18"
     },
     "vantora, formerly up.labs": {
       "name": "Vantora, Formerly UP.Labs",
       "domain": "",
       "first_seen": "2026-09-22",
-      "tries": 2,
-      "last_try": "2026-10-17"
+      "tries": 3,
+      "last_try": "2026-10-18"
     },
     "enterprise ai startup ema": {
       "name": "Enterprise AI startup Ema",
       "domain": "ema.ai",
       "first_seen": "2026-09-23",
-      "tries": 1
+      "tries": 2,
+      "last_try": "2026-10-18"
     },
     "physical ai startup xirang kaiwu": {
       "name": "Physical AI startup Xirang Kaiwu",
@@ -15065,14 +15056,15 @@
       "name": "Chicago startup Go.AI",
       "domain": "go.ai",
       "first_seen": "2026-09-23",
-      "tries": 1
+      "tries": 2,
+      "last_try": "2026-10-18"
     },
     "ai stock alert: prime focus-backed startup": {
       "name": "AI Stock Alert: Prime Focus-Backed Startup",
       "domain": "brahmaai.com",
       "first_seen": "2026-09-23",
-      "tries": 2,
-      "last_try": "2026-10-17"
+      "tries": 3,
+      "last_try": "2026-10-18"
     },
     "tampa startup": {
       "name": "Tampa Startup",
@@ -15096,14 +15088,15 @@
       "name": "Basecamp",
       "domain": "",
       "first_seen": "2026-09-23",
-      "tries": 1
+      "tries": 2,
+      "last_try": "2026-10-18"
     },
     "azulene labs": {
       "name": "Azulene Labs",
       "domain": "",
       "first_seen": "2026-09-23",
-      "tries": 2,
-      "last_try": "2026-10-17"
+      "tries": 3,
+      "last_try": "2026-10-18"
     },
     "hisway labs": {
       "name": "HisWay Labs",
@@ -15121,7 +15114,8 @@
       "name": "Ema",
       "domain": "",
       "first_seen": "2026-09-23",
-      "tries": 1
+      "tries": 2,
+      "last_try": "2026-10-18"
     },
     "prime focus-backed brahma ai": {
       "name": "Prime Focus-backed Brahma AI",
@@ -15139,7 +15133,8 @@
       "name": "Bessemer",
       "domain": "",
       "first_seen": "2026-09-23",
-      "tries": 1
+      "tries": 2,
+      "last_try": "2026-10-18"
     },
     "byteask": {
       "name": "ByteAsk",
@@ -17731,6 +17726,18 @@
       "name": "RapidCanvas",
       "domain": "",
       "first_seen": "2026-10-17",
+      "tries": 1
+    },
+    "cardiovascular imaging ai startup corologic": {
+      "name": "Cardiovascular imaging AI startup Corologic",
+      "domain": "",
+      "first_seen": "2026-10-18",
+      "tries": 1
+    },
+    "ai startup aisa": {
+      "name": "AI startup AIsa",
+      "domain": "",
+      "first_seen": "2026-10-18",
       "tries": 1
     }
   },
@@ -21356,6 +21363,20 @@
       "date": "2026-10-16",
       "url": "https://news.google.com/rss/articles/CBMidEFVX3lxTE9ienlnQzA1WEM2QTdzX0p2c25Tby1peVRQN1JzdlFGM3o2R0FaOUFhc1MtWnEzSE8wMklkYTFrQVM2aXp3NGVGOGF1SEs5Z0NvOGFRYjVTREp1enEyM0MtY2RYSi1rRWpGYVZMYzRyeFZJMFRR?oc=5",
       "tokens": []
+    },
+    "cardiovascular imaging ai startup corologic": {
+      "name": "Cardiovascular imaging AI startup Corologic",
+      "round": "Seed",
+      "date": "2026-10-18",
+      "url": "https://news.google.com/rss/articles/CBMixwFBVV95cUxOc3hoVVlPc1d3dGpHWUNNTFdpRlk5ZERUaTB5R0hsM0M2ZHRCTFp2UnpuUlJlbm42QUs4cVhoT0lmVVJqclZQWTZMTEd4R29IVHp0eGtJM1diX0Z5ckpuTEMyb3hfNmxsVGtFRnNmTHR2dm5zdU1hRUdYSy1MeWw2X3F3Z1FrdVhTWUxiVy1FelZKNXM5R3lKSXBnWWt5N2p4U2lCSm1acWt5TWJhaFg5MThpZi1XQzdqYUtMR2NhbXUxRW5ZRjZV?oc=5",
+      "tokens": []
+    },
+    "ai startup aisa": {
+      "name": "AI startup AIsa",
+      "amount": "$9M",
+      "date": "2026-10-17",
+      "url": "https://news.google.com/rss/articles/CBMiowFBVV95cUxOaXFUSGFpX1hEVDEzQlNTQ0JEOE4wRXVWLVhyUDFjRHZIdlpZbmQ4MEhuME5fbUt1am40bjdDRzRPUGwySG5DRk9qNEQzQ0R2bG1HMC1Cd0wxSzlZNkV3RHFyVXNrak1NV0NVMy15QVh0X0JLRVZ0Q1dMZDhVNjFFc2RRXy1FeVV0d0oxbEFsYnE4cEdYd3E2c0tBeTBqNi1wZTlv?oc=5",
+      "tokens": []
     }
   },
   "stage": {
@@ -23392,6 +23413,13 @@
       "name": "Exclusive / OpenRouter challenger",
       "round": "Seed",
       "date": "2026-10-16",
+      "source": "funding digest",
+      "tokens": []
+    },
+    "cardiovascular imaging ai startup corologic": {
+      "name": "Cardiovascular imaging AI startup Corologic",
+      "round": "Seed",
+      "date": "2026-10-18",
       "source": "funding digest",
       "tokens": []
     }
