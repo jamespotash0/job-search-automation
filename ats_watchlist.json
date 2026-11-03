@@ -1567,7 +1567,10 @@
     "humeai",
     "spaceium",
     "orbisk",
-    "terarecon"
+    "terarecon",
+    "truehold",
+    "athena",
+    "shield"
   ],
   "lever": [
     "rise",
@@ -2047,7 +2050,8 @@
     "osaro",
     "brilliant",
     "okendo",
-    "getsquire"
+    "getsquire",
+    "wra-ca"
   ],
   "ashby": [
     "taktile",
@@ -3691,7 +3695,19 @@
     "paradigm-health",
     "zerohomes",
     "quantumdiamonds",
-    "clark"
+    "clark",
+    "formulary",
+    "warp-sciences",
+    "vanishid",
+    "synctera",
+    "sealed",
+    "valiussciences",
+    "cointracker",
+    "faros-ai",
+    "hcompany",
+    "plain",
+    "pylon",
+    "trajectory"
   ],
   "checked": [
     "alloy",
@@ -5497,7 +5513,34 @@
     "fronted",
     "sortrace",
     "spotify, lovable backer creandum said to raise $750m new fun",
-    "spotify, lovable investor creandum"
+    "spotify, lovable investor creandum",
+    "clicks health",
+    "h company",
+    "chaos labs",
+    "vast data",
+    "plain",
+    "soren",
+    "pylon",
+    "probablygenetic",
+    "audit ai startup clark",
+    "ai-visibility startup the prompting company",
+    "legal ai startup athena",
+    "startup athena",
+    "trajectory startup",
+    "3d motion data ai startup movin",
+    "ai inference startup fal",
+    "athena",
+    "ai voice startup guava",
+    "marrow",
+    "unify foodworks",
+    "ground station startup northwood space",
+    "solgram",
+    "shield ai ceo says planning at least $1 billion raise, more",
+    "northwood hits $2b valuation: ex-disney star\u2019s ground statio",
+    "savory",
+    "trajectory",
+    "tomorrow: techcrunch founder summit takes over boston and wh",
+    "loamy"
   ],
   "workable": [
     "oxford-quantum-circuits-8",
@@ -5706,7 +5749,9 @@
     "fiscal-ai",
     "usealbatross",
     "popmenu",
-    "fastbreak-ai"
+    "fastbreak-ai",
+    "predoc",
+    "provenance-hq"
   ],
   "smartrecruiters": [
     "Canva",
@@ -6022,7 +6067,10 @@
     "penguin-ai",
     "outlier",
     "zeo-energy-corp",
-    "zumper"
+    "zumper",
+    "hdata_careers",
+    "brightside-health-jobs",
+    "trustlayer-inc"
   ],
   "sizes": {
     "jumpcloud": 600,
@@ -6180,8 +6228,8 @@
     "ual\u00e1": 3000,
     "flatfile": 120,
     "socure": 600,
-    "x.ai": 600,
-    "odeko": 120,
+    "x.ai": 15000,
+    "odeko": 600,
     "remote": 15000,
     "namely": 120,
     "fundera": 120,
@@ -6284,7 +6332,7 @@
     "temporal technologies": 600,
     "read ai": 120,
     "stackblitz": 25,
-    "surf air": 120,
+    "surf air": 600,
     "beyond (formerly beyond pricing)": 120,
     "carta": 3000,
     "forge": 600,
@@ -6321,7 +6369,7 @@
     "mindbridge ai": 600,
     "stay22": 120,
     "algolux": 25,
-    "clutch canada": 600,
+    "clutch canada": 120,
     "insight engines": 5,
     "mejuri": 600,
     "quotemachine": 25,
@@ -6377,7 +6425,7 @@
     "rent the runway": 600,
     "lex": 120,
     "brightai": 120,
-    "apex": 25,
+    "apex": 5,
     "observable space": 120,
     "chownow": 600,
     "modern animal": 600,
@@ -6449,7 +6497,7 @@
     "safewill": 25,
     "mx51": 120,
     "osmind": 25,
-    "rho": 120,
+    "rho": 600,
     "salt security": 120,
     "aera technology": 600,
     "commonwealth fusion systems": 3000,
@@ -6604,7 +6652,7 @@
     "better than cash": 25,
     "pula advisors": 600,
     "swiftly": 120,
-    "genlogs": 25,
+    "genlogs": 5,
     "onfido": 600,
     "decentro": 120,
     "hire digital": 120,
@@ -6612,7 +6660,7 @@
     "turing": 3000,
     "catena clearing": 25,
     "unit21": 120,
-    "vanta": 600,
+    "vanta": 3000,
     "siteline": 25,
     "regie": 120,
     "transcend": 120,
@@ -7631,7 +7679,7 @@
     "smarking": 5,
     "dutchie": 600,
     "scribe": 600,
-    "attio": 120,
+    "attio": 25,
     "cityblock health": 600,
     "psiquantum": 600,
     "cockroach labs": 600,
@@ -8495,7 +8543,7 @@
     "upgrade": 3000,
     "coreweave": 3000,
     "anaplan": 3000,
-    "deel": 15000,
+    "deel": 3000,
     "silk": 600,
     "avantis team": 25,
     "nimble": 120,
@@ -10419,7 +10467,7 @@
     "periodic labs": 25,
     "pockethealth": 120,
     "calibrate": 600,
-    "gemini": 600,
+    "gemini": 3000,
     "enable": 600,
     "sisense": 600,
     "paro": 600,
@@ -11088,7 +11136,7 @@
     "ontario genomics": 25,
     "kalshi": 600,
     "nuvia": 120,
-    "finch": 120,
+    "finch": 25,
     "camber": 120,
     "clearly ai": 5,
     "vama": 25,
@@ -11644,7 +11692,7 @@
     "beth israel deaconess medical center": 15000,
     "cisco": 15000,
     "staples": 15000,
-    "stake": 25,
+    "stake": 120,
     "sola": 25,
     "nearmap": 600,
     "wecu": 600,
@@ -12410,7 +12458,7 @@
     "shapr3d": 120,
     "strider": 25,
     "ninedot energy": 120,
-    "maxlinear": 3000,
+    "maxlinear": 600,
     "protomer technologies": 5,
     "live music project": 25,
     "reboot rx": 25,
@@ -13822,7 +13870,7 @@
     "utilize health": 5,
     "mode labs": 5,
     "americo financial life and annuity": 600,
-    "blackbird labs": 120,
+    "blackbird labs": 25,
     "imbue": 120,
     "openart ai": 25,
     "donna": 25,
@@ -16358,211 +16406,264 @@
     "comscore": 3000,
     "cuddly": 120,
     "pods": 5,
-    "whitewater express": 25
+    "whitewater express": 25,
+    "protico": 5,
+    "pibox": 25,
+    "skyserve": 25,
+    "volteum": 5,
+    "locus lock": 5,
+    "fig - food is good": 25,
+    "marine ventures international": 5,
+    "pacific environment": 120,
+    "wra": 120,
+    "bigelow laboratory for ocean sciences": 120,
+    "the mission to seafarers": 120,
+    "provenance": 25,
+    "faros": 25,
+    "synctera": 120,
+    "jcc east bay": 120,
+    "temple etz chaim": 5,
+    "olive": 3000,
+    "fourier llc": 5,
+    "bharatpe": 3000,
+    "picnic corporation": 25,
+    "leyden labs": 120,
+    "pharmeasy": 3000,
+    "federal bureau of investigation": 15000,
+    "trustlayer": 25,
+    "felix schoeller group": 600,
+    "cointracker": 120,
+    "brightside health": 600,
+    "sustane": 5,
+    "upside robotics": 25,
+    "clearpath robotics": 120,
+    "mavvrik": 25,
+    "avail": 25,
+    "sealed": 25,
+    "hdata": 25,
+    "truvian sciences": 120,
+    "media distillery": 25,
+    "plixxent": 600,
+    "vsl national metrology institute": 120,
+    "battolyser systems": 120,
+    "cargill": 15000,
+    "qwic": 25,
+    "engine": 120,
+    "vxt": 25,
+    "djust": 120,
+    "aerska": 25,
+    "brt biotechnologies": 5,
+    "climate interactive": 25,
+    "trubel&co": 25,
+    "city of worcester": 3000,
+    "subly": 25,
+    "the hill center": 25,
+    "habitat for humanity of orange county": 120,
+    "explore tech": 5
   },
   "pending": {
     "simple ai": {
       "name": "Simple AI",
       "domain": "",
       "first_seen": "2026-09-29",
-      "tries": 8,
-      "last_try": "2026-11-02"
+      "tries": 10,
+      "last_try": "2026-11-03"
     },
     "unframe": {
       "name": "Unframe",
       "domain": "unframe.ai",
       "first_seen": "2026-09-29",
-      "tries": 7,
-      "last_try": "2026-11-02"
+      "tries": 9,
+      "last_try": "2026-11-03"
     },
     "youshift": {
       "name": "YouShift",
       "domain": "youshift.ai",
       "first_seen": "2026-09-29",
-      "tries": 7,
-      "last_try": "2026-11-02"
+      "tries": 9,
+      "last_try": "2026-11-03"
     },
     "sunglass": {
       "name": "Sunglass",
       "domain": "sunglass.ai",
       "first_seen": "2026-09-29",
-      "tries": 8,
-      "last_try": "2026-11-02"
+      "tries": 10,
+      "last_try": "2026-11-03"
     },
     "volaren inc.": {
       "name": "Volaren Inc.",
       "domain": "volaren.com",
       "first_seen": "2026-09-29",
-      "tries": 7,
-      "last_try": "2026-11-02"
+      "tries": 9,
+      "last_try": "2026-11-03"
     },
     "startup reco": {
       "name": "Startup Reco",
       "domain": "reco.ai",
       "first_seen": "2026-09-29",
-      "tries": 8,
-      "last_try": "2026-11-02"
+      "tries": 10,
+      "last_try": "2026-11-03"
     },
     "ukraine\u2019s dod solution": {
       "name": "Ukraine\u2019s DOD Solution",
       "domain": "",
       "first_seen": "2026-09-29",
-      "tries": 7,
-      "last_try": "2026-11-02"
+      "tries": 9,
+      "last_try": "2026-11-03"
     },
     "adaptive security": {
       "name": "Adaptive Security",
       "domain": "adaptive-security.io",
       "first_seen": "2026-09-30",
-      "tries": 7,
-      "last_try": "2026-11-02"
+      "tries": 9,
+      "last_try": "2026-11-03"
     },
     "distyl ai": {
       "name": "Distyl AI",
       "domain": "distyl.ai",
       "first_seen": "2026-09-30",
-      "tries": 6,
-      "last_try": "2026-11-02"
+      "tries": 8,
+      "last_try": "2026-11-03"
     },
     "asapp": {
       "name": "ASAPP",
       "domain": "asapp.com",
       "first_seen": "2026-09-30",
-      "tries": 6,
-      "last_try": "2026-11-02"
+      "tries": 8,
+      "last_try": "2026-11-03"
     },
     "tenner": {
       "name": "Tenner",
       "domain": "",
       "first_seen": "2026-09-30",
-      "tries": 5,
-      "last_try": "2026-11-02"
+      "tries": 7,
+      "last_try": "2026-11-03"
     },
     "superblocks": {
       "name": "Superblocks",
       "domain": "superblocks.dev",
       "first_seen": "2026-09-30",
-      "tries": 5,
-      "last_try": "2026-11-02"
+      "tries": 7,
+      "last_try": "2026-11-03"
     },
     "honeyhive": {
       "name": "HoneyHive",
       "domain": "honeyhive.ai",
       "first_seen": "2026-09-30",
-      "tries": 6,
-      "last_try": "2026-11-02"
+      "tries": 8,
+      "last_try": "2026-11-03"
     },
     "matta": {
       "name": "Matta",
       "domain": "",
       "first_seen": "2026-09-30",
-      "tries": 5,
-      "last_try": "2026-11-02"
+      "tries": 7,
+      "last_try": "2026-11-03"
     },
     "greystone": {
       "name": "Greystone",
       "domain": "",
       "first_seen": "2026-09-30",
-      "tries": 6,
-      "last_try": "2026-11-02"
+      "tries": 8,
+      "last_try": "2026-11-03"
     },
     "lawfully": {
       "name": "Lawfully",
       "domain": "lawfully.ai",
       "first_seen": "2026-09-30",
-      "tries": 6,
-      "last_try": "2026-11-02"
+      "tries": 8,
+      "last_try": "2026-11-03"
     },
     "\u2018next wave of ai will be physical\u2019: warehouse robotics start": {
       "name": "\u2018Next wave of AI will be physical\u2019: warehouse robotics start",
       "domain": "destroai.com",
       "first_seen": "2026-09-30",
-      "tries": 5,
-      "last_try": "2026-11-02"
+      "tries": 7,
+      "last_try": "2026-11-03"
     },
     "destro ai": {
       "name": "Destro AI",
       "domain": "destroai.com",
       "first_seen": "2026-09-30",
-      "tries": 6,
-      "last_try": "2026-11-02"
+      "tries": 8,
+      "last_try": "2026-11-03"
     },
     "restate": {
       "name": "Restate",
       "domain": "restate.dev",
       "first_seen": "2026-09-30",
-      "tries": 5,
-      "last_try": "2026-11-02"
+      "tries": 7,
+      "last_try": "2026-11-03"
     },
     "ai chip startup sima.ai": {
       "name": "AI chip startup SiMa.ai",
       "domain": "",
       "first_seen": "2026-09-30",
-      "tries": 6,
-      "last_try": "2026-11-02"
+      "tries": 8,
+      "last_try": "2026-11-03"
     },
     "sensori co-founders raise nearly $1m in oversubscribed pre-s": {
       "name": "Sensori Co-Founders Raise Nearly $1M In Oversubscribed Pre-S",
       "domain": "",
       "first_seen": "2026-09-30",
-      "tries": 5,
-      "last_try": "2026-11-02"
+      "tries": 7,
+      "last_try": "2026-11-03"
     },
     "charter space": {
       "name": "Charter Space",
       "domain": "",
       "first_seen": "2026-09-30",
-      "tries": 6,
-      "last_try": "2026-11-02"
+      "tries": 8,
+      "last_try": "2026-11-03"
     },
     "on-demand gpu infrastructure startup gmi cloud": {
       "name": "On-demand GPU infrastructure startup GMI Cloud",
       "domain": "",
       "first_seen": "2026-09-30",
-      "tries": 5,
-      "last_try": "2026-11-02"
+      "tries": 7,
+      "last_try": "2026-11-03"
     },
     "pay-i rebrands as ascerta and": {
       "name": "Pay-i rebrands as Ascerta and",
       "domain": "",
       "first_seen": "2026-09-30",
-      "tries": 5,
-      "last_try": "2026-11-02"
+      "tries": 7,
+      "last_try": "2026-11-03"
     },
     "two google alumni raise $11.3m to back ai startups that ente": {
       "name": "Two Google alumni raise $11.3M to back AI startups that ente",
       "domain": "",
       "first_seen": "2026-09-30",
-      "tries": 5,
-      "last_try": "2026-11-02"
+      "tries": 7,
+      "last_try": "2026-11-03"
     },
     "construction tech startup miter": {
       "name": "Construction tech startup Miter",
       "domain": "",
       "first_seen": "2026-09-30",
-      "tries": 6,
-      "last_try": "2026-11-02"
+      "tries": 8,
+      "last_try": "2026-11-03"
     },
     "ives ultra ai opportunities": {
       "name": "Ives Ultra AI Opportunities",
       "domain": "",
       "first_seen": "2026-09-30",
-      "tries": 6,
-      "last_try": "2026-11-02"
+      "tries": 8,
+      "last_try": "2026-11-03"
     },
     "texas startup": {
       "name": "Texas startup",
       "domain": "",
       "first_seen": "2026-09-30",
-      "tries": 5,
-      "last_try": "2026-11-02"
+      "tries": 7,
+      "last_try": "2026-11-03"
     },
     "dodge ai": {
       "name": "Dodge AI",
       "domain": "",
       "first_seen": "2026-09-30",
-      "tries": 6,
-      "last_try": "2026-11-02"
+      "tries": 8,
+      "last_try": "2026-11-03"
     },
     "edra": {
       "name": "Edra",
@@ -16574,8 +16675,8 @@
       "name": "Artisan AI",
       "domain": "artisan.ai",
       "first_seen": "2026-10-01",
-      "tries": 4,
-      "last_try": "2026-11-02"
+      "tries": 6,
+      "last_try": "2026-11-03"
     },
     "thresh consulting": {
       "name": "Thresh Consulting",
@@ -16623,8 +16724,8 @@
       "name": "Axion",
       "domain": "axion.ai",
       "first_seen": "2026-10-01",
-      "tries": 4,
-      "last_try": "2026-11-02"
+      "tries": 6,
+      "last_try": "2026-11-03"
     },
     "plaid": {
       "name": "Plaid",
@@ -16642,15 +16743,15 @@
       "name": "Ataraxis",
       "domain": "",
       "first_seen": "2026-10-01",
-      "tries": 4,
-      "last_try": "2026-11-02"
+      "tries": 6,
+      "last_try": "2026-11-03"
     },
     "blossom": {
       "name": "Blossom",
       "domain": "",
       "first_seen": "2026-10-01",
-      "tries": 2,
-      "last_try": "2026-11-02"
+      "tries": 4,
+      "last_try": "2026-11-03"
     },
     "type": {
       "name": "Type",
@@ -16662,8 +16763,8 @@
       "name": "Augmodo",
       "domain": "augmodo.com",
       "first_seen": "2026-10-01",
-      "tries": 4,
-      "last_try": "2026-11-02"
+      "tries": 6,
+      "last_try": "2026-11-03"
     },
     "control seat": {
       "name": "Control Seat",
@@ -16681,8 +16782,8 @@
       "name": "Archal",
       "domain": "archal.ai",
       "first_seen": "2026-10-01",
-      "tries": 4,
-      "last_try": "2026-11-02"
+      "tries": 6,
+      "last_try": "2026-11-03"
     },
     "metriport": {
       "name": "Metriport",
@@ -16712,8 +16813,8 @@
       "name": "Aligator",
       "domain": "aligator.ai",
       "first_seen": "2026-10-01",
-      "tries": 4,
-      "last_try": "2026-11-02"
+      "tries": 6,
+      "last_try": "2026-11-03"
     },
     "\u2018recruiting is next\u2019: metaview": {
       "name": "\u2018Recruiting is next\u2019: Metaview",
@@ -16743,8 +16844,8 @@
       "name": "AI startup Outmarket",
       "domain": "",
       "first_seen": "2026-10-01",
-      "tries": 4,
-      "last_try": "2026-11-02"
+      "tries": 6,
+      "last_try": "2026-11-03"
     },
     "student-led dorm room fund": {
       "name": "Student-led Dorm Room Fund",
@@ -16774,8 +16875,8 @@
       "name": "Aignosis",
       "domain": "",
       "first_seen": "2026-10-01",
-      "tries": 4,
-      "last_try": "2026-11-02"
+      "tries": 6,
+      "last_try": "2026-11-03"
     },
     "m-based": {
       "name": "M-Based",
@@ -16799,8 +16900,8 @@
       "name": "'Frontier Audio AI Company' Modulate",
       "domain": "",
       "first_seen": "2026-10-01",
-      "tries": 5,
-      "last_try": "2026-11-02"
+      "tries": 7,
+      "last_try": "2026-11-03"
     },
     "inbolt": {
       "name": "Inbolt",
@@ -16812,8 +16913,8 @@
       "name": "A Neko Health investor on the $700M bet to scan your whole b",
       "domain": "",
       "first_seen": "2026-10-01",
-      "tries": 5,
-      "last_try": "2026-11-02"
+      "tries": 7,
+      "last_try": "2026-11-03"
     },
     "doss": {
       "name": "DOSS",
@@ -20215,6 +20316,132 @@
       "name": "Spotify, Lovable Investor Creandum",
       "domain": "",
       "first_seen": "2026-11-02",
+      "tries": 1
+    },
+    "clicks health": {
+      "name": "Clicks Health",
+      "domain": "clickshealth.ai",
+      "first_seen": "2026-11-03",
+      "tries": 1
+    },
+    "chaos labs": {
+      "name": "Chaos Labs",
+      "domain": "chaoslabs.io",
+      "first_seen": "2026-11-03",
+      "tries": 1
+    },
+    "vast data": {
+      "name": "VAST Data",
+      "domain": "vastdata.com",
+      "first_seen": "2026-11-03",
+      "tries": 1
+    },
+    "soren": {
+      "name": "Soren",
+      "domain": "soren.ai",
+      "first_seen": "2026-11-03",
+      "tries": 1
+    },
+    "probablygenetic": {
+      "name": "Probablygenetic",
+      "domain": "probablygenetic.com",
+      "first_seen": "2026-11-03",
+      "tries": 1
+    },
+    "audit ai startup clark": {
+      "name": "Audit AI Startup Clark",
+      "domain": "getclark.com",
+      "first_seen": "2026-11-03",
+      "tries": 1
+    },
+    "ai-visibility startup the prompting company": {
+      "name": "AI-visibility startup The Prompting Company",
+      "domain": "promptingcompany.com",
+      "first_seen": "2026-11-03",
+      "tries": 1
+    },
+    "legal ai startup athena": {
+      "name": "Legal AI Startup Athena",
+      "domain": "athenalaw.com",
+      "first_seen": "2026-11-03",
+      "tries": 1
+    },
+    "3d motion data ai startup movin": {
+      "name": "3D Motion Data AI Startup MOVIN",
+      "domain": "movin3d.com",
+      "first_seen": "2026-11-03",
+      "tries": 1
+    },
+    "ai inference startup fal": {
+      "name": "AI Inference Startup Fal",
+      "domain": "",
+      "first_seen": "2026-11-03",
+      "tries": 1
+    },
+    "athena": {
+      "name": "Athena",
+      "domain": "",
+      "first_seen": "2026-11-03",
+      "tries": 1
+    },
+    "ai voice startup guava": {
+      "name": "AI voice startup Guava",
+      "domain": "",
+      "first_seen": "2026-11-03",
+      "tries": 1
+    },
+    "marrow": {
+      "name": "Marrow",
+      "domain": "",
+      "first_seen": "2026-11-03",
+      "tries": 1
+    },
+    "unify foodworks": {
+      "name": "Unify Foodworks",
+      "domain": "",
+      "first_seen": "2026-11-03",
+      "tries": 1
+    },
+    "ground station startup northwood space": {
+      "name": "Ground Station Startup Northwood Space",
+      "domain": "",
+      "first_seen": "2026-11-03",
+      "tries": 1
+    },
+    "solgram": {
+      "name": "Solgram",
+      "domain": "",
+      "first_seen": "2026-11-03",
+      "tries": 1
+    },
+    "northwood hits $2b valuation: ex-disney star\u2019s ground statio": {
+      "name": "Northwood hits $2B valuation: Ex-Disney star\u2019s ground statio",
+      "domain": "",
+      "first_seen": "2026-11-03",
+      "tries": 1
+    },
+    "savory": {
+      "name": "Savory",
+      "domain": "",
+      "first_seen": "2026-11-03",
+      "tries": 1
+    },
+    "trajectory": {
+      "name": "Trajectory",
+      "domain": "",
+      "first_seen": "2026-11-03",
+      "tries": 1
+    },
+    "tomorrow: techcrunch founder summit takes over boston and wh": {
+      "name": "Tomorrow: TechCrunch Founder Summit takes over Boston and wh",
+      "domain": "",
+      "first_seen": "2026-11-03",
+      "tries": 1
+    },
+    "loamy": {
+      "name": "Loamy",
+      "domain": "",
+      "first_seen": "2026-11-03",
       "tries": 1
     }
   },
@@ -24583,8 +24810,8 @@
       "name": "Machenta",
       "round": "Seed",
       "amount": "$40M",
-      "date": "2026-10-27",
-      "url": "https://news.google.com/rss/articles/CBMikAFBVV95cUxNN3VVSFU2eGhZdmRDdEpwYWItdnk4ZnNaRnFPVkM4bUpBUnpJM2htOVJ6MmZxakFmd182SUVIZXgyTXhpdG1sSDd3ZzVPV25wQnh3ZFMwZWRYNkI0cWhWOEtPSVY3U1dlTEZlTlVFbXFia3JPUWVCRlprRFk4TTAxNE5ndC1RSHdSREF3b2ZKVWbSAZABQVVfeXFMTTd1VUhVNnhoWXZkQ3RKcGFiLXZ5OGZzWkZxT1ZDOG1KQVJ6STNobTlSejJmcWpBZndfNklFSGV4Mk14aXRtbEg3d2c1T1ducEJ4d2RTMGVkWDZCNHFoVjhLT0lWN1NXZUxGZU5VRW1xYmtyT1FlQkZaa0RZOE0wMTROZ3QtUUh3UkRBd29mSlVm?oc=5",
+      "date": "2026-11-02",
+      "url": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxNdFMwa2l6RkZpci1WQnlIOHo0bHp0WGh5Q1hnYzFFZHAzRng1aHE0YVdXeWJHVll5WkJnenVaVEpzWU5taWtiX042M25NRlhWOV94MHZzbXNkMTQ5MjdQNW9zSHhuMEphbFhPaG56OWVqVFo1NTZFQm5IWGRxVGxiNEVpWWxWc2F6Y0NnQ2Q2aTdLU09pTUVKRVFVeTh6aGdKdW9POXMxSnFJTTA?oc=5",
       "tokens": []
     },
     "ai startup simplismart": {
@@ -25079,6 +25306,154 @@
       "amount": "$750M",
       "date": "2026-11-02",
       "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxPRjVlRmMyaXY0N1dzREFfM2xGdnFzNFRLMFlUVmVmRFAweDh4S0xRSUgyY1lrNHVtdUxCQjctZGl5MDJZZ1ZYRGF5NFQyY05NZG1teVZ4X1QwZHMtTTdldk5GUGRFZzlscTU4SmQ1M2dvb0V5SFJMRjBVcWJwX0FXenI2SGtXTFdZeW9EX21FQUJJclpzYWQwV0htNFlvQ0x3LTlCbF80allpdW9FVHBXV0V3?oc=5",
+      "tokens": []
+    },
+    "audit ai startup clark": {
+      "name": "Audit AI Startup Clark",
+      "round": "Seed",
+      "amount": "$11M",
+      "date": "2026-11-03",
+      "url": "https://news.google.com/rss/articles/CBMikwFBVV95cUxPcW1iMmZMSTJKUzhBVjhfdURrUHlWcVpvclZvMEZsejRtbXI2LU95cUp0SWtfbEVqY2xmY3lqSU4yOHRMV2J2VDRMamQ5X0o2OXVOWE9XLThndGpzRWI2MExnUzJ2RkQ3MHNZVW5MVE13eWgtWmVIakFJYmtoYVJwTkM0dHppOWJJeXpSVDdPLUlZNUE?oc=5",
+      "tokens": []
+    },
+    "ai-visibility startup the prompting company": {
+      "name": "AI-visibility startup The Prompting Company",
+      "round": "Seed",
+      "amount": "$6.5M",
+      "date": "2026-11-03",
+      "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxQMmVHUHdUdmI2UnVWc1pOamh2SWRWNzZQaWY0MmplOXAtQmt5MHM0YkVFNE96Vkg2N3RHWW8zc0pjYmxNRUhCMFdaNk4yTlFlUkdxZml0SDV3ZUM3MzkyZnRVLWlxTXdwcUxaeG9lcUpoQlN5dEhoQktUMW5wcXN3NmFKMmJsUmY4T2tzMGpnRy1VSXdqYWpweg?oc=5",
+      "tokens": []
+    },
+    "legal ai startup athena": {
+      "name": "Legal AI Startup Athena",
+      "round": "Pre-seed",
+      "amount": "$2.5M",
+      "date": "2026-11-03",
+      "url": "https://news.google.com/rss/articles/CBMilwFBVV95cUxQNGtibEY3dUZxMGIzM05neFBpNW4xOHFtbE8wWDBJbFdUYnJOS3J4TWo0d190c2pXSjAwMUtnM1VDTWk3NTZaMDlMdTJDRVdPYU1wNTdKYnQyQm9VMjd4d0FEYmMwZkVPd0U1empVUlRYTVVqd3pRSnN1RURkM0NLWUZxd0hWaE1ub2V3c3c3aERDdjdHWURV0gFeQVVfeXFMTVdvcWUwNEdTa240ZVJPQ09ZeXRYazRfeXNtX2N0Z3NzWlZJeDJ3eTB4Z0pWT1Vvelo2dS1kemR4UU5oSVE0MFA5LWh1eURoZUZaRHF4YWpTd2RFWFBNUQ?oc=5",
+      "tokens": []
+    },
+    "startup athena": {
+      "name": "Startup Athena",
+      "round": "Pre-seed",
+      "amount": "$2.5M",
+      "date": "2026-11-03",
+      "url": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxPNEZXTVZSaEVYbXJ2aHlGdWg3QWRYLWJCazlYTk1UMDA5TUpiT29hMkRTLWFjV2RjUDVDWl9OTkE1bXE3MFBaRkdoVGp5aEtrdVRGSm1jSWRBa0pwSWxLamtiTWFuN2haNDlwdXRIMG44T3puU09IWTQxYVhXOEx3U2JBM21zN1BQZGlDRldKdTVxLWtkLUFhZ3h4RDRkN09vS0VXeVI3Y2ZtTllJTmpfSDdTSHM4eU5LeEl4TEFmMWZzZw?oc=5",
+      "tokens": [
+        "athena"
+      ]
+    },
+    "trajectory startup": {
+      "name": "Trajectory startup",
+      "round": "Series A",
+      "amount": "$45M",
+      "date": "2026-11-02",
+      "url": "https://news.google.com/rss/articles/CBMimwFBVV95cUxNcmVsNTRzZElqWGwwc01rTzdmaEpSRk5fSUs3dUxlZ1hhbFlXZVZEb20tLVNjaE43b2JZUUhvamZ5R05UZWhFa2o4eTlWOXV1MkZQREVrdVU0UWxNSXZ2WkN2NHRCU21FcUpUcktjb0tRNW5nT3ZuRno5M2VKR0JhVzk0N2NQTXpkQl85YXNWR21wYnEwcHgwVi1zVQ?oc=5",
+      "tokens": [
+        "trajectory"
+      ]
+    },
+    "3d motion data ai startup movin": {
+      "name": "3D Motion Data AI Startup MOVIN",
+      "round": "Series A",
+      "date": "2026-11-03",
+      "url": "https://news.google.com/rss/articles/CBMiU0FVX3lxTE93eUhKMmxlVUxaTGVWNklxRW1SVndtYmhILWV6MGVudkxFeXJqRHVHdE9CUVBqZUNYRVFsUEdRZkM1RGdQV1FfUVF3RDR5WWU5eWJN?oc=5",
+      "tokens": []
+    },
+    "ai inference startup fal": {
+      "name": "AI Inference Startup Fal",
+      "amount": "$16B",
+      "date": "2026-11-03",
+      "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxNVUVWV1dyM2J4YUM1WFhtR3dkYVNZclRYM1pWUk1QQkhOYnFaNjZWeHJUVjdUc1VtNEJDQ0xDaHNMYmhqbjcwaEpyb254RnRRejZMcWpub0pZWkh0cnJ5Vjd6ZUY3SS1pQWRiNUlRUXJFbmYxRmZzS05mNVQ3TmlUa1I3Y051M2JMMTJsRUJtUVF6MFhpQ3hmdXJPaVRKb0h4b2trdzB6MXR3REVmSjl3bWxKUGM?oc=5",
+      "tokens": []
+    },
+    "athena": {
+      "name": "Athena",
+      "amount": "$2.5M",
+      "date": "2026-11-03",
+      "url": "https://news.google.com/rss/articles/CBMiekFVX3lxTE1NU0dEeUNHT2VJNVJvZDIyNFRyYlNBRTRKRlhmYWdQdFF1R3lxREpqMVBmd04yalFUa2tZM0F5REVONHMyZlN5R0tsMkxaLWRYUDJyQzdXUkhnRmdJTU9mM05FZzNNZVFXLWNxX3NZcVo1NjhsNmd3Y0l3?oc=5",
+      "tokens": []
+    },
+    "ai voice startup guava": {
+      "name": "AI voice startup Guava",
+      "amount": "$12.5M",
+      "date": "2026-11-03",
+      "url": "https://news.google.com/rss/articles/CBMilgFBVV95cUxPaFlkYmY5NnZ3ZHFvMHdxem0wS1lYSzA1eWY2Y3J1VENlRGtURnRnc0VqQU1VSUtmaHBpdnlaQ1NBNk1tSHd4ak9jcEw0NzU3XzM3SkRnbm5hOHp0RVpxcHpyUWFxN3dNRnFfS2dELUVKQTV1SXBQbGxtTlZVc1F2WlJWd3VkRHdOZkJOQnpZSjF2eW1sLVE?oc=5",
+      "tokens": []
+    },
+    "marrow": {
+      "name": "Marrow",
+      "round": "Pre-seed",
+      "amount": "$2M",
+      "date": "2026-11-03",
+      "url": "https://news.google.com/rss/articles/CBMifkFVX3lxTE45anQwalpLemJQYzYycmVrX0dXOHVSMk1DTmRHQ1dKTGxOSjRTOTVoM0gycXBhaUQySDAxQTVyc1ZJV3RzZHpRTy1MUXlpVmtGMXBQVzk2UnFvNUVubTdKQnVDRW5OVnBHWFhXQjFNd0hxZTdCX0FNZGtQZ0xZZw?oc=5",
+      "tokens": []
+    },
+    "unify foodworks": {
+      "name": "Unify Foodworks",
+      "round": "Seed",
+      "amount": "$595K",
+      "date": "2026-11-03",
+      "url": "https://news.google.com/rss/articles/CBMikAFBVV95cUxOSXBFWnhVbEVMM21vWm5ONmpaX3A4ajdhMmowU1ZmSHVuYlRuOVNJT2dZTF90QkNPZUVLYktiaU5CX1ktdi0zV0ZubkM2cVFYcWRDNVBRTEZ4akxicm9ybU1jTUlkdzAzdVdQd2wzeWRsQXBiaEhMWWFXVEVoSTN5dEdSeUVwMjB4UmljdkY5Vkk?oc=5",
+      "tokens": []
+    },
+    "ground station startup northwood space": {
+      "name": "Ground Station Startup Northwood Space",
+      "round": "Series C",
+      "amount": "$375M",
+      "date": "2026-11-03",
+      "url": "https://news.google.com/rss/articles/CBMiU0FVX3lxTE1NaTFyUkdCRENxRFR2ODhGbm9mM0kzMmxaUm9IOFE2MDA3TkhUaUJjUjJCT1FWbFBSdXFUWEQzdVgwRHNVVVo0T3RqUU5wWFhuNnVZ?oc=5",
+      "tokens": []
+    },
+    "solgram": {
+      "name": "Solgram",
+      "round": "Pre-seed",
+      "amount": "$1M",
+      "date": "2026-11-03",
+      "url": "https://news.google.com/rss/articles/CBMiswFBVV95cUxQY3hJdW9wWVlyRFR2N1FXSTNlVEJ2UWZQdVd5ZzR2M093MnZ0NVZrZVpZSG5fR244cFY3TE5IOWNhdXVhcGNSMVBlNW9peWloS1BNeTVYbzdVQmRCWk5IMGtEVHUxZ1lJMktkOFJfMTZEMHV4Ymw2VGdEM1E3RGhJMk45QndoVExNSnBUUEZRMnlqUkgxSDhNczRyZ1R0MEhGSmlYTWhwSXZxTDhvbXd2anVhcw?oc=5",
+      "tokens": []
+    },
+    "shield ai ceo says planning at least $1 billion raise, more": {
+      "name": "Shield AI CEO Says Planning At Least $1 Billion Raise, More ",
+      "amount": "$1B",
+      "date": "2026-11-03",
+      "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxOTmFtbXZpd2JDM3RzZU9oMHZ0T1laZms0QXVrTnRVbkdKUVMtdnlRaGdOZHMzeFhQUEw2Y25SM1EyZ3kxU2Z0UUo4RktBZElFd3NEdVRCUk11MmhnUVFrSFRweXJmQUtmRWRJREhVNlo2aXprV3FzdWJOSGdMUjFYTmRsTTFWcHJpLWFLTmdoUnRyVE5adnl6VVQwX281WjNDYVdFQ2czajF3ZGRHdklSbXFB?oc=5",
+      "tokens": [
+        "shield"
+      ]
+    },
+    "northwood hits $2b valuation: ex-disney star\u2019s ground statio": {
+      "name": "Northwood hits $2B valuation: Ex-Disney star\u2019s ground statio",
+      "amount": "$2B",
+      "date": "2026-11-03",
+      "url": "https://news.google.com/rss/articles/CBMie0FVX3lxTE90ZG5mYThZMGtRZjhxN3h6UkxrMWJFdFZIWFNyd1lZZVdhYWpfYlZSOUg5WEd1aGcwRGJyOS1ZOC1SVEtrR0JjbW56bXQ1bVl0M1RicVg0Ui00N2RSTElkemNmUjV2UWYyNmhWMjBtTW5kanMyb0FiZ2ZLaw?oc=5",
+      "tokens": []
+    },
+    "savory": {
+      "name": "Savory",
+      "amount": "$201.5M",
+      "date": "2026-11-03",
+      "url": "https://news.google.com/rss/articles/CBMi2AFBVV95cUxQS2dpRDFrV0RNV1BhdVdIekJobUpOVGVteTBGel81b3h4TzgwMkRER0QySkdPbFU1aUxmQ3JFV1BCOFlQQWwxTFdxeHZVZkNoYkJzQ2d4QWlxUWI5YW52VFc4S1JTX0JjYnNtREFfc25WaWN1XzhUaG85bThHRktiZmp5ODFvWDBHUUFRWm1lS0c0S1hVVEFJMkJnZ2d3VWdfeWxBUm1uRlZzWHFaTjlyVkZMaFR2aGljMk1sUzhYTnN5bW12UlozVGVPZDd0MGpUQVdSeUxZZUk?oc=5",
+      "tokens": []
+    },
+    "trajectory": {
+      "name": "Trajectory",
+      "amount": "$45M",
+      "date": "2026-11-02",
+      "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxNQXBXcWVNSnF4bHF6YndHbU1BVnlvVDZzVTNLZFZyTHZGSVZkRGNKVWxHaUc2UjUzODlmNVV6cHpwSUl6bGJKOFowd0dDZmZMUjdRWFBWb2hGcnZIR0tycGFkSTZrT0M0ZnNJN2RyVmc5ckNfc2c5eldTd3hFbGs2ZmFjOUpxSnBYaDVHSnlueHkzc2NNRW1ZdkFLMlloQ2ZTaGgxSWY4NU9NV1RPenl3UWhZem9QREZG?oc=5",
+      "tokens": []
+    },
+    "tomorrow: techcrunch founder summit takes over boston and wh": {
+      "name": "Tomorrow: TechCrunch Founder Summit takes over Boston and wh",
+      "amount": "$100",
+      "date": "2026-11-03",
+      "url": "https://techcrunch.com/2026/11/03/tomorrow-techcrunch-founder-summit-takes-over-boston-and-when-pass-rates-increase/",
+      "tokens": []
+    },
+    "loamy": {
+      "name": "Loamy",
+      "amount": "$6M",
+      "date": "2026-11-03",
+      "url": "https://news.google.com/rss/articles/CBMifkFVX3lxTE1OWC1yWmUzWFhTcUI3Nk1oS1V2T2MwTFJoUS03cXowVVBRcldZdnpSVGFLSTQ2R2t1NV9WVC1GbC0xekk5MWlIdzU2Uk5Wemw2VnpkNlVHVUU2Qk9WdHVuMGJiYnlfQ1lRSDhxX1ZHa3FCVEFyT3hYWmY3SExxZw?oc=5",
       "tokens": []
     }
   },
@@ -27583,7 +27958,7 @@
     "machenta": {
       "name": "Machenta",
       "round": "Seed",
-      "date": "2026-10-27",
+      "date": "2026-11-02",
       "source": "funding digest",
       "tokens": []
     },
@@ -27818,6 +28193,80 @@
       "name": "Fronted",
       "round": "Pre-seed",
       "date": "2026-11-02",
+      "source": "funding digest",
+      "tokens": []
+    },
+    "audit ai startup clark": {
+      "name": "Audit AI Startup Clark",
+      "round": "Seed",
+      "date": "2026-11-03",
+      "source": "funding digest",
+      "tokens": []
+    },
+    "ai-visibility startup the prompting company": {
+      "name": "AI-visibility startup The Prompting Company",
+      "round": "Seed",
+      "date": "2026-11-03",
+      "source": "funding digest",
+      "tokens": []
+    },
+    "legal ai startup athena": {
+      "name": "Legal AI Startup Athena",
+      "round": "Pre-seed",
+      "date": "2026-11-03",
+      "source": "funding digest",
+      "tokens": []
+    },
+    "startup athena": {
+      "name": "Startup Athena",
+      "round": "Pre-seed",
+      "date": "2026-11-03",
+      "source": "funding digest",
+      "tokens": [
+        "athena"
+      ]
+    },
+    "trajectory startup": {
+      "name": "Trajectory startup",
+      "round": "Series A",
+      "date": "2026-11-02",
+      "source": "funding digest",
+      "tokens": [
+        "trajectory"
+      ]
+    },
+    "3d motion data ai startup movin": {
+      "name": "3D Motion Data AI Startup MOVIN",
+      "round": "Series A",
+      "date": "2026-11-03",
+      "source": "funding digest",
+      "tokens": []
+    },
+    "marrow": {
+      "name": "Marrow",
+      "round": "Pre-seed",
+      "date": "2026-11-03",
+      "source": "funding digest",
+      "tokens": []
+    },
+    "unify foodworks": {
+      "name": "Unify Foodworks",
+      "round": "Seed",
+      "date": "2026-11-03",
+      "source": "funding digest",
+      "tokens": []
+    },
+    "ground station startup northwood space": {
+      "name": "Ground Station Startup Northwood Space",
+      "round": "Series C",
+      "date": "2026-11-03",
+      "source": "funding digest",
+      "tokens": []
+    },
+    "solgram": {
+      "name": "Solgram",
+      "round": "Pre-seed",
+      "date": "2026-11-03",
       "source": "funding digest",
       "tokens": []
     }
