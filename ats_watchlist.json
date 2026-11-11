@@ -1595,7 +1595,14 @@
     "tealmedia",
     "teachforall",
     "mixmode",
-    "alta"
+    "alta",
+    "fervoenergy",
+    "aircallioinc",
+    "fortrobotics",
+    "flowfuse",
+    "wheelhouse",
+    "mewssystems",
+    "industrial"
   ],
   "lever": [
     "rise",
@@ -2080,7 +2087,11 @@
     "epsilon3",
     "aigen",
     "newton",
-    "bluecore-energy"
+    "bluecore-energy",
+    "heard",
+    "azul",
+    "twingate",
+    "hint"
   ],
   "ashby": [
     "taktile",
@@ -3774,7 +3785,17 @@
     "capitalize",
     "playerzero",
     "gradientrobotics",
-    "mimolabs"
+    "mimolabs",
+    "anglehealth",
+    "arkoselabs",
+    "roguebeam",
+    "sound.xyz",
+    "blissway",
+    "miramace",
+    "flox",
+    "hyperscience",
+    "crogl",
+    "lumbra"
   ],
   "checked": [
     "alloy",
@@ -5687,7 +5708,27 @@
     "ridero",
     "bucketlistt.com",
     "multipolitan",
-    "dallas\u2019 triplemoon"
+    "dallas\u2019 triplemoon",
+    "plurai",
+    "kardi ai",
+    "housing tokenization startup index industries",
+    "bay",
+    "lumbra",
+    "ai sales startup rox",
+    "utah-based startup",
+    "ai security startup daylight",
+    "ai-driven managed security startup daylight",
+    "tendrils",
+    "tano",
+    "blue j",
+    "mercor",
+    "fractile startup",
+    "automation startup rox",
+    "enza capital",
+    "private equity research startup",
+    "electra ai",
+    "industrial automation startup path robotics",
+    "proximal ventures"
   ],
   "workable": [
     "oxford-quantum-circuits-8",
@@ -5910,7 +5951,8 @@
     "elementlpower",
     "anza-xyz",
     "norbloc-se",
-    "power-factors"
+    "power-factors",
+    "persuit-1"
   ],
   "smartrecruiters": [
     "Canva",
@@ -6240,7 +6282,12 @@
     "bioage-labs",
     "accorded",
     "soteria",
-    "clearestate"
+    "clearestate",
+    "cove",
+    "sanas",
+    "zwitterco",
+    "cdata-software",
+    "syenex"
   ],
   "sizes": {
     "jumpcloud": 600,
@@ -6319,7 +6366,7 @@
     "ionq": 600,
     "alloy": 600,
     "fora": 3000,
-    "neon": 600,
+    "neon": 3000,
     "orchard robotics": 25,
     "gabi": 120,
     "patreon": 3000,
@@ -6376,7 +6423,7 @@
     "yuma": 25,
     "flock.io": 25,
     "blockchain.com": 3000,
-    "coinbase": 15000,
+    "coinbase": 3000,
     "kraken": 3000,
     "bitgo": 600,
     "coin metrics": 120,
@@ -6398,7 +6445,7 @@
     "ual\u00e1": 3000,
     "flatfile": 120,
     "socure": 600,
-    "x.ai": 600,
+    "x.ai": 15000,
     "odeko": 120,
     "remote": 15000,
     "namely": 120,
@@ -6439,7 +6486,7 @@
     "flagler health": 120,
     "signoz": 25,
     "grammarly": 600,
-    "solace": 25,
+    "solace": 600,
     "terac": 5,
     "clubhouse": 5,
     "auxilius": 25,
@@ -6459,7 +6506,7 @@
     "wave life sciences": 600,
     "peloton therapeutics": 25,
     "aimmune therapeutics": 600,
-    "bit bio": 600,
+    "bit bio": 120,
     "place exchange": 120,
     "policygenius": 120,
     "placemakr": 120,
@@ -6521,7 +6568,7 @@
     "tetrix": 5,
     "greptile": 25,
     "carrot fertility": 600,
-    "vast data": 600,
+    "vast data": 3000,
     "forge biologics": 600,
     "applyboard": 3000,
     "civ robotics": 25,
@@ -6539,7 +6586,7 @@
     "mindbridge ai": 600,
     "stay22": 120,
     "algolux": 25,
-    "clutch canada": 600,
+    "clutch canada": 120,
     "insight engines": 5,
     "mejuri": 600,
     "quotemachine": 25,
@@ -6588,14 +6635,14 @@
     "acorns": 600,
     "frank & oak": 600,
     "static media": 25,
-    "flip": 120,
+    "flip": 600,
     "nativo": 120,
     "merit beauty": 120,
     "marfeel": 120,
     "rent the runway": 600,
     "lex": 120,
     "brightai": 120,
-    "apex": 25,
+    "apex": 120,
     "observable space": 120,
     "chownow": 600,
     "modern animal": 600,
@@ -6607,7 +6654,7 @@
     "clickhouse": 600,
     "whatnot": 3000,
     "launchdarkly": 600,
-    "bitwarden": 120,
+    "bitwarden": 600,
     "buildots": 600,
     "unframe": 25,
     "metalbear": 25,
@@ -6661,7 +6708,7 @@
     "may mobility": 600,
     "immutable systems": 600,
     "athena": 120,
-    "auror": 120,
+    "auror": 600,
     "instant": 25,
     "indebted": 600,
     "safewill": 25,
@@ -7032,7 +7079,7 @@
     "openspace": 600,
     "proda": 25,
     "ecoworks": 120,
-    "roguebeam": 5,
+    "roguebeam": 25,
     "eclipse space": 25,
     "canada rocket company": 5,
     "impulse space": 600,
@@ -7064,7 +7111,7 @@
     "infura": 25,
     "erisx": 25,
     "jitsu": 120,
-    "true anomaly": 120,
+    "true anomaly": 600,
     "medchart": 25,
     "devcycle": 25,
     "trulioo": 600,
@@ -7072,7 +7119,7 @@
     "invinity energy systems plc": 120,
     "leap tools": 600,
     "kavodax": 5,
-    "rippling": 3000,
+    "rippling": 15000,
     "university of toronto": 15000,
     "chargelab": 120,
     "linkedin": 15000,
@@ -7080,7 +7127,7 @@
     "genedit": 120,
     "cherry": 600,
     "flexport": 3000,
-    "primer": 120,
+    "primer": 25,
     "human interest": 600,
     "hallow": 600,
     "wander": 120,
@@ -7096,7 +7143,7 @@
     "ethisphere": 120,
     "bitfocus, inc.": 120,
     "streamingfast": 25,
-    "ashby": 120,
+    "ashby": 600,
     "breeze": 25,
     "le moyne college": 3000,
     "liberty resources, inc.": 600,
@@ -7144,7 +7191,7 @@
     "aftershoot": 120,
     "upstart": 3000,
     "socar": 600,
-    "crafty": 120,
+    "crafty": 600,
     "truveris": 120,
     "aeva": 600,
     "anduril": 15000,
@@ -7244,7 +7291,7 @@
     "infosum": 120,
     "nanit": 120,
     "bland ai": 120,
-    "vaxess technologies": 120,
+    "vaxess technologies": 25,
     "singlestore": 25,
     "lucid": 3000,
     "solo.io": 120,
@@ -7279,7 +7326,7 @@
     "ouai": 120,
     "arx robotics": 25,
     "finn": 600,
-    "sennder": 600,
+    "sennder": 3000,
     "rvvup": 25,
     "holidu": 600,
     "sanity group": 120,
@@ -7426,7 +7473,7 @@
     "taboola": 3000,
     "fiverr": 600,
     "aquant": 120,
-    "skai": 600,
+    "skai": 5,
     "podimo": 600,
     "embankment": 25,
     "factbird": 120,
@@ -7479,7 +7526,7 @@
     "ubitricity": 120,
     "agile space": 120,
     "good buy gear": 25,
-    "pepper": 600,
+    "pepper": 120,
     "thinking machines lab": 120,
     "rasa": 120,
     "vizcom": 120,
@@ -7499,7 +7546,7 @@
     "metox international": 120,
     "shifted energy": 25,
     "geli": 25,
-    "fervo energy": 120,
+    "fervo energy": 600,
     "ratedpower": 120,
     "everlab": 25,
     "north": 25,
@@ -7901,7 +7948,7 @@
     "blaze pizza": 3000,
     "advanced machine intelligence": 25,
     "entyre gmbh": 25,
-    "caronsale": 120,
+    "caronsale": 600,
     "adaptive6": 25,
     "nucleai": 120,
     "start.io": 120,
@@ -7911,7 +7958,7 @@
     "upscale: the sales engagement platform": 25,
     "motorq": 120,
     "seated": 120,
-    "nymbus": 600,
+    "nymbus": 120,
     "pdi technologies": 3000,
     "ivo": 25,
     "coder": 600,
@@ -8096,7 +8143,7 @@
     "stenon": 25,
     "aviso": 600,
     "lumos": 120,
-    "nearpod": 600,
+    "nearpod": 120,
     "bold penguin": 120,
     "central ohio transit authority": 600,
     "hyland": 3000,
@@ -8138,7 +8185,7 @@
     "g2": 3000,
     "market wagon": 25,
     "nomad health": 600,
-    "the black tux": 120,
+    "the black tux": 600,
     "biolite": 120,
     "coinjar": 25,
     "cinch": 120,
@@ -8182,7 +8229,7 @@
     "tunein": 120,
     "tromzo": 25,
     "gecko robotics": 600,
-    "hologram": 120,
+    "hologram": 25,
     "jdc entwine": 25,
     "mozaic senior life": 120,
     "jq international inc": 120,
@@ -8410,7 +8457,7 @@
     "langchain": 120,
     "latchbio": 25,
     "crystal is": 25,
-    "hadrian": 120,
+    "hadrian": 600,
     "simulare medical": 600,
     "luma health": 120,
     "overtime": 600,
@@ -8635,7 +8682,7 @@
     "ellipsis labs": 5,
     "fomo": 5,
     "nous research": 25,
-    "sphere": 5,
+    "sphere": 25,
     "veda": 25,
     "hopscotch primary care": 120,
     "strive health": 600,
@@ -8713,7 +8760,7 @@
     "upgrade": 3000,
     "coreweave": 3000,
     "anaplan": 3000,
-    "deel": 3000,
+    "deel": 15000,
     "silk": 600,
     "avantis team": 25,
     "nimble": 120,
@@ -8785,7 +8832,7 @@
     "fama": 120,
     "j.p. morgan": 15000,
     "union pacific railroad": 15000,
-    "astro mechanica": 25,
+    "astro mechanica": 5,
     "dispel": 120,
     "skydio": 600,
     "ironscales": 120,
@@ -8868,7 +8915,7 @@
     "shypple": 120,
     "wonderkind": 120,
     "yourcampus": 120,
-    "metycle": 5,
+    "metycle": 25,
     "voicebooking.com": 120,
     "ready rebound": 120,
     "docstation": 25,
@@ -8970,7 +9017,7 @@
     "c teleport": 120,
     "cruisereizen.nl": 25,
     "dawn aerospace": 120,
-    "momo medical": 25,
+    "momo medical": 120,
     "episci": 120,
     "aloft (formerly kittyhawk)": 25,
     "scout": 25,
@@ -9013,7 +9060,7 @@
     "modern health": 600,
     "superhuman": 120,
     "pair eyewear": 120,
-    "manara": 120,
+    "manara": 600,
     "stretchdollar": 5,
     "nagish": 25,
     "harbinger": 600,
@@ -9152,7 +9199,7 @@
     "midi": 600,
     "flytehealth": 120,
     "25madison": 120,
-    "canopy": 25,
+    "canopy": 600,
     "basalt health": 5,
     "biorce": 25,
     "grupo ageas portugal": 3000,
@@ -9228,7 +9275,7 @@
     "vectorious": 120,
     "alayacare": 600,
     "payshepherd": 25,
-    "flare": 600,
+    "flare": 120,
     "vital bio": 600,
     "float": 120,
     "1851 labs": 25,
@@ -9292,7 +9339,7 @@
     "kombo": 25,
     "nomi health": 600,
     "beeline": 600,
-    "checkmate savings, inc": 120,
+    "checkmate savings, inc": 25,
     "arctype": 5,
     "unspun": 120,
     "comparative": 25,
@@ -9414,7 +9461,7 @@
     "bennie": 120,
     "subject": 120,
     "third wave automation": 120,
-    "parspec": 25,
+    "parspec": 120,
     "linkedfield": 5,
     "hinkle contracting company, llc": 120,
     "beta technologies": 600,
@@ -9575,7 +9622,7 @@
     "amuse": 5,
     "design centered co.": 25,
     "gadget": 120,
-    "gamestrat": 5,
+    "gamestrat": 25,
     "trustwave": 600,
     "stylerunner": 120,
     "splend": 120,
@@ -9877,7 +9924,7 @@
     "exelon corporation": 15000,
     "jll": 15000,
     "vos technics": 25,
-    "persolis": 120,
+    "persolis": 25,
     "g.i.m. geographic information management": 120,
     "altebra fire protection": 120,
     "vanrobaeys": 120,
@@ -10462,7 +10509,7 @@
     "highnote": 120,
     "first due": 600,
     "lastwall networks, inc.": 25,
-    "preply": 600,
+    "preply": 15000,
     "stellantis": 15000,
     "doma": 120,
     "verana health": 120,
@@ -10690,7 +10737,7 @@
     "parity": 25,
     "lilac solutions": 120,
     "oso semiconductor": 5,
-    "open cosmos": 120,
+    "open cosmos": 600,
     "automata": 120,
     "growthspace": 600,
     "supabase": 120,
@@ -10791,7 +10838,7 @@
     "sifive": 600,
     "novisto": 120,
     "invisible technologies": 3000,
-    "cove": 120,
+    "cove": 25,
     "refurbed": 600,
     "onapsis": 600,
     "epirus": 120,
@@ -11131,7 +11178,7 @@
     "jellyvision": 600,
     "vector remote care": 25,
     "improvado": 120,
-    "pathology watch": 25,
+    "pathology watch": 120,
     "stackai": 25,
     "paraform": 120,
     "atlys": 120,
@@ -11167,7 +11214,7 @@
     "lucky kat studios": 25,
     "egym": 600,
     "anybotics": 600,
-    "perception point": 120,
+    "perception point": 25,
     "ravenpack": 600,
     "finalcad": 25,
     "ravelin technology": 120,
@@ -11197,7 +11244,7 @@
     "charm industrial": 120,
     "outro health": 5,
     "swarm aero": 25,
-    "copia": 25,
+    "copia": 120,
     "trust wallet": 600,
     "pancakeswap": 25,
     "bnb chain": 600,
@@ -11288,7 +11335,7 @@
     "zone & co": 120,
     "chrono24": 600,
     "condor": 120,
-    "inertia": 5,
+    "inertia": 25,
     "safetywing": 120,
     "gr4vy": 25,
     "symend": 120,
@@ -11455,7 +11502,7 @@
     "tecton": 120,
     "zeiss": 15000,
     "arm": 15000,
-    "malam team": 3000,
+    "malam team": 15000,
     "tsg it advanced systems": 600,
     "israel aircraft industries ltd.": 15000,
     "vasco": 25,
@@ -11612,7 +11659,7 @@
     "withme": 120,
     "repscrubs": 25,
     "webai": 120,
-    "venn": 120,
+    "venn": 25,
     "saferide health": 120,
     "axle": 5,
     "james avery jewelry": 3000,
@@ -12443,7 +12490,7 @@
     "uplight": 600,
     "haply": 25,
     "terra": 25,
-    "odyssey": 120,
+    "odyssey": 25,
     "carnegie learning": 600,
     "scientific learning corporation": 600,
     "college board": 15000,
@@ -13572,7 +13619,7 @@
     "clark dietz, inc.": 120,
     "doola": 120,
     "responsibly": 25,
-    "carpe": 25,
+    "carpe": 120,
     "foresight works": 25,
     "the better meat co.": 25,
     "mood health": 25,
@@ -13941,7 +13988,7 @@
     "patronus group": 120,
     "cambridge associates": 3000,
     "morgan stanley": 15000,
-    "coco": 120,
+    "coco": 600,
     "moonshot ai": 5,
     "helion": 600,
     "razorpay": 3000,
@@ -14218,7 +14265,7 @@
     "enexor bioenergy": 25,
     "albus health": 5,
     "immunebridge": 25,
-    "quantum source": 25,
+    "quantum source": 120,
     "syd": 25,
     "plot": 5,
     "trebellar": 5,
@@ -14532,7 +14579,7 @@
     "zego": 600,
     "cypher technologies, inc.": 5,
     "swing education": 3000,
-    "converge": 120,
+    "converge": 25,
     "phagos biotech": 25,
     "unipaas": 25,
     "nuvemshop": 600,
@@ -15029,7 +15076,7 @@
     "kalibrr": 120,
     "xampla": 25,
     "loowatt": 25,
-    "ambyint": 25,
+    "ambyint": 120,
     "syenex": 5,
     "6am city": 120,
     "village caregiving, llc": 600,
@@ -15905,7 +15952,7 @@
     "accredible": 120,
     "stride, inc.": 15000,
     "tacit": 5,
-    "deako": 120,
+    "deako": 25,
     "noble.ai": 120,
     "rewst": 120,
     "altonomy": 120,
@@ -16142,7 +16189,7 @@
     "metronome": 120,
     "rocycle": 120,
     "xpar vision": 25,
-    "splitwise": 25,
+    "splitwise": 120,
     "john brown university": 600,
     "opsmx": 120,
     "riverse": 25,
@@ -16207,7 +16254,7 @@
     "replate": 25,
     "desci labs": 25,
     "fleet device management": 120,
-    "reliaquest": 600,
+    "reliaquest": 3000,
     "xpansiv": 120,
     "constellation": 5,
     "rhythmscience inc.": 25,
@@ -16753,7 +16800,7 @@
     "lev": 25,
     "rick hansen foundation": 120,
     "globalme": 120,
-    "hyper hippo entertainment": 120,
+    "hyper hippo entertainment": 25,
     "doxim": 600,
     "lazo": 25,
     "leverage": 25,
@@ -16974,225 +17021,308 @@
     "redsail technologies": 600,
     "office ally": 600,
     "fluence": 25,
-    "variance": 5
+    "variance": 5,
+    "angle health": 120,
+    "centre for environment, fisheries and aquaculture science (cefas)": 600,
+    "twingate": 120,
+    "wheelhouse": 120,
+    "the doux": 5,
+    "hyperscience": 120,
+    "kohls": 15000,
+    "pillar vc": 120,
+    "chalk": 120,
+    "alsym energy": 120,
+    "switch therapeutics": 25,
+    "nick's": 120,
+    "ivy homes": 120,
+    "nibo": 600,
+    "hint health": 120,
+    "talus bio": 25,
+    "oneriver software": 25,
+    "vibe bio": 5,
+    "duos": 120,
+    "heard technologies": 120,
+    "aviaryai": 25,
+    "knowlify": 5,
+    "ing": 15000,
+    "dahua technology": 15000,
+    "flox": 25,
+    "due": 25,
+    "mews": 3000,
+    "edconnective": 120,
+    "accelo": 120,
+    "mira mace": 5,
+    "wolf & company, p.c.": 5,
+    "crogl": 25,
+    "zwitterco": 120,
+    "high definition vehicle insurance": 120,
+    "nextera energy": 15000,
+    "pt coupling": 15000,
+    "land life company": 120,
+    "food city / kvat foods inc.": 3000,
+    "nrg energy": 15000,
+    "springfield clinic": 3000,
+    "equifax": 15000,
+    "tracplus": 25,
+    "openmarkets": 25,
+    "transwood carriers": 600,
+    "linde": 3000,
+    "european hematology association (eha)": 120,
+    "fso instruments": 25,
+    "flowfuse": 25,
+    "twentyeight health": 120,
+    "trualta": 25,
+    "evoke health": 5,
+    "sound": 25,
+    "jackson hewitt": 15000,
+    "red river brick": 120,
+    "novus": 25,
+    "sanas": 600,
+    "fort robotics": 25,
+    "zilch": 600,
+    "candis": 120,
+    "zauber": 5,
+    "kanopi": 25,
+    "ryft": 25,
+    "clifford jacobs forging": 120,
+    "champaign county": 600,
+    "fractal": 25,
+    "accel club": 120,
+    "speakup": 120,
+    "bryter": 120,
+    "azra ai": 25,
+    "cdata software": 600,
+    "inito": 600,
+    "helm health": 25,
+    "lifen": 120,
+    "moonwatt": 5,
+    "apperio": 25,
+    "fintechos": 120,
+    "aircall": 600,
+    "southern systems inc.": 25,
+    "pro lift rigging": 600,
+    "vitalite malawi": 25,
+    "trainloop": 5,
+    "wayline": 5,
+    "reposit": 25
   },
   "pending": {
     "edra": {
       "name": "Edra",
       "domain": "edra.ai",
       "first_seen": "2026-10-01",
-      "tries": 6,
-      "last_try": "2026-11-10"
+      "tries": 7,
+      "last_try": "2026-11-11"
     },
     "thresh consulting": {
       "name": "Thresh Consulting",
       "domain": "threshconsulting.com",
       "first_seen": "2026-10-01",
-      "tries": 3,
-      "last_try": "2026-11-10"
+      "tries": 4,
+      "last_try": "2026-11-11"
     },
     "masterpiece": {
       "name": "Masterpiece",
       "domain": "masterpiece.ai",
       "first_seen": "2026-10-01",
-      "tries": 4,
-      "last_try": "2026-11-10"
+      "tries": 5,
+      "last_try": "2026-11-11"
     },
     "happyrobot": {
       "name": "HappyRobot",
       "domain": "happyrobot.ai",
       "first_seen": "2026-10-01",
-      "tries": 5,
-      "last_try": "2026-11-10"
+      "tries": 6,
+      "last_try": "2026-11-11"
     },
     "on me gifting": {
       "name": "On Me Gifting",
       "domain": "onmegifting.com",
       "first_seen": "2026-10-01",
-      "tries": 4,
-      "last_try": "2026-11-10"
+      "tries": 5,
+      "last_try": "2026-11-11"
     },
     "landed": {
       "name": "Landed",
       "domain": "landed.ai",
       "first_seen": "2026-10-01",
-      "tries": 4,
-      "last_try": "2026-11-10"
+      "tries": 5,
+      "last_try": "2026-11-11"
     },
     "workwhile": {
       "name": "WorkWhile",
       "domain": "workwhile.com",
       "first_seen": "2026-10-01",
-      "tries": 3,
-      "last_try": "2026-11-10"
+      "tries": 4,
+      "last_try": "2026-11-11"
     },
     "vectorshift": {
       "name": "VectorShift",
       "domain": "vectorshift.ai",
       "first_seen": "2026-10-01",
-      "tries": 3,
-      "last_try": "2026-11-10"
+      "tries": 4,
+      "last_try": "2026-11-11"
     },
     "plaid": {
       "name": "Plaid",
       "domain": "plaid.com",
       "first_seen": "2026-10-01",
-      "tries": 4,
-      "last_try": "2026-11-10"
+      "tries": 5,
+      "last_try": "2026-11-11"
     },
     "wayco": {
       "name": "Wayco",
       "domain": "wayco.com",
       "first_seen": "2026-10-01",
-      "tries": 3,
-      "last_try": "2026-11-10"
+      "tries": 4,
+      "last_try": "2026-11-11"
     },
     "blossom": {
       "name": "Blossom",
       "domain": "",
       "first_seen": "2026-10-01",
-      "tries": 11,
-      "last_try": "2026-11-10"
+      "tries": 12,
+      "last_try": "2026-11-11"
     },
     "type": {
       "name": "Type",
       "domain": "",
       "first_seen": "2026-10-01",
-      "tries": 3,
-      "last_try": "2026-11-10"
+      "tries": 4,
+      "last_try": "2026-11-11"
     },
     "control seat": {
       "name": "Control Seat",
       "domain": "controlseat.com",
       "first_seen": "2026-10-01",
-      "tries": 6,
-      "last_try": "2026-11-10"
+      "tries": 7,
+      "last_try": "2026-11-11"
     },
     "realpact": {
       "name": "RealPact",
       "domain": "realpact.ai",
       "first_seen": "2026-10-01",
-      "tries": 4,
-      "last_try": "2026-11-10"
+      "tries": 5,
+      "last_try": "2026-11-11"
     },
     "metriport": {
       "name": "Metriport",
       "domain": "",
       "first_seen": "2026-10-01",
-      "tries": 4,
-      "last_try": "2026-11-10"
+      "tries": 5,
+      "last_try": "2026-11-11"
     },
     "civilgrid": {
       "name": "CivilGrid",
       "domain": "",
       "first_seen": "2026-10-01",
-      "tries": 6,
-      "last_try": "2026-11-10"
+      "tries": 7,
+      "last_try": "2026-11-11"
     },
     "infimaker": {
       "name": "InfiMaker",
       "domain": "",
       "first_seen": "2026-10-01",
-      "tries": 4,
-      "last_try": "2026-11-10"
+      "tries": 5,
+      "last_try": "2026-11-11"
     },
     "manchester's revnu": {
       "name": "Manchester's Revnu",
       "domain": "revnu.com",
       "first_seen": "2026-10-01",
-      "tries": 4,
-      "last_try": "2026-11-10"
+      "tries": 5,
+      "last_try": "2026-11-11"
     },
     "\u2018recruiting is next\u2019: metaview": {
       "name": "\u2018Recruiting is next\u2019: Metaview",
       "domain": "metaview.ai",
       "first_seen": "2026-10-01",
-      "tries": 3,
-      "last_try": "2026-11-10"
+      "tries": 4,
+      "last_try": "2026-11-11"
     },
     "preventive healthcare startup vytalyou": {
       "name": "Preventive Healthcare Startup Vytalyou",
       "domain": "vytalyou.com",
       "first_seen": "2026-10-01",
-      "tries": 4,
-      "last_try": "2026-11-10"
+      "tries": 5,
+      "last_try": "2026-11-11"
     },
     "exclusive | ai cyber startup armadin": {
       "name": "Exclusive | AI Cyber Startup Armadin",
       "domain": "",
       "first_seen": "2026-10-01",
-      "tries": 5,
-      "last_try": "2026-11-10"
+      "tries": 6,
+      "last_try": "2026-11-11"
     },
     "video ai startup synthesia": {
       "name": "Video AI Startup Synthesia",
       "domain": "",
       "first_seen": "2026-10-01",
-      "tries": 3,
-      "last_try": "2026-11-10"
+      "tries": 4,
+      "last_try": "2026-11-11"
     },
     "student-led dorm room fund": {
       "name": "Student-led Dorm Room Fund",
       "domain": "",
       "first_seen": "2026-10-01",
-      "tries": 3,
-      "last_try": "2026-11-10"
+      "tries": 4,
+      "last_try": "2026-11-11"
     },
     "hop aero": {
       "name": "Hop Aero",
       "domain": "",
       "first_seen": "2026-10-01",
-      "tries": 5,
-      "last_try": "2026-11-10"
+      "tries": 6,
+      "last_try": "2026-11-11"
     },
     "satlyt": {
       "name": "Satlyt",
       "domain": "",
       "first_seen": "2026-10-01",
-      "tries": 3,
-      "last_try": "2026-11-10"
+      "tries": 4,
+      "last_try": "2026-11-11"
     },
     "zaperon": {
       "name": "Zaperon",
       "domain": "",
       "first_seen": "2026-10-01",
-      "tries": 3,
-      "last_try": "2026-11-10"
+      "tries": 4,
+      "last_try": "2026-11-11"
     },
     "m-based": {
       "name": "M-Based",
       "domain": "",
       "first_seen": "2026-10-01",
-      "tries": 4,
-      "last_try": "2026-11-10"
+      "tries": 5,
+      "last_try": "2026-11-11"
     },
     "flowscope": {
       "name": "flowscope",
       "domain": "",
       "first_seen": "2026-10-01",
-      "tries": 5,
-      "last_try": "2026-11-10"
+      "tries": 6,
+      "last_try": "2026-11-11"
     },
     "metaview": {
       "name": "Metaview",
       "domain": "",
       "first_seen": "2026-10-01",
-      "tries": 4,
-      "last_try": "2026-11-10"
+      "tries": 5,
+      "last_try": "2026-11-11"
     },
     "inbolt": {
       "name": "Inbolt",
       "domain": "",
       "first_seen": "2026-10-01",
-      "tries": 5,
-      "last_try": "2026-11-10"
+      "tries": 6,
+      "last_try": "2026-11-11"
     },
     "doss": {
       "name": "DOSS",
       "domain": "doss.com",
       "first_seen": "2026-10-02",
-      "tries": 3,
-      "last_try": "2026-11-10"
+      "tries": 4,
+      "last_try": "2026-11-11"
     },
     "withcoverage": {
       "name": "WithCoverage",
@@ -17210,36 +17340,36 @@
       "name": "Bastion",
       "domain": "bastion.ai",
       "first_seen": "2026-10-02",
-      "tries": 3,
-      "last_try": "2026-11-10"
+      "tries": 4,
+      "last_try": "2026-11-11"
     },
     "halluminate": {
       "name": "Halluminate",
       "domain": "halluminate.ai",
       "first_seen": "2026-10-02",
-      "tries": 2,
-      "last_try": "2026-11-10"
+      "tries": 3,
+      "last_try": "2026-11-11"
     },
     "offensive security startup armadin": {
       "name": "Offensive Security Startup Armadin",
       "domain": "armadin.com",
       "first_seen": "2026-10-02",
-      "tries": 2,
-      "last_try": "2026-11-10"
+      "tries": 3,
+      "last_try": "2026-11-11"
     },
     "global payments infra startup walapay": {
       "name": "Global payments infra startup Walapay",
       "domain": "walapay.io",
       "first_seen": "2026-10-02",
-      "tries": 2,
-      "last_try": "2026-11-10"
+      "tries": 3,
+      "last_try": "2026-11-11"
     },
     "photon": {
       "name": "Photon",
       "domain": "photon.dev",
       "first_seen": "2026-10-02",
-      "tries": 2,
-      "last_try": "2026-11-10"
+      "tries": 3,
+      "last_try": "2026-11-11"
     },
     "unveilr ai": {
       "name": "Unveilr AI",
@@ -17251,29 +17381,29 @@
       "name": "Good Tape",
       "domain": "",
       "first_seen": "2026-10-02",
-      "tries": 2,
-      "last_try": "2026-11-10"
+      "tries": 3,
+      "last_try": "2026-11-11"
     },
     "palebluedot ai": {
       "name": "PaleBlueDot AI",
       "domain": "",
       "first_seen": "2026-10-02",
-      "tries": 2,
-      "last_try": "2026-11-10"
+      "tries": 3,
+      "last_try": "2026-11-11"
     },
     "kevin mandia's new 'agent swarm' security startup armadin": {
       "name": "Kevin Mandia's new 'agent swarm' security startup Armadin",
       "domain": "",
       "first_seen": "2026-10-02",
-      "tries": 2,
-      "last_try": "2026-11-10"
+      "tries": 3,
+      "last_try": "2026-11-11"
     },
     "nine-person halluminate": {
       "name": "Nine-person Halluminate",
       "domain": "",
       "first_seen": "2026-10-02",
-      "tries": 2,
-      "last_try": "2026-11-10"
+      "tries": 3,
+      "last_try": "2026-11-11"
     },
     "flexpoint": {
       "name": "FlexPoint",
@@ -21174,6 +21304,114 @@
       "domain": "",
       "first_seen": "2026-11-10",
       "tries": 1
+    },
+    "plurai": {
+      "name": "Plurai",
+      "domain": "",
+      "first_seen": "2026-11-11",
+      "tries": 1
+    },
+    "kardi ai": {
+      "name": "Kardi Ai",
+      "domain": "",
+      "first_seen": "2026-11-11",
+      "tries": 1
+    },
+    "housing tokenization startup index industries": {
+      "name": "Housing tokenization startup Index Industries",
+      "domain": "",
+      "first_seen": "2026-11-11",
+      "tries": 1
+    },
+    "bay": {
+      "name": "Bay",
+      "domain": "",
+      "first_seen": "2026-11-11",
+      "tries": 1
+    },
+    "ai sales startup rox": {
+      "name": "AI sales startup Rox",
+      "domain": "",
+      "first_seen": "2026-11-11",
+      "tries": 1
+    },
+    "utah-based startup": {
+      "name": "Utah-Based Startup",
+      "domain": "",
+      "first_seen": "2026-11-11",
+      "tries": 1
+    },
+    "ai security startup daylight": {
+      "name": "AI security startup Daylight",
+      "domain": "",
+      "first_seen": "2026-11-11",
+      "tries": 1
+    },
+    "ai-driven managed security startup daylight": {
+      "name": "AI-driven managed security startup Daylight",
+      "domain": "",
+      "first_seen": "2026-11-11",
+      "tries": 1
+    },
+    "tendrils": {
+      "name": "Tendrils",
+      "domain": "",
+      "first_seen": "2026-11-11",
+      "tries": 1
+    },
+    "tano": {
+      "name": "Tano",
+      "domain": "",
+      "first_seen": "2026-11-11",
+      "tries": 1
+    },
+    "blue j": {
+      "name": "Blue J",
+      "domain": "",
+      "first_seen": "2026-11-11",
+      "tries": 1
+    },
+    "mercor": {
+      "name": "Mercor",
+      "domain": "",
+      "first_seen": "2026-11-11",
+      "tries": 1
+    },
+    "fractile startup": {
+      "name": "Fractile startup",
+      "domain": "",
+      "first_seen": "2026-11-11",
+      "tries": 1
+    },
+    "automation startup rox": {
+      "name": "Automation startup Rox",
+      "domain": "",
+      "first_seen": "2026-11-11",
+      "tries": 1
+    },
+    "enza capital": {
+      "name": "Enza Capital",
+      "domain": "",
+      "first_seen": "2026-11-11",
+      "tries": 1
+    },
+    "private equity research startup": {
+      "name": "Private equity research startup",
+      "domain": "",
+      "first_seen": "2026-11-11",
+      "tries": 1
+    },
+    "electra ai": {
+      "name": "ELECTRA AI",
+      "domain": "",
+      "first_seen": "2026-11-11",
+      "tries": 1
+    },
+    "proximal ventures": {
+      "name": "Proximal Ventures",
+      "domain": "",
+      "first_seen": "2026-11-11",
+      "tries": 1
     }
   },
   "funded": {
@@ -21462,9 +21700,9 @@
     },
     "startup": {
       "name": "Startup",
-      "amount": "$7M",
-      "date": "2026-08-26",
-      "url": "https://news.google.com/rss/articles/CBMiowFBVV95cUxQNVNKbktKYXhYRm13MmpsNWVfbmZ4YkEwU212X2FHSTZPLU8yZnhzZk9QLUhpeFlZMW5tN25pZG5pTlFEYWlTdkptMWdrVEhOV3FQbExaUzctRWVjNmllajhmQXk0eElkZ1VRbGZ1bHBXQWxHWlV4SktoVkxTcmtUUEtNamwzQ2xxY0tqb0RQaEJIWWJZQVJUTkMzbXR1dWVxUXk0?oc=5",
+      "amount": "$50M",
+      "date": "2026-11-11",
+      "url": "https://news.google.com/rss/articles/CBMiWEFVX3lxTFBESWZ4Um1SR1NPYTRBV3lmRTk3TUpfeWhfSmwzdFdCRUtjU1g1VkY1ZmNPTDB1UjJxb25uRXo2aUFDbkhWWWIzNzk5MDN1ZGdlcGxoVVktRDI?oc=5",
       "tokens": []
     },
     "ecomid": {
@@ -26101,9 +26339,10 @@
     "athena": {
       "name": "Athena",
       "amount": "$2.5M",
-      "date": "2026-11-03",
-      "url": "https://news.google.com/rss/articles/CBMiekFVX3lxTE1NU0dEeUNHT2VJNVJvZDIyNFRyYlNBRTRKRlhmYWdQdFF1R3lxREpqMVBmd04yalFUa2tZM0F5REVONHMyZlN5R0tsMkxaLWRYUDJyQzdXUkhnRmdJTU9mM05FZzNNZVFXLWNxX3NZcVo1NjhsNmd3Y0l3?oc=5",
-      "tokens": []
+      "date": "2026-11-11",
+      "url": "https://news.google.com/rss/articles/CBMi0AFBVV95cUxOYlc2MlZTcWNlclVvOThtZXNHMktyTkRuLVl2VTBYdjl6ZEF2NmwwSWR0US12cWlZM0ZTMEdTV1hNbkxreHRnRHQ3XzhXdTNFc195UVI5aW5BZTFoRVVfeXhKU0RWYkV6VUg2SGlJcVJ6RzRZdkZobld5dnBjSVFEOW16UV81T3Jld2ZTUWVPZlYzWDF5YVRHU0pyT0luVkVHVUNwWWVhNG1aanNRVUpYRmF4S2tTNmpiNk9LdGN1VVlIdE0yWnVqOWRXZW1oSVg0?oc=5",
+      "tokens": [],
+      "round": "Pre-seed"
     },
     "ai voice startup guava": {
       "name": "AI voice startup Guava",
@@ -26551,8 +26790,8 @@
       "name": "Guava",
       "round": "Seed",
       "amount": "$12.5M",
-      "date": "2026-11-09",
-      "url": "https://news.google.com/rss/articles/CBMicEFVX3lxTE9aV2h5SExUVHhiYUh4VXVJVTc4cDh1X1pYWHhucUNSdk4zMUdvQVJ0eHdfdjhRY2V5ekxwemx3WF9JM3JBTzQxOVEwT0xQUUN3bVJ6dlBCaG9mekRRUlFSNzlFOENtcldrNWxxRDZ0eFQ?oc=5",
+      "date": "2026-11-11",
+      "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxOcld6M1NXRjlhUTBicnVhZU1OeVJTNEJIV1JDR2FLUWRCN3N6R0tfc2RfVklKQmUwUHhwOVlmX2ZHX2VNdms0SWRobG5zcnkxenlTbWFHZHVzVW9BTXJpMGd4eVdONUdBdnJ1Z1R0b21Ra2Iwb1dBQkRRN1Q2MmJoXzFxOUY4WEtCNFdPSjZfUjRlS0ZKUmNrbUdyOHR2eUlzMEdUczJlMGFiTE1DTklvVE53?oc=5",
       "tokens": []
     },
     "finpilot": {
@@ -26766,8 +27005,8 @@
       "name": "Lumepay",
       "round": "Pre-seed",
       "amount": "$6M",
-      "date": "2026-11-10",
-      "url": "https://news.google.com/rss/articles/CBMiXkFVX3lxTE5HOUEycGRoaEZtUWN1MHBCdzJ3UmJDWHE1UHY5RlhYaXd2aGZKUXNCOEZZeGM0Tm15cGI4bDZVYUdHUGNhMk1Lc3MzZEpMQnE5Q2s4X0RYZFhYZVlUNHc?oc=5",
+      "date": "2026-11-11",
+      "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxQVjFTQ1FidmZkRkZVRldtNDZKUUlLUTYybVRuNkRtS2Y1S3hnaDRYRmFjc3RnNEljd3hIOXVsMmNRRGxZN0dJckMzODB1cTdPckpHVk1LaUNSUjI5YTJxWFNsaDdoMzRFWjRLbThISG1DR0poM1l1a3ZlU2pWWG5nRG4wY2MybVp2VlRYbFo2Y3pva2dWOWFWMFV5QTVidW12TDhkdGhYelpXVzBxVy1Nb3JoZHFBdUhVNEtr?oc=5",
       "tokens": []
     },
     "alta": {
@@ -26829,6 +27068,166 @@
       "amount": "$4M",
       "date": "2026-11-10",
       "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxQZ0tIa1BUSkJUUU5Hc0JtdnQwcVhlYnAxYk5MaERvWUh5VUxCajBhSmIwOE9EYklzd0p5eHg3WjhiREdoNm1UWlFaVFVIU0RFaFAxa0RqUV9GOEQ2RWdRbmRKSUVVUzZvWUNFLU9qLW5GaXo5QWlQSnpaV284cXZXRGc5NmhtMUJ5ZXVGOWhLQXliX2liOVZXWkE4dXFPWTI0STFVRUItVXFhalFMZHFJYjF3?oc=5",
+      "tokens": []
+    },
+    "plurai": {
+      "name": "Plurai",
+      "round": "Seed",
+      "amount": "$13M",
+      "date": "2026-11-11",
+      "url": "https://news.google.com/rss/articles/CBMiiwFBVV95cUxNQ0pXcURfYUx2a18weG5PY29FS1VWYlRpeWVJMzdMWENiQnFybWlYaXdlNXU3YkF1Q2V6VHJJcnRBeVlkYURoLWQ4dEV2TUpsMnRETkREVXBWSWlNS0xIV2pnQmxtVHNMRTJla2dUSmU2bHhuWlN3RUVMUHA3VlpKY2U2OWJEcVE3YjAw?oc=5",
+      "tokens": []
+    },
+    "kardi ai": {
+      "name": "Kardi Ai",
+      "round": "Series A",
+      "date": "2026-11-11",
+      "url": "https://news.google.com/rss/articles/CBMimwFBVV95cUxNV3hCRW9BcHlZZWp6YS04MlZrZzRfY2pUa1lHdFZJVlpTLUUta1Y2T2RoSi1KdVdkeXk5UUM3d2Qta3M2RzR3bE9GY2JCbUt1QVF3ZDE4NWNVRVk1NU1Dcl8wQzlUNU9BaFJpX2ljOFJVcWxIRXpDZDB0N0RFQTkxNXFMS3c1cDZobFJWNXhVSmJVZlNTQ1lZRkVHOA?oc=5",
+      "tokens": []
+    },
+    "housing tokenization startup index industries": {
+      "name": "Housing tokenization startup Index Industries",
+      "round": "Seed",
+      "amount": "$50M",
+      "date": "2026-11-11",
+      "url": "https://news.google.com/rss/articles/CBMieEFVX3lxTE9WelRMSnQzMmRDQzNMaEpDX3ppX1RaYkRLWDVkRkhlZWtWcnkzNk4yMlBHU3dDNWp0a0ZUY1VuQjFHekZxcjJ3TTdkN1RxZkxUdWp2eU9XUDZhSkhLNnMxcFZZdU9BYjUwS3Z0TzhHc2piOG04azhHXw?oc=5",
+      "tokens": []
+    },
+    "bay": {
+      "name": "Bay",
+      "round": "Series A",
+      "amount": "$37M",
+      "date": "2026-11-10",
+      "url": "https://news.google.com/rss/articles/CBMiiwFBVV95cUxPRkpZc2VvOWRFZUs5b2NNRHRURW8ydzBQbngxYVc3OXVDZ25wQWxMTDJXNjNZM2hFUUZGNlZIYzdRajloYzZ1TGotajg2X0c1T1RLX3pQcmwxTWhqNnNnU2plTEtuMU9PaHJJMjg2ckFSRHBXV0V3MGE4V3VzU3p6NlRralNMN3BHM2Nn?oc=5",
+      "tokens": []
+    },
+    "lumbra": {
+      "name": "Lumbra",
+      "round": "Series A",
+      "amount": "$25M",
+      "date": "2026-11-10",
+      "url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxNQUpqUDRwNjY2TWpFYnVXOTQ1OVdVNG93QVl6WGxMNHE1VnBVUkt3STZ4UThxNFExUUpTVWhzaWlQd3FNV0lMT0s5RHA2US1Ec2ZsOVVWSWJNM0lORUhxVmJJYVFkM1FiZnBBOENCV2hCS1F6MnZVQU02SEMtYkllZFRYZ0FaSlpTMjNzUzRrRWpFVG56?oc=5",
+      "tokens": [
+        "lumbra"
+      ]
+    },
+    "charta health": {
+      "name": "Charta Health",
+      "round": "Series B",
+      "amount": "$55M",
+      "date": "2026-11-10",
+      "url": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxQZEZsYUMyUm1MbmpRSHhVZGxMN2RlMGFGUExHMWRWcVMtN29EYnJfRnJ4alp2VmYxVVdZZmx4SU92ZEtyeDlmWDZ1Ylh2TFFTS2gxWUtReC0tQ09JZkZmMWVvdUktZ29qX2ZNNEsxdmtWV2Y4TldlWU0yYVltT3g0Z0hEZFpUcXgy?oc=5",
+      "tokens": []
+    },
+    "ai sales startup rox": {
+      "name": "AI sales startup Rox",
+      "amount": "$100M",
+      "date": "2026-11-11",
+      "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxOdmVyNzJCUFpxYTJMZ1RrLXh6M1ZWNW5rZlN3bUxYTmVOOXotZmRLVnc1cFd2SHJFNkhxaS01TFJNMmxyTHp1ZmwzQXd3VU9aY2trQTF5djg5YnVPcGk4YUZtTkFDd0JJY1RGWlZ2bVM4R0VFM2dqYzdMZzJLWVRRWG9OSVNQcTRIVlhlT0Uzcm9iazRKcENzYlZNNzAyX2hQYkNPZ1F6RzEwUGg5?oc=5",
+      "tokens": []
+    },
+    "utah-based startup": {
+      "name": "Utah-Based Startup",
+      "amount": "$500M",
+      "date": "2026-11-11",
+      "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxNMnkyLURTQXlOa1U5cWh1TU9aNE9DUlM4MGxCaDhEcEZ3dXBxUm1hS1RiVlAxTVdKU2VxX2pKREk1WVo0bEpzOHRuNUVKYUhXQzkwclRTNEF4amJoNy14d2tHMlRpbHNnNFlRSHl1REM2QTdkUDJ3VTN3N3YyTzNaX2dDXzFmS1NFQ1BjYzUtaWJsRVBaV0lxZnFDdFpLTnVxWW01MUVNYTA3Rkl3TGRIQzJFYXVMZw?oc=5",
+      "tokens": []
+    },
+    "ai security startup daylight": {
+      "name": "AI security startup Daylight",
+      "amount": "$80M",
+      "date": "2026-11-10",
+      "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxNTElpZDMwRWtZU1FaZ3pzZDM2Zmp3NzFuWi1MakdzZ3JUT0dpZHptYlBUNUNQQl9FaXJRb1VBTUJNaURvdDNoMDB3QXU5b2hYU0lUZnlUem9fR294UFhKcDJCMWlpQUdCeVU0VGFFb2Q1dXE2STZBOFRQUU1BR2JyZ1BJdkpUQlE4NDJVa041dHVXcGF1UTVlM2xyMzY?oc=5",
+      "tokens": []
+    },
+    "ai-driven managed security startup daylight": {
+      "name": "AI-driven managed security startup Daylight",
+      "amount": "$80M",
+      "date": "2026-11-10",
+      "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxPY0tUVTZGRkVfa2E0dUctZmtkcGRsRFlMVmR3RmQtSmF5NndmMmVMMHFFMm1uRzhfdnRlSFNKdjRjV2ZSNHdvamVScUU1VlQyRnRfaUQxb2U1WjBBS2V2MFF2M3UxektCUzB0TkRVQnNqTTd6MEpxSDJOT2U5WWp2SGt2Yy1tNUtST3dONHVsaDJBSGxUaVVLbjE5TFN5am95bUtqclVPSS1sME5xU3J1NVBIRllsTlNl?oc=5",
+      "tokens": []
+    },
+    "tendrils": {
+      "name": "Tendrils",
+      "round": "Seed",
+      "amount": "$30M",
+      "date": "2026-11-11",
+      "url": "https://news.google.com/rss/articles/CBMifEFVX3lxTE9VdmFMdHdYU0ctU0JZWm5nellWRFN2MjZXZXFoN3pkNUdlVVl6clNJZzZCM1JNMTZQbmR5bDR1dDY1aDZIMHdxRW51UTNnYWxTY0VyZThyeTBzSk9hclZiVGhsUnJIS0Z3cFZyN0E1V1FCaTRZVDZJVnhUaXA?oc=5",
+      "tokens": []
+    },
+    "tano": {
+      "name": "Tano",
+      "round": "Seed",
+      "amount": "$4M",
+      "date": "2026-11-11",
+      "url": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxQWmFUVUVRaGw1ZXpmX2xfRlNNZVhzaF9GcmZkOGFCMmE5T0F5dDVwUjlQenZ4dWtOSWtwMkJKMFJxT3FjWUlVYS1XTUZQNm1ZNE9TZHA2amt1NzlHM2w4ckE3VlhhRi1maWdCWi1LMTNCZi04OEsxckRoWHQ4RmVpamhicWZaQmhzX3NnWE1fUklRLUZ1YWRnRGFBU2l6RFRrcjdodTVnYkpQQQ?oc=5",
+      "tokens": []
+    },
+    "blue j": {
+      "name": "Blue J",
+      "round": "Series E",
+      "amount": "$176M",
+      "date": "2026-11-10",
+      "url": "https://news.google.com/rss/articles/CBMijwFBVV95cUxNNUcta1h1UHkzRU5vVFFuRjR1MERYUE9lRk1zT3dDcjNvcWhDVGxXNW80b19xWkdscGpzclhJdm10X1QteGxhX0hKSENGVjJDS1JpU2VHMFJqUUpBYXRQSGl5dFdQTG5faWJsUmdyT0ZiR2FyaU5Oem1WY3U1ZGpJWnF3VnN3Z1pLYlVvWVFIcw?oc=5",
+      "tokens": []
+    },
+    "mercor": {
+      "name": "Mercor",
+      "round": "Series D",
+      "amount": "$750M",
+      "date": "2026-11-10",
+      "url": "https://news.google.com/rss/articles/CBMikgFBVV95cUxNcVV4ZXAzZERIVUU0LUJXci1oVjgwblRjSUxqdENFRWw3SkRTWkxGVWRnYWxzUjBwblVDMm5BWVdZZGVDMUVqMjVFV3o1Mjhqd2h2S1ZtTVpJUkVyVDg3SzRQSWJ1VWhzdGtib3ZjdV9LakstOWdMOXFxdmRLaGhqQ3ZFMjBCLVVNRmtOaWtacnlSZw?oc=5",
+      "tokens": []
+    },
+    "fractile startup": {
+      "name": "Fractile startup",
+      "amount": "$720M",
+      "date": "2026-11-11",
+      "url": "https://news.google.com/rss/articles/CBMiowFBVV95cUxQazMzOVNrNURFRVQtOHU0OE1SRDd0bFVCNUJyOTVZOFNheVYtMkVtSEtiYmI0bVZxS3BLdFRmVllKeU5wR2ZxaDBsNDA2aGl1WkFRUDVfSURaRnc3TTlBanFEemF2cEpGMHpuNzFTblg2a2p3S2diUFdHSnhMcHJDa2NaSFVSNFFDMm5MdHVlNDBzVFN2QjMzVEpOa2Q5RUcydW5r?oc=5",
+      "tokens": []
+    },
+    "automation startup rox": {
+      "name": "Automation startup Rox",
+      "amount": "$100M",
+      "date": "2026-11-11",
+      "url": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxQMUtrODMtSnhzZldZdEpjMmFEdHlzdTBlTTdDZkJObUJMenZOSkZ0eGhpT3R0Z3prQ0ZZazE0dVVsMlFKMklla0dMVGhVOURMSG1fTHRjSFFoZE0xS3IwRUYyNm14T2RRbktPNERZVXdBejduY1U3T0xJelZsbXJ1T0U4Q1prZTR0Z2NmYXV4RDRrdWw0UE5GdE1vdjFJamFBb25JTElKMTdXV2s?oc=5",
+      "tokens": []
+    },
+    "enza capital": {
+      "name": "Enza Capital",
+      "amount": "$21M",
+      "date": "2026-11-11",
+      "url": "https://news.google.com/rss/articles/CBMiYEFVX3lxTE95UXdfemRvWjUzNGFuVi0tRnp1ZDhuNFd0VGFxR21yRVUxd2hna1gxV0xHSlFFNThhVFk2RXJDSVdPTUpKbXFGUjVrQk8xZDZ0dUlBNFpUek9IenQ0bWZORw?oc=5",
+      "tokens": []
+    },
+    "private equity research startup": {
+      "name": "Private equity research startup",
+      "amount": "$31M",
+      "date": "2026-11-11",
+      "url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxNV1NKaXcwanE5c0pxQms1amFBdDBZMzJvb2JsWmJpNGdJenBxZkE5TXdLcTE3N1A4X29YNDdZWHlkeHdoZGZLRVlqcGtIWnVtaDd5T056UlpyQTNGODRzTEd5bkgyOEtPM3RNNFVCRFFmX3ZHcWRpUkYxWTZ1Wkp3c1k4SndWaDdwSjlsbXlZWFBncGlr?oc=5",
+      "tokens": []
+    },
+    "electra ai": {
+      "name": "ELECTRA AI",
+      "amount": "$5M",
+      "date": "2026-11-11",
+      "url": "https://news.google.com/rss/articles/CBMilgFBVV95cUxQU2l1M0ZJS0FtTTdkeTlYRzQ2TXhxc3FZaEhKYVVoU3doUXRla1ZOWlB4WHRFSDhoWkRhX2FGWFB0UzdkM09qdkpHRm1aV1ItaEZUMTFoQXRDUEIzOXpsTDJ3RVJKaTdHbU5ieTkyYllvRVJralZKbkltMnRCdDhWX0ZqZkZrREZabHRsQnh4LTJrU3pKOGc?oc=5",
+      "tokens": []
+    },
+    "industrial automation startup path robotics": {
+      "name": "Industrial automation startup Path Robotics",
+      "amount": "$300M",
+      "date": "2026-11-11",
+      "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxPREtBMjVMSHd3czdzMmRmQ3ZVdjdmb0s5bFQzZld0eFl1T0R1dmtvMXU0TUQxZkJ2RzRuQVNXdm5Lb2RENlluYU56TnFNS2xWZVUxVnAyTkZnVzc2SkFtd0FSVENvd2FKS3Qyd3FYMTNfekI3RU83VTMxQS14c19nVXo1bFNrOEh6VTloc3ZGdlhoaVNJdGVKRWpCMlpULUlScmFWcjl3?oc=5",
+      "tokens": [
+        "industrial"
+      ]
+    },
+    "proximal ventures": {
+      "name": "Proximal Ventures",
+      "amount": "$27.5M",
+      "date": "2026-11-10",
+      "url": "https://techcrunch.com/2026/11/10/proximal-ventures-raises-debut-fund-to-back-startups-bringing-ai-to-drug-development/",
       "tokens": []
     }
   },
@@ -29841,7 +30240,7 @@
     "guava": {
       "name": "Guava",
       "round": "Seed",
-      "date": "2026-11-09",
+      "date": "2026-11-11",
       "source": "funding digest",
       "tokens": []
     },
@@ -29988,7 +30387,7 @@
     "lumepay": {
       "name": "Lumepay",
       "round": "Pre-seed",
-      "date": "2026-11-10",
+      "date": "2026-11-11",
       "source": "funding digest",
       "tokens": []
     },
@@ -30025,6 +30424,85 @@
     "bucketlistt.com": {
       "name": "Bucketlistt.com",
       "round": "Seed",
+      "date": "2026-11-10",
+      "source": "funding digest",
+      "tokens": []
+    },
+    "athena": {
+      "name": "Athena",
+      "round": "Pre-seed",
+      "date": "2026-11-11",
+      "source": "funding digest",
+      "tokens": []
+    },
+    "plurai": {
+      "name": "Plurai",
+      "round": "Seed",
+      "date": "2026-11-11",
+      "source": "funding digest",
+      "tokens": []
+    },
+    "kardi ai": {
+      "name": "Kardi Ai",
+      "round": "Series A",
+      "date": "2026-11-11",
+      "source": "funding digest",
+      "tokens": []
+    },
+    "housing tokenization startup index industries": {
+      "name": "Housing tokenization startup Index Industries",
+      "round": "Seed",
+      "date": "2026-11-11",
+      "source": "funding digest",
+      "tokens": []
+    },
+    "bay": {
+      "name": "Bay",
+      "round": "Series A",
+      "date": "2026-11-10",
+      "source": "funding digest",
+      "tokens": []
+    },
+    "lumbra": {
+      "name": "Lumbra",
+      "round": "Series A",
+      "date": "2026-11-10",
+      "source": "funding digest",
+      "tokens": [
+        "lumbra"
+      ]
+    },
+    "charta health": {
+      "name": "Charta Health",
+      "round": "Series B",
+      "date": "2026-11-10",
+      "source": "funding digest",
+      "tokens": []
+    },
+    "tendrils": {
+      "name": "Tendrils",
+      "round": "Seed",
+      "date": "2026-11-11",
+      "source": "funding digest",
+      "tokens": []
+    },
+    "tano": {
+      "name": "Tano",
+      "round": "Seed",
+      "date": "2026-11-11",
+      "source": "funding digest",
+      "tokens": []
+    },
+    "blue j": {
+      "name": "Blue J",
+      "round": "Series E",
+      "date": "2026-11-10",
+      "source": "funding digest",
+      "tokens": []
+    },
+    "mercor": {
+      "name": "Mercor",
+      "round": "Series D",
       "date": "2026-11-10",
       "source": "funding digest",
       "tokens": []
