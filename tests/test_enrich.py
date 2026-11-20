@@ -164,7 +164,7 @@ def test_geo_gate_is_about_the_company_not_the_role():
     """
     src = open(os.path.join(os.path.dirname(HERE), "funding_digest.py")).read()
     body = src[src.index('if __name__ == "__main__":'):]
-    watch = body.index("for i in watchable:")
+    watch = body.index("for i in watchable")
     check("us_only_reject" not in body[watch:watch + 400],
           "the watchlist loop must not be filtered by the HQ country gate")
     check("emailable" in body and "watchable" in body,

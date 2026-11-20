@@ -6,10 +6,10 @@ against your resume (your apply list), and companies discovered by the first fee
 the second. Runs free or near-free on GitHub Actions.
 
 ```
-getro.py ──┐                                    ┌──► companies_digest.py
-discover.py┼──► ats_watchlist.json ◄──────┐     │    (newest roles, scored
-funding_digest.py ──detects ATS + raise ──┘     │     against your resume)
-     (who just raised, enriched with contacts) ─┘
+FUNDING WORKFLOW (8am)                 JOBS WORKFLOW (~9am)
+funding_digest.py ──► funded_companies.json ──► watchlist.py ─┐
+  (who just raised,                           getro.py ───────┼─► ats_watchlist.json ──► companies_digest.py
+   enriched with contacts)                    discover.py ────┘                          (newest roles, scored)
 ```
 
 ## The pieces
@@ -135,8 +135,8 @@ Push your fork and enable Actions. Three workflows ship with it:
 
 | Workflow | Schedule | Runs |
 |---|---|---|
-| `daily-digest.yml` | 8am ET | `getro.py` → `discover.py` → `funding_digest.py` |
-| `companies-digest.yml` | ~9am ET | `companies_digest.py` (+ a second "X Hiring Posts" email when that source is on) |
+| `daily-digest.yml` | 8am ET | `funding_digest.py` only. Funding side; writes `funded_companies.json` for the jobs side |
+| `companies-digest.yml` | ~9am ET | `getro.py` → `discover.py` → `watchlist.py` → `companies_digest.py` (+ a second "X Hiring Posts" email when that source is on) |
 | `tests.yml` | every push | `tests/run.py` |
 
 In your fork: **Settings → Secrets and variables → Actions → Secrets**, add the
@@ -146,7 +146,7 @@ runs fall back to the generic keywords baked into the scripts, and you get a
 digest tuned to someone else's job hunt.
 
 State (`ats_watchlist.json`, `seen_jobs.json`, `enrich_cache.json`,
-`hunter_usage.json`, `getro_networks.json`) persists on a `state` branch between
+`hunter_usage.json`, `getro_networks.json`, `funded_companies.json`) persists on a `state` branch between
 runs, so the watchlist grows and you're never emailed the same posting twice.
 
 Trigger a run by hand from the **Actions** tab → pick a workflow → **Run

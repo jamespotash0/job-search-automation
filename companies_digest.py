@@ -38,6 +38,8 @@ from email.mime.text import MIMEText
 from email.utils import formataddr, make_msgid
 from datetime import datetime, timezone
 
+from watchlist import open_json
+
 
 def load_dotenv(path=".env"):
     """Minimal .env loader so local runs pick up keys without exporting them.
@@ -616,9 +618,7 @@ UA = {"User-Agent": "Mozilla/5.0 (companies-digest)"}
 
 
 def get_json(url, timeout=25):
-    req = urllib.request.Request(url, headers=UA)
-    with urllib.request.urlopen(req, timeout=timeout) as r:
-        return json.loads(r.read().decode("utf-8", "replace"))
+    return open_json(urllib.request.Request(url, headers=UA), timeout)
 
 
 def post_json(url, payload, timeout=25):
@@ -626,8 +626,7 @@ def post_json(url, payload, timeout=25):
         url, data=json.dumps(payload).encode(),
         headers={**UA, "Content-Type": "application/json", "Accept": "application/json"},
         method="POST")
-    with urllib.request.urlopen(req, timeout=timeout) as r:
-        return json.loads(r.read().decode("utf-8", "replace"))
+    return open_json(req, timeout)
 
 
 def strip_html(t):
@@ -2356,6 +2355,32 @@ def _shell(inner):
         f"</td></tr></table></div>")
 
 
+def discovery_banner():
+    """A one-line status of today's discovery step, read from the breadcrumb
+    discover.py leaves. Green when it added companies, grey when it ran but found
+    nothing new, red when it failed — so you can tell at a glance that the loop
+    that feeds the companies digest is alive. Empty string if discovery didn't run."""
+    try:
+        with open("discover_status.json") as f:
+            st = json.load(f)
+    except Exception:
+        return ""
+    total = st.get("watchlist_total", "?")
+    if not st.get("ok"):
+        color, msg = "#b00", f"⚠ Discovery FAILED: {html.escape(str(st.get('error') or 'unknown'))}"
+    elif st.get("added"):
+        names = ", ".join(st.get("added_names", [])[:8])
+        color = "#2a7"
+        msg = (f"✓ Discovery: probed {st.get('probed', 0)}, "
+               f"added {st.get('added')} — {html.escape(names)}")
+    else:
+        color = "#999"
+        msg = f"Discovery ran: probed {st.get('probed', 0)}, no new companies today"
+    return (f"<div style='font-family:sans-serif;font-size:12px;color:{color};"
+            f"border-left:3px solid {color};padding:2px 0 2px 8px;margin:0 0 12px'>"
+            f"{msg} · watchlist now {total} companies</div>")
+
+
 def build_html(items, title="Companies digest"):
     now = datetime.now().strftime("%A, %B %-d")
     clock = datetime.now().strftime("%-I:%M %p").lower()
@@ -2698,7 +2723,7 @@ def main():
         send_email(build_html(grok, title="Hiring posts from X"),
                    subject=subject_for(SUBJECT_X), thread="x")
     if picked or SEND_WHEN_EMPTY:
-        send_email(build_html(picked))
+        send_email(discovery_banner() + build_html(picked))
     elif grok:
         print("[info] only X/Grok leads this run — nothing for the main digest")
     else:

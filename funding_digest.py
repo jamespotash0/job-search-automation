@@ -594,30 +594,7 @@ def newsletters_block(letters):
             "<ul style='list-style:none;padding:0;margin:0'>" + "".join(rows) + "</ul>")
 
 
-def discovery_banner():
-    """A one-line status of the 8am discovery step, read from the breadcrumb
-    discover.py leaves. Green when it added companies, grey when it ran but found
-    nothing new, red when it failed — so you can tell at a glance that the loop
-    that feeds the companies digest is alive. Empty string if discovery didn't run."""
-    try:
-        with open("discover_status.json") as f:
-            st = json.load(f)
-    except Exception:
-        return ""
-    total = st.get("watchlist_total", "?")
-    if not st.get("ok"):
-        color, msg = "#b00", f"⚠ Discovery FAILED: {html.escape(str(st.get('error') or 'unknown'))}"
-    elif st.get("added"):
-        names = ", ".join(st.get("added_names", [])[:8])
-        color = "#2a7"
-        msg = (f"✓ Discovery: probed {st.get('probed', 0)}, "
-               f"added {st.get('added')} — {html.escape(names)}")
-    else:
-        color = "#999"
-        msg = f"Discovery ran: probed {st.get('probed', 0)}, no new companies today"
-    return (f"<div style='font-family:sans-serif;font-size:12px;color:{color};"
-            f"border-left:3px solid {color};padding:2px 0 2px 8px;margin:0 0 12px'>"
-            f"{msg} · watchlist now {total} companies</div>")
+FUNDED_FILE = "funded_companies.json"
 
 
 def build_html(items, letters=None):
@@ -783,10 +760,6 @@ if __name__ == "__main__":
     print(f"[info] collected {len(items)} items")
 
     if ENRICH_TOP_N != 0 and _enrich is not None:
-        try:
-            import watchlist as _wl
-        except Exception:
-            _wl = None
         targets = items if ENRICH_TOP_N is None else items[:ENRICH_TOP_N]
         print(f"[info] enriching {len(targets)} of {len(items)} raises"
               + ("" if ENRICH_TOP_N is None else
@@ -835,32 +808,29 @@ if __name__ == "__main__":
         print(f"[info] {len(items)} raises in the email, "
               f"{len(watchable)} companies going to the job watchlist")
 
-        # LOOP: detect each surviving company's ATS and feed the companies digest's
-        # watchlist. The round itself travels with the company, so the companies
-        # digest can flag "🚀 raised $12M Series A" next to the reqs it pays for.
-        if _wl is not None:
-            for i in watchable:                     # NOT `items` — see above
-                try:
-                    _wl.detect_and_add(
-                        i["company"],
-                        (i.get("enrich") or {}).get("domain"),
-                        funding={"round": i.get("stage") or "", "amount": i.get("amount") or "",
-                                 "date": i["time"].strftime("%Y-%m-%d"), "url": i.get("link", "")},
-                    )
-                except Exception as e:
-                    print(f"[warn] watchlist {i['company']}: {e}")
-
-            # ...then give the companies that had NO public board when we first saw
-            # them another look. A seed-stage startup usually opens its Greenhouse
-            # weeks after the announcement, and without this they stay invisible
-            # forever — probed once on announcement day, then cached as "checked".
-            try:
-                _wl.reprobe_pending()
-            except Exception as e:
-                print(f"[warn] watchlist re-probe: {e}")
+        # HAND-OFF to the jobs workflow: it reads this file (watchlist.py) and
+        # probes each company's ATS, so the companies digest can flag "🚀 raised
+        # $12M Series A" next to the reqs it pays for. Rolling 30 days, so a day
+        # the jobs workflow misses is picked up on the next run. This workflow
+        # never writes ats_watchlist.json itself — that file is the jobs side's.
+        try:
+            with open(FUNDED_FILE) as f:
+                prev = json.load(f)
+        except Exception:
+            prev = []
+        cutoff = (datetime.now() - timedelta(days=30)).strftime("%Y-%m-%d")
+        new = [{"company": i["company"], "domain": (i.get("enrich") or {}).get("domain"),
+                "funding": {"round": i.get("stage") or "", "amount": i.get("amount") or "",
+                            "date": i["time"].strftime("%Y-%m-%d"), "url": i.get("link", "")}}
+               for i in watchable]             # NOT `items` — see above
+        names = {r["company"].lower() for r in new}
+        keep = [r for r in prev if r["company"].lower() not in names
+                and r["funding"]["date"] >= cutoff]
+        with open(FUNDED_FILE, "w") as f:
+            json.dump(new + keep, f, indent=2)
     else:
         print("[info] enrichment disabled or enrich.py missing")
 
     letters = collect_substack()
     print(f"[info] {len(letters)} newsletter posts")
-    send_email(discovery_banner() + build_html(items, letters))
+    send_email(build_html(items, letters))

@@ -11,13 +11,17 @@ that company's postings against your resume automatically.
 No scraping — these are the same public board APIs the companies digest already uses.
 Detection results are cached (per company) so we never re-probe.
 
-The shared file travels between the two GitHub Actions workflows via a cache
-with the key prefix "watchlist-" (caches are repo-scoped, so both see it).
+The file is owned by the companies (jobs) workflow and persisted on the `state`
+branch. The funding workflow never writes it: it leaves funded_companies.json,
+which `python watchlist.py` (a step in the jobs workflow) feeds in here.
 """
 
 import os
 import re
 import json
+import random
+import time
+import urllib.error
 import urllib.request
 from datetime import datetime, timezone
 
@@ -114,10 +118,25 @@ def candidate_tokens(name, domain=None):
     return out[:4]
 
 
+def open_json(req, timeout=25, retries=3):
+    """urlopen + JSON decode, retrying 429/503 with backoff. Board APIs (Workable,
+    Getro) rate-limit the concurrent fetches; without this every throttled board
+    was silently dropped from that day's digest."""
+    for attempt in range(retries + 1):
+        try:
+            with urllib.request.urlopen(req, timeout=timeout) as r:
+                return json.loads(r.read().decode("utf-8", "replace"))
+        except urllib.error.HTTPError as e:
+            if e.code not in (429, 503) or attempt == retries:
+                raise
+            wait = e.headers.get("Retry-After", "") if e.headers else ""
+            wait = float(wait) if wait.isdigit() else 2 * 2 ** attempt
+            time.sleep(min(wait, 30) + random.random())
+
+
 # --------------------------- probes (each returns True if token is valid) ----
 def _get(url, timeout=12):
-    with urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=timeout) as r:
-        return json.loads(r.read().decode())
+    return open_json(urllib.request.Request(url, headers=UA), timeout)
 
 
 def _post(url, payload, timeout=12):
@@ -125,8 +144,7 @@ def _post(url, payload, timeout=12):
         url, data=json.dumps(payload).encode(),
         headers={**UA, "Content-Type": "application/json", "Accept": "application/json"},
         method="POST")
-    with urllib.request.urlopen(req, timeout=timeout) as r:
-        return json.loads(r.read().decode())
+    return open_json(req, timeout)
 
 
 def probe_greenhouse(token):
@@ -436,3 +454,28 @@ if __name__ == "__main__":
             print(f"{v.get('round','?'):<12} {k}  ({v.get('source','')})")
     else:
         print("usage: watchlist.py stage <company> <round> | watchlist.py stages")
+
+
+FUNDED_FILE = "funded_companies.json"
+
+
+def ingest_funded(path=FUNDED_FILE):
+    """Feed the funding digest's hand-off file into the watchlist, then re-probe
+    the board-less ones. Idempotent: an already-checked company only refreshes
+    its funding flag, so re-reading the same rolling file every day is cheap."""
+    try:
+        with open(path) as f:
+            rows = json.load(f)
+    except FileNotFoundError:
+        print(f"[watchlist] no {path} — funding digest hasn't run yet")
+        rows = []
+    for r in rows:
+        try:
+            detect_and_add(r["company"], r.get("domain"), funding=r.get("funding"))
+        except Exception as e:
+            print(f"[warn] watchlist {r.get('company')}: {e}")
+    reprobe_pending()
+
+
+if __name__ == "__main__":
+    ingest_funded()

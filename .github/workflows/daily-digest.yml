@@ -48,35 +48,17 @@ jobs:
       - name: Install deps
         run: pip install -r requirements.txt
 
-      # Durable state lives on the `state` branch (survives cache eviction and is
-      # inspectable). Pull the files this digest reads/updates: enrichment cache,
-      # Hunter monthly counter, and the shared ATS watchlist (the loop).
+      # Durable state lives on the `state` branch. This workflow owns ONLY the
+      # funding-side files: enrichment cache, Hunter monthly counter, and
+      # funded_companies.json (its hand-off to the jobs workflow). Everything
+      # job-search (watchlist, Getro, discovery) lives in companies-digest.yml.
       - name: Restore state
         run: |
           git fetch -q origin state 2>/dev/null || true
-          for f in enrich_cache.json hunter_usage.json ats_watchlist.json getro_networks.json; do
+          for f in enrich_cache.json hunter_usage.json funded_companies.json; do
             git cat-file -e "origin/state:$f" 2>/dev/null \
               && git show "origin/state:$f" > "$f" && echo "restored $f" || true
           done
-
-      # Bulk-feed the watchlist from the public Getro API (the portfolio job
-      # boards of hundreds of VC funds). Every job it returns carries a real
-      # apply URL, so ATS tokens are READ rather than guessed — it adds
-      # companies by the hundred where discover.py adds them by the handful.
-      # Keyless, and non-fatal: a sweep failure never blocks the digest.
-      - name: Sweep VC job boards (Getro)
-        continue-on-error: true
-        run: python getro.py
-
-      # Web-search LinkedIn "we're hiring" posts / hiring roundups for companies
-      # hiring your roles, probe their ATS, and add hits to ats_watchlist.json.
-      # Still worth running after the sweep: it reaches companies that are on no
-      # VC board at all. Non-fatal: a discovery failure never blocks the digest.
-      - name: Discover hiring companies
-        continue-on-error: true
-        env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: python discover.py
 
       # The compiled profile (resume-derived focus keywords + locations) is
       # gitignored — this repo is public, so it can't be committed. Ship it as the
@@ -122,10 +104,10 @@ jobs:
           GEO_MODE:          ${{ vars.GEO_MODE || 'us' }}
         run: python funding_digest.py
 
-      # Persist enrichment cache, Hunter counter, and the watchlist so we never
-      # re-spend API calls and the companies digest sees newly-raised companies.
+      # Persist enrichment cache, Hunter counter, and the funded-company hand-off
+      # the jobs workflow reads.
       - name: Persist state
         if: always()
         env:
-          FILES: "enrich_cache.json hunter_usage.json ats_watchlist.json getro_networks.json"
+          FILES: "enrich_cache.json hunter_usage.json funded_companies.json"
         run: bash .github/persist-state.sh

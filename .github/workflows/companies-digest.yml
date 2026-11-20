@@ -54,16 +54,39 @@ jobs:
         with:
           python-version: "3.12"
 
-      # Durable state on the `state` branch: the "already-seen" list (so 1pm/4pm
-      # don't repeat 9am's postings) plus the shared ATS watchlist written by the
-      # funding digest (read-only here — this workflow never writes it back).
+      # Durable state on the `state` branch. This workflow owns the job-search
+      # files (seen-cache, ATS watchlist, Getro scan cursor) and only READS
+      # funded_companies.json, which the funding workflow writes.
       - name: Restore state
         run: |
           git fetch -q origin state 2>/dev/null || true
-          for f in seen_jobs.json ats_watchlist.json; do
+          for f in seen_jobs.json ats_watchlist.json getro_networks.json funded_companies.json; do
             git cat-file -e "origin/state:$f" 2>/dev/null \
               && git show "origin/state:$f" > "$f" && echo "restored $f" || true
           done
+
+      - name: Install deps
+        run: pip install -r requirements.txt
+
+      # Bulk-feed the watchlist from the public Getro API (the portfolio job
+      # boards of hundreds of VC funds). Keyless; non-fatal.
+      - name: Sweep VC job boards (Getro)
+        continue-on-error: true
+        run: python getro.py
+
+      # Web-search "we're hiring" posts for companies on no VC board. Needs an
+      # LLM key; non-fatal, but a failure shows as a red banner in the email.
+      - name: Discover hiring companies
+        continue-on-error: true
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python discover.py
+
+      # Probe ATS boards for companies the funding digest saw raise, and re-probe
+      # the ones that had no board yet. Non-fatal.
+      - name: Add funded companies to watchlist
+        continue-on-error: true
+        run: python watchlist.py
 
       # Same as the funding workflow: the compiled profile (resume-derived titles,
       # locations) is gitignored on this public repo, so ship it as a secret and
@@ -111,9 +134,8 @@ jobs:
           GROK_API_KEY:   ${{ secrets.GROK_API_KEY }}
         run: python companies_digest.py
 
-      # Persist only the seen-cache; the watchlist is owned by the funding digest.
       - name: Persist state
         if: always()
         env:
-          FILES: "seen_jobs.json"
+          FILES: "seen_jobs.json ats_watchlist.json getro_networks.json"
         run: bash .github/persist-state.sh

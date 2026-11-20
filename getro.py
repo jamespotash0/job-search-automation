@@ -41,9 +41,9 @@ HDR = {"Content-Type": "application/json", "Accept": "application/json",
 
 STATE_FILE = "getro_networks.json"
 
-# Getro answered 73 sequential and 60 concurrent probes with no 429 and no
-# throttling (~26 req/s at 12 workers), so this is polite rather than forced.
-WORKERS = int(os.environ.get("GETRO_WORKERS", "10"))
+# Getro does 429 at 10 workers; requests retry with backoff (watchlist.open_json),
+# and 6 workers keeps the retries rare.
+WORKERS = int(os.environ.get("GETRO_WORKERS", "6"))
 # Live collection ids are sparse (~17% of the 600-4000 range), so the id space is
 # walked a slice per run and the hits are cached — a full rescan every run would
 # be thousands of calls to relearn what we already know.
@@ -93,8 +93,7 @@ def extract_token(url):
 def _post(cid, page, hits=100, timeout=20):
     body = json.dumps({"hitsPerPage": hits, "page": page, "filters": {}}).encode()
     req = urllib.request.Request(API.format(cid), data=body, headers=HDR, method="POST")
-    with urllib.request.urlopen(req, timeout=timeout) as r:
-        return json.loads(r.read().decode("utf-8", "replace"))
+    return wl.open_json(req, timeout)
 
 
 def probe_network(cid):
